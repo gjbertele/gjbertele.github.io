@@ -74,3 +74,8 @@ a:hover {
     left:4.5em;
     top:24.5em;
 }
+.dots {
+    position:absolute;
+    left:0;
+    top:0;
+}
