@@ -23,5 +23,5 @@ const loadEvents = () => {
 document.body.onload = () => {
     loadEvents();
 
-    loadBall();
+    loadDots();
 }

@@ -36,6 +36,7 @@ const stepBall = () => {
 
 const loadBall = () => {
     ball = document.querySelector('.ball');
+    ball.style.display = 'inline-block';
     radius = ball.clientWidth/2;
     stepBall();
 }

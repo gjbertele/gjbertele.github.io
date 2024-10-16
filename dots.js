@@ -56,15 +56,19 @@ const stepDots = () => {
             let originalY = canvasOffsetTop + canvasWidth*normalY/gridCount;
             let dx = originalX - dot[0];
             let dy = originalY - dot[1];
-            let angleToDefault = Math.atan2(dy, dx);
-            dot[0]+=Math.cos(angleToDefault);
-            dot[1]+=Math.sin(angleToDefault)
-
+            if(dx*dx + dy*dy >= 3){
+                let angleToDefault = Math.atan2(dy, dx);
+                dot[0]+=Math.cos(angleToDefault);
+                dot[1]+=Math.sin(angleToDefault);
+            } else {
+                dot[0] = originalX;
+                dot[1] = originalY;
+            }
         }
-        
-        console.log(dot);
 
-        ctx.fillRect(dot[0]-3,dot[1]-3,6,6);
+        ctx.beginPath();
+        ctx.arc(dot[0],dot[1],3,0,2*Math.PI);
+        ctx.fill();
 
     }
     requestAnimationFrame(stepDots);
