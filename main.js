@@ -22,7 +22,7 @@ const loadEvents = () => {
 }
 document.body.onload = () => {
     loadEvents();
-    if(width >= 1000 && !isMobile()){
+    if(!isMobile()){
         let r = Math.random();
         if(r < 0.5){
             loadDots();
