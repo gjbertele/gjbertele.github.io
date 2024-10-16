@@ -22,6 +22,12 @@ const loadEvents = () => {
 }
 document.body.onload = () => {
     loadEvents();
-
-    loadDots();
+    if(width >= 1000){
+        let r = Math.random();
+        if(r < 0.5){
+            loadDots();
+        } else {
+            loadBall();
+        }
+    }
 }

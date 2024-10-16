@@ -27,7 +27,6 @@ const stepDots = () => {
 
     for(let i = 0; i<dots.length; i++){
         let dot = dots[i];
-        console.log(dot);
         let velocityDX = dot[2]-dot[4];
         let velocityDY = dot[3]-dot[5];
         
