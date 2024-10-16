@@ -5,6 +5,7 @@ body {
     height:100%;
     background:#FFF;
 }
+
 .ball {
     position:fixed;
     width:10em;
@@ -38,7 +39,6 @@ body {
     position:absolute;
     left:2em;
     top:1em;
-    border-bottom: gray 1px solid;
 }
 
 .subtitle1 {
