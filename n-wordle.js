@@ -93,39 +93,11 @@ let wordles = [];
 
 let wordlesStarted = false;
 
-document.body.onkeydown = function(e) {
-    let elem = document.querySelector('.guessInput');
-    if(elem.textContent.length > 5) elem.textContent = '';
-    if(wordlesStarted == true){
-        let key = e.key.toUpperCase();
-        let code = key.charCodeAt(0)-65;
-        if(key.length == 1 && 0 <= code && code < 26){
-            if(elem.textContent.length >= 5) return;
-            elem.textContent += key;
-        } else if(e.key == 'Backspace'){
-            if(elem.textContent.length == 0) return;
-            elem.textContent = elem.textContent.slice(0,-1);
-        }
-    } else {
-        let code = e.key.charCodeAt(0)-48;
-        if(e.key.length == 1){
-            if(elem.textContent.length == 4 || !(0 <= code && code < 10)) return;
-            elem.textContent += code;
-        } else if(e.key == 'Backspace'){
-            if(elem.textContent.length == 0) return;
-            elem.textContent = elem.textContent.slice(0,-1);
-        }
-    }
-}
-
 document.querySelector('.submit').onclick = function(e){
     let elem = document.querySelector('.guessInput');
     if(!wordlesStarted){
-        let number = parseInt(elem.textContent);
-        if(number == 0){
-            elem.textContent = 'Must type in a number first!';
-            return;
-        }
+        let number = parseInt(elem.value);
+        if(number == 0 || isNaN(number)) return;
 
         for(let n = 0; n<number; n++){
             let randomIndex = Math.floor(Math.random()*words.length);
@@ -134,20 +106,21 @@ document.querySelector('.submit').onclick = function(e){
         }
         wordlesStarted = true;
         document.querySelector('.submit').textContent = 'GUESS';
-        elem.textContent = 'Type your guess';
+        elem.value = '';
+        elem.placeholder = 'Type your guess';
     } else {
-        if(elem.textContent.length != 5){
-            elem.textContent = "Guess must be 5 letters!";
+        if(elem.value.length != 5){
+            elem.value = "Guess must be 5 letters!";
             return;
         }
-        if(words.indexOf(elem.textContent) == -1){
-            elem.textContent = "Invalid word";
+        if(words.indexOf(elem.value.toUpperCase()) == -1){
+            elem.value = "Invalid word";
             return;
         }
         for(let n = 0; n<wordles.length; n++){
-            wordles[n].guess(elem.textContent);
+            wordles[n].guess(elem.value);
         }
-        elem.textContent = '';
+        elem.value = '';
     }
 }
 
