@@ -124,5 +124,12 @@ document.querySelector('.submit').onclick = function(e){
     }
 }
 
+document.body.onkeydown = function(e){
+    if(e.key == 'Enter'){
+        document.querySelector('.submit').click();
+    }
+    document.querySelector('.guessInput').focus();
+}
+
 document.querySelector('.submit').style.height = (height/10)+"px";
 document.querySelector('.submit').style.lineHeight = (height/10)+"px";
