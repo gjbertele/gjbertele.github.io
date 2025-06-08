@@ -15,14 +15,14 @@ class oneWordle {
         for(let i = 0; i<w.length; i++){
             this.letterCounts[w.charCodeAt(i)-65]++;
         }
-        this.height = width/10;
+        this.height = height/10;
         this.elem = document.createElement('div');
         this.elem.className = 'wordleBox';
         this.elem.style.width = (width*0.21)+"px"
         let numberOfWordles = document.body.getElementsByClassName('wordleBox').length;
         let x = (numberOfWordles % 4)*width/4;
         this.row = Math.floor(numberOfWordles/4);
-        this.elem.style.top = (width/10)+"px";
+        this.elem.style.top = (height/10)+"px";
         this.elem.style.left = x+"px";
         this.completed = false;
         document.body.appendChild(this.elem);
