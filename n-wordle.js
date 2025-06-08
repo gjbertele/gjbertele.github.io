@@ -108,7 +108,6 @@ document.querySelector('.submit').onclick = function(e){
         document.querySelector('.submit').textContent = 'GUESS';
         elem.value = '';
         elem.placeholder = 'Type your guess';
-        elem.inputMode = 'text';
     } else {
         if(elem.value.length != 5){
             elem.value = "Guess must be 5 letters!";
