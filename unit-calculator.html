@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U_n Calculator</title>
+</head>
+<body>
+    <input type="number" placeholder="Type n here"></input>
+    <button>Calculate U_n</button>
+    <div></div>
+    <script>
+        const button = document.querySelector('button');
+        const div = document.querySelector('div');
+        const input = document.querySelector('input');
+
+        const gcd = (a,b) => {
+            if(a==0 || b == 0) return Math.max(a,b);
+            if(a<b) return gcd(b,a);
+            if(a==b) return a;
+            return gcd(b, a%b);
+        }
+
+        const ord = (n, p) => {
+            let o = 1;
+            let t = n;
+            while (t != 1 && o < p){
+                t = n*t % p;
+                o++;
+            }
+            return o;
+        }
+
+        button.onclick = () => {
+            let n = input.value;
+            let string = "";
+
+            for(let i = 1; i<=n; i++){
+                if(gcd(i,n) == 1){
+                    if(string.length != 0) string += ", ";
+                    string += i+" (ord "+ord(i,n)+")";
+                }
+            }
+
+            div.textContent = string;
+        }
+    </script>
+</body>
+</html>
