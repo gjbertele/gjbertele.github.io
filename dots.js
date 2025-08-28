@@ -3,7 +3,7 @@ let dots = [];
 
 const loadDots = () => {
     gridCount = 45;
-    canvas = document.querySelector('.dots');
+    canvas = document.querySelector('.drawBox');
     ctx = canvas.getContext('2d');
     canvasOffsetLeft = width*0.45;
     canvasOffsetTop = height*0.2;
@@ -20,6 +20,8 @@ const loadDots = () => {
         }
     }
     stepDots();
+
+    return;
 }
 
 const stepDots = () => {
@@ -71,4 +73,6 @@ const stepDots = () => {
 
     }
     requestAnimationFrame(stepDots);
+    
+    return;
 }

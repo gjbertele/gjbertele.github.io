@@ -2,10 +2,40 @@ let height, width;
 let mousedown = false;
 let mx = 0;
 let my = 0;
+
+let linkList = [];
+
+const createLink = (href, title) => {
+    const element = document.createElement('a');
+    element.className = 'small text';
+    element.setAttribute('href', href);
+    element.textContent = title;
+
+    element.style.position = 'absolute';
+    element.style.top = linkList.length*(getDefaultFontSize()+20)+'px';
+
+    return element;
+}
+
+const buildLinkBox = () => {
+    linkList.push(createLink('proof_2.pdf','Zeta-Gamma Proof'));
+    linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html/AI','Self-Contained JS Neural Net'));
+    linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html/math%20utils','Self-Contained JS Math Utils/UI'));
+    linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html','Projects Archive'));
+    linkList.push(createLink('multi-wordle.html','Multi-Wordle'));
+
+    for(let i = 0; i<linkList.length; i++){
+        document.querySelector('.sectionA').appendChild(linkList[i]);
+    }
+
+    return;
+}
+
+
+
 const loadEvents = () => {
     width = document.body.clientWidth;
     height = document.body.clientHeight;
-
 
     document.body.onmousemove = (e) => {
        mx = e.clientX;
@@ -19,17 +49,32 @@ const loadEvents = () => {
     document.body.onmouseup = () => {
         mousedown = false;
     }
+
+    return;
 }
+
+const getDefaultFontSize = () => {
+    var div = document.createElement('div');
+    div.style.width = "1000em";
+    document.body.appendChild(div);
+    var pixels = div.offsetWidth / 1000;
+    document.body.removeChild(div);
+    return pixels;
+}
+
+
 document.body.onload = () => {
     loadEvents();
+    buildLinkBox();
+
     if(!isMobile()){
-        let r = Math.random();
-        if(r < 0.5){
-            loadDots();
-        } else {
-            loadBall();
-        }
+        let displays = [loadDots, loadBall];
+        let randomIdx = Math.floor(Math.random()*displays.length);
+
+        displays[randomIdx]();
     }
+
+    return;
 }
 
 const isMobile = () => {

@@ -18,6 +18,7 @@ body {
     z-index:-1000;
     display:none;
 }
+
 .large {
     font-size: 3em;
     font-weight:bolder;
@@ -51,7 +52,9 @@ body {
     animation: 1s ease-in-out 0s 1 move;
     left:4.5em;
     top:13em;
+    width:25em;
 }
+
 a {
     position:relative;
     left:1em;
@@ -75,7 +78,7 @@ a:hover {
     left:4.5em;
     top:26em;
 }
-.dots {
+.drawBox {
     position:absolute;
     left:0;
     top:0;
