@@ -32,6 +32,7 @@ const stepBall = () => {
 
     requestAnimationFrame(stepBall);
 
+    return;
 }
 
 const loadBall = () => {
@@ -39,4 +40,6 @@ const loadBall = () => {
     ball.style.display = 'inline-block';
     radius = ball.clientWidth/2;
     stepBall();
+
+    return;
 }
