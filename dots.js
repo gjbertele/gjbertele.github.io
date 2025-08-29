@@ -45,11 +45,15 @@ const stepDots = () => {
         let dmy = my - dot[1];
         let dmx = mx - dot[0];
 
-        let distanceToMouse = dmy*dmy + dmx*dmx + 1;
-        if(distanceToMouse <= 6400){
+        let distanceToMouse = dmy*dmy + dmx*dmx;
+        if(distanceToMouse <= 6400 && distanceToMouse > 0){
             let angleToMouse = Math.atan2(dmy, dmx);
-            dot[0]-=Math.cos(angleToMouse)*height/distanceToMouse;
-            dot[1]-=Math.sin(angleToMouse)*height/distanceToMouse
+            let force = height/distanceToMouse;
+            
+            force = Math.min(force, 300/60);
+
+            dot[0]-=Math.cos(angleToMouse)*force;
+            dot[1]-=Math.sin(angleToMouse)*force;
         } else {
             let normalY = i % gridCount;
             let normalX = (i - normalY)/gridCount;
