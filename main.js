@@ -2,6 +2,8 @@ let height, width;
 let mousedown = false;
 let mx = 0;
 let my = 0;
+let lmx = 0;
+let lmy = 0;
 
 let linkList = [];
 
@@ -38,8 +40,10 @@ const loadEvents = () => {
     height = document.body.clientHeight;
 
     document.body.onmousemove = (e) => {
-       mx = e.clientX;
-       my = e.clientY;
+        lmx = mx;
+        lmy = my;
+        mx = e.clientX;
+        my = e.clientY;
     }
 
     document.body.onmousedown = () => {
