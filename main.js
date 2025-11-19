@@ -26,7 +26,7 @@ const buildLinkBox = () => {
     linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html','Projects Archive'));
     linkList.push(createLink('multi-wordle.html','Multi-Wordle'));
     linkList.push(createLink('DiffEqWriteup.pdf','Interesting PDEs'));
-    linkList.push(createLink('eigenvalue_derivative.pdf','Representations for the derivative of eigenvalues of a matrix-valued function'));
+    linkList.push(createLink('eigenvalue_derivative.pdf','Eigenvalue Derivatives'));
     for(let i = 0; i<linkList.length; i++){
         document.querySelector('.sectionA').appendChild(linkList[i]);
     }
