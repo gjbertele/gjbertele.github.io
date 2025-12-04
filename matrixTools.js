@@ -1,0 +1,268 @@
+class Matrix {
+    rows;
+    columns;
+    arr;
+    constructor(n, m){
+        this.rows = n;
+        this.columns = m;
+
+        this.arr = new Array(n);
+        for(let i = 0; i<n; i++){
+            this.arr[i] = new Float64Array(m);
+            this.arr[i].fill(0);
+        }
+
+        return this;
+    }
+
+    plus = function(B){
+        let output = new Matrix(this.rows, this.columns);
+        for(let i = 0; i<this.rows; i++){
+            for(let j = 0; j<this.columns; j++){
+                output.arr[i][j] = this.arr[i][j] + B.arr[i][j];
+            }
+        }
+        return output;
+    }
+
+    minus = function(B){
+        let output = new Matrix(this.rows, this.columns);
+        for(let i = 0; i<this.rows; i++){
+            for(let j = 0; j<this.columns; j++){
+                output.arr[i][j] = this.arr[i][j] - B.arr[i][j];
+            }
+        }
+        return output;
+    }
+
+    multiply = function(B){
+        let output = new Matrix(this.rows, B.columns);
+        let temp = 0;
+        for(let i = 0; i < this.rows; i++){
+            for(let j = 0; j < B.columns; j++){
+                temp = 0;
+                for(let k = 0; k<Math.min(this.columns, B.rows); k++){
+                    temp += this.arr[i][k]*B.arr[k][j];
+                }
+                output.arr[i][j] = temp;
+            }
+        }
+        return output;
+    }
+
+    vecMultiply = function(v){
+        let output = new Float64Array(this.rows);
+        let temp = 0;
+        for(let i = 0; i<this.rows; i++){
+            temp = 0;
+            for(let j = 0; j<v.length; j++){
+                temp += this.arr[i][j]*v[j];
+            }
+            output[i] = temp;
+        }
+        return output;
+    }
+
+    scalarMultiply = function(a){
+        let output = new Matrix(this.rows, this.columns);
+        for(let i = 0; i<this.rows; i++){
+            for(let j = 0; j<this.columns; j++) output.arr[i][j] = a*this.arr[i][j];
+        }
+        return output;
+    }
+
+}
+
+Float64Array.prototype.dot = function(v) {
+    let d = 0;
+    for(let i = 0; i<v.length; i++){
+        d += v[i]*this[i];
+    }
+    return d;
+}
+
+Float64Array.prototype.minus = function(v){
+    let output = new Float64Array(this.length);
+    for(let i = 0; i<this.length; i++) output[i] = this[i] - v[i];
+    return output;
+}
+
+Float64Array.prototype.plus = function(v){
+    let output = new Float64Array(this.length);
+    for(let i = 0; i<this.length; i++) output[i] = this[i] + v[i];
+    return output;
+}
+
+Float64Array.prototype.scalarMultiply = function(a){
+    let output = new Float64Array(this.length);
+    for(let i = 0; i<this.length; i++) output[i] = this[i]*a;
+    return output;
+}
+
+
+const computeFirstNConstants = (A, N, b) => {
+    let xnprev = new Float64Array(A.columns); //x_{n-2}
+    let xn = new Float64Array(A.columns); // x_{n-1}
+
+    xnprev.fill(0); //initialize values
+    xn.fill(1);
+
+    let rn = A.vecMultiply(xn).minus(b); //r_0 = Ax_0 - b
+
+    let dtemp = 0; //d_0 = 0
+    let atemp = A.vecMultiply(rn); //save value of Ar_0
+    let rdotatemp = rn.dot(atemp); //save value of (r_0,Ar_0)
+    let ctemp = atemp.dot(atemp)/rdotatemp; //c_0 = (Ar_0,Ar_0)/(r_0,Ar_0)
+    let btemp = -(ctemp + dtemp); //b_0 = -c_0 - d_0
+
+    let sn = 1/btemp; //s_0 = 1/b_0
+    let pn = -ctemp/btemp; //p_0 = -c_0/b_0
+    let qn = -dtemp/btemp; //q_0 = -d_0/b_0
+
+    let constantLog = []; //initialize log to save values of s,p,q
+
+    for(let i = 1; i < N; i++){
+        let xtemp = xn; //save x_{i-1}
+
+        xn =  A.scalarMultiply(sn) //x_i = s_{i-1}Ax_{i-1}+p_{i-1}x_{i-1}+q_{i-1}x_{i-2}-s_{i-1}b
+        .vecMultiply(xn)
+        .plus(xn.scalarMultiply(pn))
+        .plus(xnprev.scalarMultiply(qn))
+        .minus(b.scalarMultiply(sn));
+
+        xnprev = xtemp; //update x_{i-2}
+
+
+        rn = A.vecMultiply(xn).minus(b); //r_i = Ax_i - b
+        aprevtemp = atemp; //update aprevtemp
+        atemp = A.vecMultiply(rn); //save value of Ar_i
+
+        dtemp = atemp.dot(aprevtemp)/rdotatemp; //d_i = (Ar_i,Ar_{i-1})/(r_{i-1},Ar_{i-1})
+
+        rdotatemp = rn.dot(atemp); //save value of (r_i,Ar_i)
+
+        ctemp = atemp.dot(atemp)/rdotatemp; //c_i = (Ar_i,Ar_i)/(r_i,Ar_i)
+
+        btemp = -ctemp - dtemp; //b_i=-c_i-d_i
+
+        sn = 1/btemp; //s_i=1/b_i
+        pn = -ctemp/btemp; //p_i=-c_i/b_i
+        qn = -dtemp/btemp; //q_i=-d_i/b_i
+
+        constantLog.push([sn,pn,qn]) //update log
+
+        let errorSize = rn.dot(rn);
+        if(errorSize < 0.00001) break;
+    }
+
+    return [xn,constantLog]; //return final x and log of constants
+}
+
+function computeEigenvalues(M){
+    if(M.rows != M.columns) return;
+    let n = M.rows;
+    let stepSize = 0.01;
+    let init = new Matrix(n,n);
+    let lambda = new Array(n);
+    for(let i = 0; i<n; i++){
+        init.arr[i][i] = i+1;
+        lambda[i] = i+1;
+    }
+
+    for(let i = 0; i<n; i++){
+        for(let j = 0; j<n; j++){
+            let sgn = -1;
+            if(init.arr[i][j] < M.arr[i][j]) sgn = 1;
+            let steps = Math.abs(M.arr[i][j]-init.arr[i][j])/stepSize;
+            for(let k = 0; k<steps; k++){
+                let newLambda = new Array(n);
+                for(let m = 0; m<n; m++){
+                    newLambda[m] = lambda[m] + computeLambdaKDij(init, lambda, m, i, j)*stepSize*sgn;
+                }
+                lambda = newLambda;
+                init.arr[i][j] += stepSize*sgn;
+            }
+        }
+    }
+    return lambda;
+}
+
+function computeLambdaKDij(M, lambda, k, i, j){
+    let Lneqk = 1;
+    for(let idx = 0; idx<M.rows; idx++){
+        if(idx == k) continue;
+        Lneqk *= lambda[idx]-lambda[k];
+    }
+
+    let Mneqk = matrixPolynomialExcluding(M, lambda, k);
+
+    return Mneqk.arr[j][i]/Lneqk;
+
+}
+
+function getIdentity(n){
+    let I = new Matrix(n,n);
+    for(let i = 0; i<n; i++) I.arr[i][i]  = 1;
+    return I;
+}
+
+function matrixPolynomialExcluding(M,lambda,idx){
+    let n = M.rows;
+    let I = getIdentity(n);
+    let output = getIdentity(n);
+
+    for(let j = 0; j<n; j++){
+        if(j == idx) continue;
+        output = output.multiply(I.scalarMultiply(lambda[j]).minus(M));
+    }
+
+    return output;
+}
+function prodAtIndex(lambda, k){
+    let output = 1;
+    for(let i = 0; i<lambda.length; i++){
+        if(i == k) continue;
+        output *= lambda[i] - lambda[k];
+    }
+    return output;
+}
+function computeEigenvectorsFromEigenvalues(M, lambda){
+    let n = M.rows;
+    let vecs = new Array(n);
+    for(let i = 0; i<n; i++){
+        let Mneqk = matrixPolynomialExcluding(M, lambda, i);
+
+        let idx = 0;
+        while(idx < n){
+            vecs[i] = Mneqk.arr[idx];
+            let norm = Math.sqrt(vecs[i].dot(vecs[i]));
+            vecs[i] = vecs[i].scalarMultiply(1/norm);
+            if(norm > 0.000001) break;
+            idx++;
+        }
+    }
+
+    return vecs;
+}
+
+
+let M = new Matrix(2,2);
+M.arr = [[1,4],[4,6]];
+
+let eigenvalues = computeEigenvalues(M);
+let eigenvectors = computeEigenvectorsFromEigenvalues(M, eigenvalues);
+console.log(eigenvalues, eigenvectors);
+
+
+
+
+let bvec = new Float64Array(M.rows); 
+bvec.fill(1); //set b to be vector of all 1s
+
+let solutionData = computeFirstNConstants(M, 100, bvec); //get data and solutions to Mx=b
+
+console.log('Data:',solutionData); //log
+
+let error = M.vecMultiply(solutionData[0]).minus(bvec); //find error
+console.log('Magnitude of Error:',Math.sqrt(error.dot(error))); //log norm of error
+
