@@ -71,6 +71,20 @@ class Matrix {
         return output;
     }
 
+    transpose = function(){
+        let output = new Matrix(this.columns, this.rows);
+        for(let i = 0; i<this.columns; i++){
+            for(let j = 0; j<this.rows; j++) output.arr[i][j] = this.arr[j][i];
+        }
+        return output;
+    }
+
+    dot = function(B){
+        let output = 0;
+        for(let i = 0; i<this.rows; i++) output += this.arr[i].dot(B.arr[i]);
+        return output;
+    }
+
 }
 
 Float64Array.prototype.dot = function(v) {
@@ -100,7 +114,7 @@ Float64Array.prototype.scalarMultiply = function(a){
 }
 
 
-const computeFirstNConstants = (A, N, b) => {
+function tripleIterativeSolve (A, N, b){
     let xnprev = new Float64Array(A.columns); //x_{n-2}
     let xn = new Float64Array(A.columns); // x_{n-1}
 
@@ -161,44 +175,38 @@ const computeFirstNConstants = (A, N, b) => {
 function computeEigenvalues(M){
     if(M.rows != M.columns) return;
     let n = M.rows;
-    let stepSize = 0.01;
+    let steps = 1000;
     let init = new Matrix(n,n);
     let lambda = new Array(n);
     for(let i = 0; i<n; i++){
-        init.arr[i][i] = i+1;
-        lambda[i] = i+1;
+        init.arr[i][i] = M.arr[i][i];
+        lambda[i] = M.arr[i][i];
     }
 
-    for(let i = 0; i<n; i++){
-        for(let j = 0; j<n; j++){
-            let sgn = -1;
-            if(init.arr[i][j] < M.arr[i][j]) sgn = 1;
-            let steps = Math.abs(M.arr[i][j]-init.arr[i][j])/stepSize;
-            for(let k = 0; k<steps; k++){
-                let newLambda = new Array(n);
-                for(let m = 0; m<n; m++){
-                    newLambda[m] = lambda[m] + computeLambdaKDij(init, lambda, m, i, j)*stepSize*sgn;
-                }
-                lambda = newLambda;
-                init.arr[i][j] += stepSize*sgn;
-            }
+    let scale = M.minus(init).scalarMultiply(1/steps);
+
+    for(let iteration = 0; iteration < steps; iteration++){
+        let nextLambda = new Array(n);
+        for(let k = 0; k<n; k++){
+            let U = computeLambdaKD(init, lambda, k);
+            nextLambda[k] = lambda[k] + U.transpose().dot(scale);
         }
+        
+        lambda = nextLambda;
+        init = init.plus(scale);
     }
+
     return lambda;
 }
 
-function computeLambdaKDij(M, lambda, k, i, j){
-    let Lneqk = 1;
-    for(let idx = 0; idx<M.rows; idx++){
-        if(idx == k) continue;
-        Lneqk *= lambda[idx]-lambda[k];
-    }
 
+function computeLambdaKD(M, lambda, k){
+    let Lneqk = prodAtIndex(lambda, k);
     let Mneqk = matrixPolynomialExcluding(M, lambda, k);
 
-    return Mneqk.arr[j][i]/Lneqk;
-
+    return Mneqk.scalarMultiply(1/Lneqk);
 }
+
 
 function getIdentity(n){
     let I = new Matrix(n,n);
@@ -206,18 +214,41 @@ function getIdentity(n){
     return I;
 }
 
+function getE(n, idx){
+    let vec = new Float64Array(n);
+    vec.fill(0);
+    vec[idx] = 1;
+    return vec;
+}
+
+function precomputeCoefficientsExcluding(lambda, idx){
+    let output = [1]
+    for(let i = 0; i<lambda.length; i++){
+        if(i == idx) continue;
+        output.unshift(0);
+        for(let j = 0; j<output.length-1; j++) output[j] -= output[j+1]*lambda[i];
+    }
+    
+    let pow = Math.pow(-1,lambda.length - 1);
+    for(let j = 0; j<output.length; j++) output[j] *= pow;
+
+    return output;
+}
+
 function matrixPolynomialExcluding(M,lambda,idx){
     let n = M.rows;
-    let I = getIdentity(n);
-    let output = getIdentity(n);
+    let output = new Matrix(n,n);
+    let pow = getIdentity(n);
 
-    for(let j = 0; j<n; j++){
-        if(j == idx) continue;
-        output = output.multiply(I.scalarMultiply(lambda[j]).minus(M));
+    let coefficients = precomputeCoefficientsExcluding(lambda, idx);
+    for(let i = 0; i<coefficients.length; i++){
+        output = output.plus(pow.scalarMultiply(coefficients[i]));
+        pow = pow.multiply(M);
     }
 
     return output;
 }
+
 function prodAtIndex(lambda, k){
     let output = 1;
     for(let i = 0; i<lambda.length; i++){
@@ -226,6 +257,7 @@ function prodAtIndex(lambda, k){
     }
     return output;
 }
+
 function computeEigenvectorsFromEigenvalues(M, lambda){
     let n = M.rows;
     let vecs = new Array(n);
@@ -234,7 +266,7 @@ function computeEigenvectorsFromEigenvalues(M, lambda){
 
         let idx = 0;
         while(idx < n){
-            vecs[i] = Mneqk.arr[idx];
+            vecs[i] = Mneqk.vecMultiply(getE(n, idx));
             let norm = Math.sqrt(vecs[i].dot(vecs[i]));
             vecs[i] = vecs[i].scalarMultiply(1/norm);
             if(norm > 0.000001) break;
@@ -245,7 +277,6 @@ function computeEigenvectorsFromEigenvalues(M, lambda){
     return vecs;
 }
 
-
 let M = new Matrix(2,2);
 M.arr = [[1,4],[4,6]];
 
@@ -254,7 +285,7 @@ let eigenvectors = computeEigenvectorsFromEigenvalues(M, eigenvalues);
 console.log(eigenvalues, eigenvectors);
 
 
-
+/*
 
 let bvec = new Float64Array(M.rows); 
 bvec.fill(1); //set b to be vector of all 1s
@@ -265,4 +296,4 @@ console.log('Data:',solutionData); //log
 
 let error = M.vecMultiply(solutionData[0]).minus(bvec); //find error
 console.log('Magnitude of Error:',Math.sqrt(error.dot(error))); //log norm of error
-
+*/
