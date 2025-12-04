@@ -172,6 +172,36 @@ function tripleIterativeSolve (A, N, b){
     return [xn,constantLog]; //return final x and log of constants
 }
 
+function computeSparseEigenvalues(M){
+    if(M.rows != M.columns) return;
+    let n = M.rows;
+    let stepSize = 0.001;
+    let init = new Matrix(n,n);
+    let lambda = new Array(n);
+    for(let i = 0; i<n; i++){
+        init.arr[i][i] = M.arr[i][i];
+        lambda[i] = M.arr[i][i];
+    }
+
+    for(let i = 0; i<n; i++){
+        for(let j = 0; j<n; j++){
+            let steps = Math.ceil(Math.abs(init.arr[i][j] - M.arr[i][j])/stepSize);
+            let dir = (M.arr[i][j] - init.arr[i][j])/steps;
+            for(let m = 0; m<steps; m++){
+                let nextLambda = new Array(n);
+                for(let k = 0; k<n; k++){
+                    let derivative = computeLambdaKD(init, lambda, k).arr[j][i];
+                    nextLambda[k] = lambda[k] + derivative*dir;
+                }
+                lambda = nextLambda;
+                init.arr[i][j] += dir;
+            }
+        }
+    }
+
+    return lambda;
+}
+
 function computeEigenvalues(M){
     if(M.rows != M.columns) return;
     let n = M.rows;
@@ -181,15 +211,15 @@ function computeEigenvalues(M){
     for(let i = 0; i<n; i++){
         init.arr[i][i] = M.arr[i][i];
         lambda[i] = M.arr[i][i];
-    }
+    } 
 
-    let scale = M.minus(init).scalarMultiply(1/steps);
+    let scale = M.minus(init).scalarMultiply(1/steps); 
 
     for(let iteration = 0; iteration < steps; iteration++){
         let nextLambda = new Array(n);
-        for(let k = 0; k<n; k++){
-            let U = computeLambdaKD(init, lambda, k);
-            nextLambda[k] = lambda[k] + U.transpose().dot(scale);
+        for(let k = 0; k<n; k++){ 
+            let U = computeLambdaKD(init, lambda, k); 
+            nextLambda[k] = lambda[k] + U.transpose().dot(scale); 
         }
         
         lambda = nextLambda;
@@ -277,10 +307,11 @@ function computeEigenvectorsFromEigenvalues(M, lambda){
     return vecs;
 }
 
-let M = new Matrix(2,2);
-M.arr = [[1,4],[4,6]];
+let M = new Matrix(10,10);
+M.arr = [[16 ,5 ,2 ,18 ,2 ,9 ,1 ,12 ,1 ,19],[5 ,17 ,7 ,4 ,12 ,9 ,2 ,10 ,3 ,13],[2 ,7 ,15 ,13 ,0 ,18 ,6 ,18 ,1 ,14],[18 ,4 ,13 ,7 ,18 ,1 ,20 ,3 ,16 ,10],[2 ,12 ,0 ,18 ,5 ,11 ,1 ,0 ,14 ,15],[9 ,9 ,18 ,1 ,11 ,11 ,18 ,13 ,15 ,1],[1 ,2 ,6 ,20 ,1 ,18 ,20 ,6 ,7 ,13],[12 ,10 ,18 ,3 ,0 ,13 ,6 ,12 ,2 ,5],[1 ,3 ,1 ,16 ,14 ,15 ,7 ,2 ,9 ,12],[19 ,13 ,14 ,10 ,15 ,1 ,13 ,5 ,12 ,2]];
+//M.arr = [[1,4],[4,6]];
 
-let eigenvalues = computeEigenvalues(M);
+let eigenvalues = computeSparseEigenvalues(M);
 let eigenvectors = computeEigenvectorsFromEigenvalues(M, eigenvalues);
 console.log(eigenvalues, eigenvectors);
 
