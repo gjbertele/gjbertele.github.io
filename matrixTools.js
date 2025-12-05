@@ -3,6 +3,12 @@ class Matrix {
     columns;
     arr;
     constructor(n, m){
+        if(!m){
+            this.arr = n;
+            this.rows = n.length;
+            this.columns = n[0].length;
+            return this;
+        }
         this.rows = n;
         this.columns = m;
 
@@ -14,7 +20,6 @@ class Matrix {
 
         return this;
     }
-
     plus = function(B){
         let output = new Matrix(this.rows, this.columns);
         for(let i = 0; i<this.rows; i++){
@@ -407,9 +412,9 @@ function QRFactorize(M){
     return {'Q':Qn.transpose(),'R':An};
 }
 
-function computeEigenvaluesWithQR(M){
+function computeEigenvaluesWithQR(M, iter = 1000){
     let output = M;
-    for(let i = 0; i<1000; i++){
+    for(let i = 0; i<iter; i++){
         let {Q,R} = QRFactorize(output);
         output = R.multiply(Q);
     }
