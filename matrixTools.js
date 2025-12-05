@@ -85,6 +85,20 @@ class Matrix {
         return output;
     }
 
+    toString = function(){
+        return this.arr.map(i => i = '['+i.toString()+']').join(',');
+    }
+
+    wolfram = function(){
+        window.open(`https://www.wolframalpha.com/input?i=${encodeURIComponent(this.toString())}`);
+        return;
+    }
+
+    QR = function(){
+        return QRFactorize(this);
+    }
+
+    T = this.transpose;
 }
 
 Float64Array.prototype.dot = function(v) {
@@ -113,6 +127,9 @@ Float64Array.prototype.scalarMultiply = function(a){
     return output;
 }
 
+Float64Array.prototype.mag = function(){
+    return Math.sqrt(this.dot(this));
+}
 
 function tripleIterativeSolve (A, N, b){
     let xnprev = new Float64Array(A.columns); //x_{n-2}
@@ -170,36 +187,6 @@ function tripleIterativeSolve (A, N, b){
     }
 
     return [xn,constantLog]; //return final x and log of constants
-}
-
-function computeSparseEigenvalues(M){
-    if(M.rows != M.columns) return;
-    let n = M.rows;
-    let stepSize = 0.001;
-    let init = new Matrix(n,n);
-    let lambda = new Array(n);
-    for(let i = 0; i<n; i++){
-        init.arr[i][i] = M.arr[i][i];
-        lambda[i] = M.arr[i][i];
-    }
-
-    for(let i = 0; i<n; i++){
-        for(let j = 0; j<n; j++){
-            let steps = Math.ceil(Math.abs(init.arr[i][j] - M.arr[i][j])/stepSize);
-            let dir = (M.arr[i][j] - init.arr[i][j])/steps;
-            for(let m = 0; m<steps; m++){
-                let nextLambda = new Array(n);
-                for(let k = 0; k<n; k++){
-                    let derivative = computeLambdaKD(init, lambda, k).arr[j][i];
-                    nextLambda[k] = lambda[k] + derivative*dir;
-                }
-                lambda = nextLambda;
-                init.arr[i][j] += dir;
-            }
-        }
-    }
-
-    return lambda;
 }
 
 function computeEigenvalues(M){
@@ -293,7 +280,7 @@ function computeEigenvectorsFromEigenvalues(M, lambda){
     let vecs = new Array(n);
     for(let i = 0; i<n; i++){
         let Mneqk = matrixPolynomialExcluding(M, lambda, i);
-
+        
         let idx = 0;
         while(idx < n){
             vecs[i] = Mneqk.vecMultiply(getE(n, idx));
@@ -307,14 +294,148 @@ function computeEigenvectorsFromEigenvalues(M, lambda){
     return vecs;
 }
 
-let M = new Matrix(10,10);
-M.arr = [[16 ,5 ,2 ,18 ,2 ,9 ,1 ,12 ,1 ,19],[5 ,17 ,7 ,4 ,12 ,9 ,2 ,10 ,3 ,13],[2 ,7 ,15 ,13 ,0 ,18 ,6 ,18 ,1 ,14],[18 ,4 ,13 ,7 ,18 ,1 ,20 ,3 ,16 ,10],[2 ,12 ,0 ,18 ,5 ,11 ,1 ,0 ,14 ,15],[9 ,9 ,18 ,1 ,11 ,11 ,18 ,13 ,15 ,1],[1 ,2 ,6 ,20 ,1 ,18 ,20 ,6 ,7 ,13],[12 ,10 ,18 ,3 ,0 ,13 ,6 ,12 ,2 ,5],[1 ,3 ,1 ,16 ,14 ,15 ,7 ,2 ,9 ,12],[19 ,13 ,14 ,10 ,15 ,1 ,13 ,5 ,12 ,2]];
-//M.arr = [[1,4],[4,6]];
+function convertReflectionToMatrix(v, embedding = 0){
+    let output = getIdentity(v.length); 
 
-let eigenvalues = computeSparseEigenvalues(M);
+    let mag = 0;
+    for(let i = embedding; i<v.length; i++) mag+=v[i]**2;
+
+    for(let i = embedding; i<v.length; i++){
+        for(let j = embedding; j<v.length; j++){
+            output.arr[i][j] += -2*v[i]*v[j]/mag;
+        }
+   }
+
+   return output;
+}
+
+function det(M){
+    let {Q, R} = QRFactorize(M);
+    let output = 1;
+    for(let i = 0; i<M.rows; i++) output *= R.arr[i][i];
+    return output;
+}
+
+function Tr(M){
+    let output = 0;
+    for(let i = 0; i<M.rows; i++) output += M.arr[i][i];
+    return output;
+}
+
+function Diag(vec){
+    let output = new Matrix(vec.length, vec.length);
+    for(let i = 0; i<vec.length; i++) output.arr[i][i] = vec[i];
+    return output;
+}
+
+function SVD(M){
+    let MTM = M.transpose().multiply(M);
+    let lambda = computeEigenvaluesWithQR(MTM);
+    let vecV = computeEigenvectorsFromEigenvalues(MTM, lambda);
+    let V = new Matrix(vecV.length, vecV[0].length);
+    V.arr = vecV;
+    V = V.transpose();
+
+    let U = M.multiply(V).transpose();
+
+    for(let i = 0; i<U.arr.length; i++){
+        let norm = U.arr[i].mag();
+        if(norm>10**(-6)){
+            U.arr[i] = U.arr[i].scalarMultiply(1/norm);
+        }
+    }
+
+    U = U.transpose();
+    
+    let Sigma = new Matrix(lambda.length, lambda.length);
+    for(let i = 0; i<lambda.length; i++) Sigma.arr[i][i] = Math.sqrt(lambda[i]);
+    
+    return {U:U, S:Sigma, V:V};
+}
+
+function computeEigenvaluesSparse(M){
+    if(M.rows != M.columns) return;
+    let n = M.rows;
+    let stepSize = 0.001;
+    let init = new Matrix(n,n);
+    let lambda = new Array(n);
+    for(let i = 0; i<n; i++){
+        init.arr[i][i] = M.arr[i][i];
+        lambda[i] = M.arr[i][i];
+    }
+
+    for(let i = 0; i<n; i++){
+        for(let j = 0; j<n; j++){
+            let steps = Math.ceil(Math.abs(init.arr[i][j] - M.arr[i][j])/stepSize);
+            let dir = (M.arr[i][j] - init.arr[i][j])/steps;
+            for(let m = 0; m<steps; m++){
+                let nextLambda = new Array(n);
+                for(let k = 0; k<n; k++){
+                    let derivative = computeLambdaKD(init, lambda, k).arr[j][i];
+                    nextLambda[k] = lambda[k] + derivative*dir;
+                }
+                lambda = nextLambda;
+                init.arr[i][j] += dir;
+            }
+        }
+    }
+
+    return lambda;
+}
+
+
+function QRFactorize(M){
+    if(M.rows != M.columns) return;
+
+    let n = M.rows;
+    let An = M;
+    let Qn = getIdentity(n);
+    let HMatrices = [];
+
+    for(let i = 0; i<n-1; i++){
+        let aCol = An.transpose().arr[i];
+        for(let j = 0; j<i; j++) aCol[j] = 0;
+        let norm = Math.sqrt(aCol.dot(aCol));
+        let vi = aCol.plus(getE(n, i).scalarMultiply(norm*Math.sign(aCol[i])));
+
+        let Hn = convertReflectionToMatrix(vi, 0);
+        An = Hn.multiply(An);
+        Qn = Hn.multiply(Qn);
+        HMatrices.push(Hn);
+    }
+
+    return {'Q':Qn.transpose(),'R':An};
+}
+
+function computeEigenvaluesWithQR(M){
+    let output = M;
+    for(let i = 0; i<1000; i++){
+        let {Q,R} = QRFactorize(output);
+        output = R.multiply(Q);
+    }
+    let vec = new Float64Array(M.rows);
+    for(let i = 0; i<M.rows; i++) vec[i] = output.arr[i][i];
+    return vec;
+}
+
+function randomMatrix(n, symmetric = true){
+    let output = new Matrix(n,n);
+    for(let i =0; i<n; i++){
+        for(let j = 0; j<n; j++){
+            if(symmetric && i>j) output.arr[i][j] = output.arr[j][i];
+            else output.arr[i][j] = Math.floor(Math.random()*10);
+        }
+    }
+    return output;
+}
+
+let M = new Matrix(5,5);
+M.arr = [[38,24,26,29,27],[24,31,49,34,12],[26,49,11,28,16],[29,34,28,0,9],[27,12,16,9,7]];
+
+/*let eigenvalues = computeEigenvalues(M);
 let eigenvectors = computeEigenvectorsFromEigenvalues(M, eigenvalues);
 console.log(eigenvalues, eigenvectors);
-
+*/
 
 /*
 
