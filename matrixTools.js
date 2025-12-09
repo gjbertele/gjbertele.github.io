@@ -395,7 +395,6 @@ function QRFactorize(M){
     let n = M.rows;
     let An = M;
     let Qn = getIdentity(n);
-    let HMatrices = [];
 
     for(let i = 0; i<n-1; i++){
         let aCol = An.transpose().arr[i];
@@ -406,7 +405,6 @@ function QRFactorize(M){
         let Hn = convertReflectionToMatrix(vi, 0);
         An = Hn.multiply(An);
         Qn = Hn.multiply(Qn);
-        HMatrices.push(Hn);
     }
 
     return {'Q':Qn.transpose(),'R':An};
@@ -434,23 +432,103 @@ function randomMatrix(n, symmetric = true){
     return output;
 }
 
+function invert(M){
+    let {U, S, V} = SVD(M);
+    let D = new Matrix(S.rows,S.rows);
+    for(let i = 0; i<D.arr.length; i++){
+        if(S.arr[i][i] != 0) D.arr[i][i] = 1/S.arr[i][i];
+    }
+    return V.multiply(D).multiply(U.transpose());
+}
+
+function completeOrthogonalBasis(vectors){
+    let n = vectors[0].length;
+    if(vectors.length == n) return vectors;
+
+    let orthog = [];
+    for(let i = 0; i<vectors.length; i++) orthog.push(vectors[i].scalarMultiply(1/Math.sqrt(vectors[i].dot(vectors[i]))));
+
+    for(let i = 0; i<n; i++){
+        let vec = getE(n, i);
+        for(let j = 0; j<vectors.length; j++){
+            vec = vec.minus(orthog[j].scalarMultiply(orthog[j].dot(vec)));
+        }
+
+        if(vec.dot(vec) < 0.001) continue;
+
+        vec = vec.scalarMultiply(1/Math.sqrt(vec.dot(vec)));
+        return [...vectors, vec];
+    }
+
+    return vectors;
+
+}
+
+function computeEigenpairsPower(M, iter = 100){
+    let n = M.rows;
+    let A = M;
+    let vectors = [];
+    let vec;
+    for(let i = 0; i<n; i++){
+        vec = getE(n, 1);
+
+        for(let j = 0; j<iter; j++){
+            vec = A.vecMultiply(vec);
+            let norm = Math.sqrt(vec.dot(vec));
+            if(norm != 0) vec = vec.scalarMultiply(1/norm);
+            else break;
+        }
+
+        vectors.push(vec);
+
+        let Av = A.vecMultiply(vec);
+        let lambda = Math.sqrt(Av.dot(Av));
+
+        if(lambda == 0){
+            vectors = completeOrthogonalBasis(vectors);
+            break;
+        }
+
+        A = A.multiply(A.minus(getIdentity(n).scalarMultiply(lambda))).scalarMultiply(1/lambda);
+    }
+
+    let eigenvalues = [];
+    for(let i = 0; i<n; i++){
+        let Av = M.vecMultiply(vectors[i]);
+        let val = Math.sqrt(Av.dot(Av));
+
+        for(let j = 0; j<n; j++){
+            if(Av[j] == 0 || vectors[j] == 0) continue;
+            val *= Math.sign(Av[j]/vectors[i][j]);
+            break;
+        }
+
+        eigenvalues.push(val);
+    }
+
+    return [vectors, eigenvalues];
+    
+
+}
+
+function operatorNorm(M, iter = 1000){
+    let n = M.columns;
+    let vec = getE(n, 0);
+
+    for(let j = 0; j<iter; j++){
+        vec = M.vecMultiply(vec);
+        let norm = Math.sqrt(vec.dot(vec));
+        if(norm != 0) vec = vec.scalarMultiply(1/norm);
+        else break;
+    }
+
+    let mVec = M.vecMultiply(vec);
+    return Math.sqrt(mVec.dot(mVec));
+}
+
+function conditionNumber(M){
+    return operatorNorm(M)*operatorNorm(invert(M));
+}
+
 let M = new Matrix(5,5);
 M.arr = [[38,24,26,29,27],[24,31,49,34,12],[26,49,11,28,16],[29,34,28,0,9],[27,12,16,9,7]];
-
-/*let eigenvalues = computeEigenvalues(M);
-let eigenvectors = computeEigenvectorsFromEigenvalues(M, eigenvalues);
-console.log(eigenvalues, eigenvectors);
-*/
-
-/*
-
-let bvec = new Float64Array(M.rows); 
-bvec.fill(1); //set b to be vector of all 1s
-
-let solutionData = computeFirstNConstants(M, 100, bvec); //get data and solutions to Mx=b
-
-console.log('Data:',solutionData); //log
-
-let error = M.vecMultiply(solutionData[0]).minus(bvec); //find error
-console.log('Magnitude of Error:',Math.sqrt(error.dot(error))); //log norm of error
-*/
