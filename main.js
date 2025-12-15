@@ -27,6 +27,7 @@ const buildLinkBox = () => {
     linkList.push(createLink('multi-wordle.html','Multi-Wordle'));
     linkList.push(createLink('DiffEqWriteup.pdf','Interesting PDEs'));
     linkList.push(createLink('eigenvalue_derivative.pdf','Eigenvalue Derivatives'));
+    linkList.push(createLink('Generalized_Permutations.pdf','Generalized Permutations'));
     for(let i = 0; i<linkList.length; i++){
         document.querySelector('.sectionA').appendChild(linkList[i]);
     }
