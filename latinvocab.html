@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let words = `sinō, sinere, sivī, situs_________to allow__________ 
+animus, animī m.________mind, spirit________________
+cura, ae f.________care, concern________________ 
+imagō, imaginis f.______image_________ 
+moenia, moeniōrum n.pl.________city walls___________________ 
+nimium_________too_________
+tangō, tangere, tetigī, tactus_______to touch________________
+Dardanius/a/um _____Trojan_______
+numquam________never_______
+ iuvō, iuvāre, iuvī, iutus________to help__________________
+oculus, ī m. __________eye___________
+eō, īre, iī__________to go_________________
+Fama, -ae f._______Rumor, reputation____________________ 
+malus/a/um________bad________________ 
+ūllus/a/um______any_________ 
+ vis, viris f.______force_________________________ 
+primō__________at first__________________ 
+volō, volāre, volavī, volatus _____to fly__________________
+gaudeō, gaudēre, gavisus sum ___to enjoy, to rejoice_________
+pariter ______equally____________
+canō, canere, cecinī, cantus ___to sing____________
+crescō, crescere, crevī, cretus _______to grow___________________
+dignōr, dignērī, dignus sum _______to deem worthy, to consider it worthy, to think it’s a good idea______
+iungō, iungere, iunxī, iunctus ________to join____________________
+immanis, immane ____________huge_________________
+hiems, hiemis f. ____________winter______________
+ regnum, regnī n. ________________kingdom__________
+ immemor, immemoris ___________________forgetful____
+os, oris n. _________mouth_________
+metuō, metuere, metuī, —- ______to fear__________________
+Saturnia, -ae f. ____________________Juno______________
+carus/a/um______________dear____________________
+Argī, Argōrum m. ___________Greeks_______________________
+mens, mentis f.______________mind____________________
+agō, agere, ēgī, actus ________to drive__________________________
+   iniuria, -ae f. _____________injury_____________________
+  forma, formae f.__________form, appearance________________________
+  invisus/a/um_____________hated_____________________
+  rapiō, rapere, rapuī, raptus  _______to take_____________
+  accendō, accendere, accendī, accensus______to burn______________________
+  aequus, aequoris n.______________ocean____________________
+agnoscō, agnoscere, agnovī, agnotus ________to recognize___________________
+errō, errāre, erravī, —--,  ___________to wander_______________________
+incedō, incedere, incessī, incessus _____________to go in, to walk forward_______
+imponō, imponere, imposuī, impositus _______to place in_______
+vīx _______barely_____________
+conspectus, -ūs m._____view______________
+tellus, tellūris f. __________earth________________________
+ aeternus/a/um ____________eternal______________________
+Argivī, -ōrum m. pl. _________Greeks_________________________
+ruō, ruere, ruī, rutus ________to rush__________________________
+coniunx, coniugis m./f. _________spouse_______________________
+ desistō, desistere, destitī, destitus________to stop_________________________
+Teucrī, -ōrum m. pl._________Trojans_________________________
+exspirō, exspirāre, exspirāvi, exspiratus____________to breathe out _______
+divus, ī m. __divine_________
+  furia, -ae f.____________fury_______
+ nubēs, nubis f.____cloud________________
+qualis _______just like___________ 
+apēs, apis m.__________bee___________
+ aestās, aestatis f._____summer_____________ 
+floreus/a/um_______flowery________ 
+rūs, ruris n._____countryside, farm_________________
+exerceō, exercēre, exercuī, exercitus________to train_______
+mel, melis n.________honey_________________
+dulcis, -e_____________sweet_______________ 
+onus, oneris n.___________work, task, labor______________ 
+agmen, agminis n. ________battle line________________
+ait _________________he/she/they say__________________
+inanus, -e __________empty_____________
+gemō, gemere, gemuī, gemitus ___________I groan________________________
+vultus, vultūs m. ________face_________________
+namque ______________and for, and because_____________________
+utī/ut ___________that, so that, as_______
+bellō, bellāre, bellavī, bellatus ____________to make war________________
+Pergama _________Troy_____________
+ius, iuris n._____legal system____________
+saxum, -ī n. _________rock___________
+iam ____already____________
+arma, armōrum n. pl ________weapons_____
+ardeō, ardēre, arduī, —  ______to burn with zeal, to seethe____________
+altus, altī n. (nomen, nōn adiectivum) ____the sea, the deep_________
+tectum, -ī n.______shelter, roof______________
+aliī…aliī______some…others___________
+saevus/a/um _______savage______________________
+iactō, iactāre, iactavī, iactatus ______to throw violently__________
+vis, vis f.  (ablative vī)__________force__________________
+patior, patī, passus sum ________to suffer________________________
+numen, numinis n. _____diety______________
+-ve________or__
+dum ___________while_________________________
+condō, condere, condidī, conditus ________to found___________________
+laedō, laedere, laesī, laesus _____to injure____________
+quid_______what____
+quis ________who____________
+insignis, -e _________famous_________________________
+casus, casūs m. _____disaster_________________
+volvō, volvere, voluī, volutus ______to roll______________
+pietās, pietatis f. ____piety______________
+gens, gentis f. ________people, clan ________________
+`.split('\n');
+for(let i = 0; i<words.length; i++){
+    for(let j = 0; j<20; j++) words[i] = words[i].replaceAll('__','_');
+    words[i] = words[i].split('_');
+}
+for(let i = 0; i<words.length; i++){
+    words[i] = [words[i][0],words[i][1]];
+}
+function random(){
+    let rand = Math.floor(Math.random()*99);
+    prompt(words[rand][0]);
+    alert(words[rand][1]);
+    random();
+}
+</script>
+</body>
+</html>
