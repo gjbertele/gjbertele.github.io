@@ -28,6 +28,8 @@ const buildLinkBox = () => {
     linkList.push(createLink('DiffEqWriteup.pdf','Interesting PDEs'));
     linkList.push(createLink('eigenvalue_derivative.pdf','Eigenvalue Derivatives'));
     linkList.push(createLink('Generalized_Permutations.pdf','Generalized Permutations'));
+    linkList.push(createLink('https://github.com/gjbertele/projects/blob/main/html/DEOlder/PDE.js','PDE Solver'));
+
     for(let i = 0; i<linkList.length; i++){
         document.querySelector('.sectionA').appendChild(linkList[i]);
     }
