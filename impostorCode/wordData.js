@@ -68,5 +68,14 @@ const wordData =
     "Bluey", "iCarly", "Victorious", "Drake and Josh", "Hannah Montana",
     "Fuller House", "Young Sheldon", "Modern Family", "Glee", "Euphoria",
     "The Last of Us", "Wednesday Addams", "Five Nights at Freddy's", "The Conjuring", "A Quiet Place"
-  ]
+  ],
+  "Music": [ "Sabrina Carpenter", "Ice Spice", "Billie Eilish", "Olivia Rodrigo", "Addison Rae", "Tate McRae",
+        "Doja Cat", "Taylor Swift", "Drake", "The Weeknd", "Ariana Grande", "Charli XCX",
+        "Jessie Murph", "SZA", "Post Malone", "Megan Thee Stallion",
+        "Lana Del Rey", "Benson Boone", "Tyler, The Creator",
+        "Playboi Carti", "Travis Scott", "Future", "Lil Uzi Vert", "Yeat", 
+        "Madison Beer", "Luke Combs", "Bruno Mars", "Ed Sheeran", "Justin Bieber",
+        "Miley Cyrus", "Jack Harlow", "Noah Kahan", "Gracie Abrams",
+        "Kendrick Lamar", "Lil Nas X", "J. Cole",
+        "Morgan Wallen", "Baby Keem", "GloRilla", "Yuno Miles"]
 }

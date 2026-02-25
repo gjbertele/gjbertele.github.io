@@ -63,8 +63,8 @@ const chooseWord = () => {
         chosenWord = words[randomIdx].word;
         chosenCategory = 'Custom Word';
     } else {
-        let randomCategoryIdx = Math.floor(Math.random()*5);
-        chosenCategory = ['Locations', 'Objects', 'Foods', 'Sports', 'Movies/TV'][randomCategoryIdx];
+        let randomCategoryIdx = Math.floor(Math.random()*6);
+        chosenCategory = ['Locations', 'Objects', 'Foods', 'Sports', 'Movies/TV', 'Music'][randomCategoryIdx];
         let randomIdx = Math.floor(Math.random()*wordData[chosenCategory].length)
         chosenWord = wordData[chosenCategory][randomIdx];
     }
