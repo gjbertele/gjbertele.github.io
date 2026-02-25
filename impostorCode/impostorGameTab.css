@@ -1,0 +1,109 @@
+.gamePage {
+    display:none;
+}
+
+.gamePage > .playerStart {
+    position:absolute;
+    left:50%;
+    top:10vh;
+    transform:translate(-50%,-50%);
+    color:#d5baf2;
+    font-size:5vh;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:bolder;
+    overflow:visible;
+    width:100%;
+    text-align:center;
+}
+
+.gamePage > .playerGrid {
+    position:absolute;
+    left:0;
+    top:20vh;
+    width:100%;
+    height:100%;
+}
+
+.playerGrid > .gridCard {
+    position:absolute;
+    width:37.5vw;
+    height:37.5vw;
+    box-shadow: 0px 0px 1vh 0.3vh rgba(131, 55, 179, 1);
+}
+
+.gridCard > .playerName {
+    position:absolute;
+    left:50%;
+    bottom:1.5vh;
+    width:100%;
+    height:1em;
+    font-size:2vh;
+    color:#fff;
+    font-family: Arial, Helvetica, sans-serif;
+    transform:translateX(-50%);
+    text-align:center;
+    overflow:visible;
+    font-weight:bold;
+}
+
+
+.gridCard > .playerProfile {
+    position:absolute;
+    left:50%;
+    top:40%;
+    width:20vw;
+    height:20vw;
+    border-radius:100%;
+    transform:translate(-50%,-50%);
+    background: #3477DA;
+    background: linear-gradient(135deg,rgba(52, 119, 218, 1) 0%, rgba(131, 55, 179, 1) 100%);
+    color:#FFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:bolder;
+    text-align:center;
+    font-size:10vw;
+    line-height:20vw;
+    vertical-align: middle;
+}
+
+.playerDisplay {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.playerDisplay > .textDisplay {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    font-size:4vh;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    width:80%;
+    text-align:center;
+}
+
+.playerDisplay > .textDisplay > .default {
+    color:#9595a4;
+}
+
+.playerDisplay > .textDisplay > .highlighted {
+    color:#d5baf2;
+}
+.playerDisplay > .textDisplay > .highlightedRed {
+    color:#ac2f2f;
+}
+
+.backButton {
+    position:absolute;
+    left:2.5vh;
+    top:3vh;
+    width:5vh;
+    height:5vh;
+    color:#FFF;
+}
+
