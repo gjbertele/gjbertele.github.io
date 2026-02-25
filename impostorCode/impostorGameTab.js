@@ -7,11 +7,6 @@ let chosenWord = '';
 let chosenCategory = '';
 
 let chosenImpostors = [];
-let impostorDictionary = [{
-    word:'a',
-    category:'category a'
-}];
-
 
 
 const startGame = () => {
@@ -68,9 +63,10 @@ const chooseWord = () => {
         chosenWord = words[randomIdx].word;
         chosenCategory = 'Custom Word';
     } else {
-        let randomIdx = Math.floor(Math.random()*impostorDictionary.length);
-        chosenWord = impostorDictionary[randomIdx].word;
-        chosenCategory = impostorDictionary[randomIdx].category;
+        let randomCategoryIdx = Math.floor(Math.random()*5);
+        chosenCategory = ['Locations', 'Objects', 'Foods', 'Sports', 'Movies/TV'][randomCategoryIdx];
+        let randomIdx = Math.floor(Math.random()*wordData[chosenCategory].length)
+        chosenWord = wordData[chosenCategory][randomIdx];
     }
 
     return;
@@ -85,6 +81,7 @@ const choosePlayerStart = () => {
 
 const chooseImpostors = () => {
     let playersClone = [];
+    chosenImpostors = [];
     for(let i = 0; i<players.length; i++){
         players[i].isImpostor = false;
         playersClone.push(players[i]);

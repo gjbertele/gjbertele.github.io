@@ -1,0 +1,72 @@
+const wordData =
+{
+  "Locations": [
+    "School", "Library", "Mall", "Beach", "Airport", "Movie Theater", "Stadium", "Park", "Zoo", "Museum",
+    "Restaurant", "Cafe", "Gym", "Hospital", "Police Station", "Fire Station", "Supermarket", "Gas Station", "Subway Station", "Train Station",
+    "Bus Stop", "Amusement Park", "Water Park", "Aquarium", "Bowling Alley", "Arcade", "Skate Park", "Camping Site", "Lake", "River",
+    "Mountain", "Desert", "Forest", "Island", "Bridge", "Tunnel", "Highway", "Farm", "Barn", "Castle",
+    "Hotel", "Resort", "Concert Hall", "Theater Stage", "Classroom", "Auditorium", "Courthouse", "City Hall", "Bank", "Post Office",
+    "Salon", "Barbershop", "Bakery", "Butcher Shop", "Pharmacy", "Tech Store", "Bookstore", "Clothing Store", "Shoe Store", "Toy Store",
+    "Basketball Court", "Soccer Field", "Baseball Field", "Tennis Court", "Swimming Pool", "Ice Rink", "Locker Room", "Science Lab", "Computer Lab", "Art Room",
+    "Principal's Office", "Rooftop", "Basement", "Attic", "Garage", "Kitchen", "Living Room", "Bedroom", "Bathroom", "Balcony",
+    "Elevator", "Escalator", "Parking Lot", "Playground", "Volcano", "Cave", "Harbor", "Dock", "Lighthouse", "Observatory",
+    "Planetarium", "Studio", "News Station", "Radio Station", "Factory", "Warehouse", "Greenhouse", "Courtyard", "Fountain", "Plaza"
+  ],
+  "Objects": [
+    "Phone", "Laptop", "Tablet", "Headphones", "Backpack", "Notebook", "Pencil", "Pen", "Marker", "Highlighter",
+    "Water Bottle", "Charger", "Keyboard", "Mouse", "Controller", "Television", "Remote", "Camera", "Tripod", "Microphone",
+    "Speaker", "Watch", "Clock", "Sunglasses", "Wallet", "Keys", "Umbrella", "Jacket", "Sneakers", "Hat",
+    "Helmet", "Skateboard", "Bicycle", "Scooter", "Car", "Bus", "Drone", "Flashlight", "Compass", "Map",
+    "Trophy", "Medal", "Whistle", "Backboard", "Basketball", "Soccer Ball", "Baseball Bat", "Glove", "Tennis Racket", "Football",
+    "Frisbee", "Yo-yo", "Puzzle", "Board Game", "Playing Cards", "Dice", "Rubik's Cube", "Action Figure", "Doll", "Stuffed Animal",
+    "Toothbrush", "Hairbrush", "Mirror", "Soap", "Shampoo", "Towel", "Blanket", "Pillow", "Lamp", "Chair",
+    "Desk", "Couch", "Table", "Refrigerator", "Microwave", "Oven", "Blender", "Toaster", "Plate", "Cup",
+    "Fork", "Spoon", "Knife", "Scissors", "Tape", "Glue", "Stapler", "Calculator", "Ruler", "Paintbrush",
+    "Easel", "Palette", "Battery", "Extension Cord", "Fan", "Heater", "Backpack Zipper", "Doorbell", "Alarm Clock", "Whiteboard"
+  ],
+  "Foods": [
+    "Pizza", "Burger", "Hot Dog", "Tacos", "Burrito", "Sandwich", "Fries", "Nachos", "Pasta", "Spaghetti",
+    "Mac and Cheese", "Ramen", "Fried Rice", "Sushi", "Dumplings", "Chicken Nuggets", "Grilled Cheese", "Pancakes", "Waffles", "French Toast",
+    "Cereal", "Oatmeal", "Bagel", "Donut", "Muffin", "Croissant", "Cupcake", "Brownie", "Cookie", "Ice Cream",
+    "Milkshake", "Smoothie", "Apple", "Banana", "Orange", "Grapes", "Strawberries", "Watermelon", "Pineapple", "Mango",
+    "Carrot", "Broccoli", "Corn", "Mashed Potatoes", "Salad", "Soup", "Chili", "Steak", "Chicken Wings", "BBQ Ribs",
+    "Popcorn", "Pretzels", "Chips", "Guacamole", "Salsa", "Cheese", "Yogurt", "Granola Bar", "Peanut Butter", "Jelly",
+    "Eggs", "Bacon", "Sausage", "Quesadilla", "Fajitas", "Lasagna", "Meatballs", "Shrimp", "Fish Sticks", "Clam Chowder",
+    "Chocolate", "Candy", "Lollipop", "Marshmallow", "Gummy Bears", "Trail Mix", "Pudding", "Jello", "Pie", "Cheesecake",
+    "Ketchup", "Mustard", "Mayonnaise", "Honey", "Maple Syrup", "Pickles", "Avocado Toast", "Cinnamon Roll", "Onion Rings", "Sliders",
+    "Fried Chicken", "Tater Tots", "Mozzarella Sticks", "Sourdough Bread", "Turkey Sandwich", "Caesar Salad", "Rice Bowl", "Protein Bar", "Acai Bowl", "Frozen Yogurt"
+  ],
+  "Sports": [
+    "Basketball", "Soccer", "Baseball", "Football", "Tennis", "Volleyball", "Hockey", "Golf", "Swimming", "Track",
+    "Cross Country", "Wrestling", "Boxing", "Martial Arts", "Karate", "Taekwondo", "Judo", "Skateboarding", "Surfing", "Snowboarding",
+    "Skiing", "Cycling", "BMX", "Rock Climbing", "Gymnastics", "Cheerleading", "Dance", "Rowing", "Sailing", "Archery",
+    "Fencing", "Ping Pong", "Badminton", "Cricket", "Rugby", "Lacrosse", "Softball", "Ultimate Frisbee", "Handball", "Water Polo",
+    "Dodgeball", "Kickball", "Pickleball", "Powerlifting", "Weightlifting", "Triathlon", "Marathon", "High Jump", "Long Jump", "Pole Vault",
+    "Shot Put", "Discus", "Shotgun Shooting", "Esports", "Bowling", "Motocross", "Kart Racing", "Formula 1", "Horseback Riding", "Figure Skating",
+    "Ice Skating", "Table Tennis", "Streetball", "Flag Football", "Beach Volleyball", "Mountain Biking", "Cliff Diving", "Kayaking", "Canoeing", "Scuba Diving",
+    "Freestyle Rap Battle", "Arm Wrestling", "Parkour", "Obstacle Course", "Mud Run", "Slacklining", "Speed Skating", "Curling", "Bobsled", "Skeleton",
+    "Climbing Wall", "Foosball", "Air Hockey", "Mini Golf", "Paintball", "Laser Tag", "Sledding", "Paddleboarding", "Indoor Skydiving", "CrossFit",
+    "Rollerblading", "Skimboarding", "Street Hockey", "Disc Golf", "Trampoline", "Hurdles", "Relay Race", "Freerunning", "Snowball Fight", "Capture the Flag"
+  ],
+  "Movies/TV": [
+    "Stranger Things", "Wednesday", "Outer Banks", "The Mandalorian", "Spider-Man No Way Home",
+    "Avengers Endgame", "Black Panther", "Guardians of the Galaxy", "The Batman", "Joker",
+    "Frozen", "Frozen II", "Moana", "Encanto", "Inside Out",
+    "Toy Story", "Cars", "Finding Nemo", "The Incredibles", "Coco",
+    "Turning Red", "Luca", "Soul", "Lightyear", "Zootopia",
+    "The Hunger Games", "Harry Potter", "Percy Jackson", "The Maze Runner", "Divergent",
+    "Jurassic World", "Minions", "Despicable Me", "Shrek", "The Super Mario Bros Movie",
+    "Sonic the Hedgehog", "Detective Pikachu", "Barbie", "Wonka", "The Little Mermaid",
+    "Aladdin", "Beauty and the Beast", "High School Musical", "Camp Rock", "The Greatest Showman",
+    "Mean Girls", "Clueless", "The Princess Diaries", "Legally Blonde", "Pitch Perfect",
+    "The Office", "Friends", "Brooklyn Nine-Nine", "The Simpsons", "Family Guy",
+    "Gravity Falls", "Adventure Time", "Steven Universe", "Teen Titans", "Avatar The Last Airbender",
+    "Cobra Kai", "The Flash", "Supergirl", "Arrow", "Smallville",
+    "The Walking Dead", "Squid Game", "The Umbrella Academy", "Loki", "WandaVision",
+    "Hawkeye", "The Boys", "Invincible", "Arcane", "One Piece",
+    "Naruto", "Demon Slayer", "My Hero Academia", "Attack on Titan", "Dragon Ball Super",
+    "Bluey", "iCarly", "Victorious", "Drake and Josh", "Hannah Montana",
+    "Fuller House", "Young Sheldon", "Modern Family", "Glee", "Euphoria",
+    "The Last of Us", "Wednesday Addams", "Five Nights at Freddy's", "The Conjuring", "A Quiet Place"
+  ]
+}
