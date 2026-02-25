@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impostor</title>
+    <link rel="stylesheet" href="impostorCode/impostorSettingsTab.css">
+    <link rel="stylesheet" href="impostorCode/impostorGameTab.css">
+</head>
+<body>
+    <div class="settingsPage">
+        <h1 class="title">Impostor</h1>
+        <div class="card countSelector">
+            <span class="label countLabel">Players</span>
+        </div>
+        <div class="playerHolder"></div>
+        <div class="afterPlayerHolder">
+            <div class="card addButton addPlayer">Add Player</div>
+            <div class="card impostorCount">
+                <span class="label countLabel">Impostors</span>
+                <input type="number" class="editableLabel" id="impostorCount" placeholder="1">
+            </div>
+            <div class="card wordSelector">
+                <span class="label countLabel">Custom Words</span>
+            </div>
+            <div class="wordHolder"></div>
+            <div class="afterWordHolder">
+                <div class="card addButton addWord">Add Word</div>
+                <div class="startGame">Start</div>
+            </div>
+        </div>
+    </div>
+    <div class="gamePage">
+        <h1 class="playerStart">Player Starts the Round</h1>
+        <div class="playerGrid"></div>
+        <div class="backButton"></div>
+    </div>
+    <div class="playerDisplay">
+        <div class="textDisplay">
+            <span class="default">The word for </span>
+            <span class="highlighted">Player</span>
+            <span class="default"> is </span>
+            <span class="highlighted">word</span> 
+            <span class="default"> and the category is </span>
+            <span class="highlighted">Category</span>
+        </div>
+        <div class="backButton"></div>
+    </div>
+    <script src="impostorCode/impostorGameTab.js"></script>
+    <script src="impostorCode/impostorSettingsTab.js"></script>
+</body>
+</html>
