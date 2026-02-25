@@ -172,14 +172,6 @@ addWordButton.onclick = addWord;
 startGameButton.onclick = startGame;
 
 
-addPlayer();
-addPlayer();
-addWord('test 1');
-addWord('test 2');
-addWord('test 3');
-startGame();
-
-
 
 
 
