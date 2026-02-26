@@ -9,7 +9,7 @@ body {
 
 .card {
     background: #151531;
-    border-radius:1vh;
+    border-radius:1dvh;
 }
 
 .settingsPage {
@@ -26,7 +26,7 @@ body {
     top:7%;
     transform:translate(-50%,-50%);
     color:#d5baf2;
-    font-size:6vh;
+    font-size:6dvh;
     font-family:Arial, Helvetica, sans-serif;
     font-weight:bolder;
 }
@@ -34,26 +34,26 @@ body {
 .settingsPage > .countSelector {
     position:absolute;
     left:50%;
-    top:20vh;
+    top:20dvh;
     transform:translateX(-50%);
     width:90%;
-    height:8vh;
+    height:8dvh;
 }
 
 .settingsPage > .countSelector > .label {
     position:absolute;
     left:5%;
-    top:1.5vh;
+    top:1.5dvh;
     color:#fff;
     font-family: Arial, Helvetica, sans-serif;
     font-weight:bold;
-    font-size:4vh;
+    font-size:4dvh;
 }
 
 .settingsPage > .playerHolder {
     position:absolute;
     left:50%;
-    top:30vh;
+    top:30dvh;
     transform:translateX(-50%);
     width:90%;
     height:0;
@@ -73,14 +73,14 @@ body {
     left:50%;
     transform:translateX(-50%);
     width:95%;
-    height:8vh;
+    height:8dvh;
 }
 
 .settingsPage > .playerHolder > .playerCard > .editableLabel {
     position:absolute;
     left:5%;
-    top:2vh;
-    font-size:3.5vh;
+    top:2dvh;
+    font-size:3.5dvh;
     font-weight:bold;
     font-family:Arial, Helvetica, sans-serif;
     color:#FFF;
@@ -98,42 +98,42 @@ body {
 
 .removeButton {
     position:absolute;
-    right:2vw;
-    top: 2vh;
-    width:4vh;
-    height:4vh;
+    right:2dvw;
+    top: 2dvh;
+    width:4dvh;
+    height:4dvh;
 }
 
 .settingsPage > .afterPlayerHolder > .impostorCount {
     position:absolute;
     left:50%;
-    top:10vh;
+    top:10dvh;
     transform:translateX(-50%);
     width:100%;
-    height:8vh;
+    height:8dvh;
 }
 
 .countLabel {
     position:absolute;
     left:5%;
-    top:1.5vh;
+    top:1.5dvh;
     color:#fff;
     font-family: Arial, Helvetica, sans-serif;
     font-weight:bold;
-    font-size:4vh;
+    font-size:4dvh;
 }
 
 .impostorCount > .editableLabel {
     position:absolute;
     right:5%;
-    top:1.5vh;
-    font-size:4vh;
+    top:1.5dvh;
+    font-size:4dvh;
     font-weight:bold;
     font-family:Arial, Helvetica, sans-serif;
     color:#FFF;
     background:none;
-    width:8vh;
-    height:5vh;
+    width:8dvh;
+    height:5dvh;
     border:none;
     border-bottom: 0em #FFF solid;
     background:#383478;
@@ -145,16 +145,16 @@ body {
 .wordSelector {
     position:absolute;
     left:50%;
-    top:20vh;
+    top:20dvh;
     transform:translateX(-50%);
     width:100%;
-    height:8vh;
+    height:8dvh;
 }
 
 .wordHolder {
     position:absolute;
     left:50%;
-    top:30vh;
+    top:30dvh;
     transform:translateX(-50%);
     width:90%;
     height:0;
@@ -165,14 +165,14 @@ body {
     left:50%;
     transform:translateX(-50%);
     width:100%;
-    height:8vh;
+    height:8dvh;
 }
 
 .wordCard > .editableLabel {
     position:absolute;
     left:5%;
-    top:1.5vh;
-    font-size:3.5vh;
+    top:1.5dvh;
+    font-size:3.5dvh;
     font-weight:bold;
     font-family:Arial, Helvetica, sans-serif;
     color:#FFF;
@@ -186,10 +186,10 @@ body {
 .afterWordHolder {
     position:absolute;
     left:50%;
-    top:40vh;
+    top:40dvh;
     transform:translate(-50%);
     width:100%;
-    height:25vh;
+    height:25dvh;
 }
 
 .addButton {
@@ -198,8 +198,8 @@ body {
     top:0;
     transform:translateX(-50%);
     width:90%;
-    height:8vh;
-    font-size:4vh;
+    height:8dvh;
+    font-size:4dvh;
     font-weight:bold;
     font-family:Arial, Helvetica, sans-serif;
     color:#d5baf2;
@@ -211,17 +211,17 @@ body {
 .startGame {
     position:absolute;
     left:50%;
-    top:12vh;
+    top:12dvh;
     transform:translateX(-50%);
     width:90%;
-    height:10vh;
-    font-size:6vh;
+    height:10dvh;
+    font-size:6dvh;
     font-weight:bold;
     font-family:Arial, Helvetica, sans-serif;
     background:#8638b9;
     color:#FFF;
     text-align:center;
-    line-height: 10vh;
+    line-height: 10dvh;
     vertical-align: center;
     border-radius:2em;
     box-shadow: 0px 0px 0.5em 0.1em #8638b9;
