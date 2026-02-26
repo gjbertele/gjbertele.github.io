@@ -159,8 +159,6 @@ document.querySelector('.gamePage > .backButton').addEventListener('click', () =
     document.querySelector('.gamePage').style.display = 'none';
 });
 
-
-
 let backSize = document.body.clientWidth*0.08;
 const backButtonSVG = `<svg width="${0.5895892351*backSize}" height="${backSize}" viewBox="0 0 14.15 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_6_13443)">

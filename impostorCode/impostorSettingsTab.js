@@ -160,6 +160,16 @@ const addWord = (wordValue = '') => {
     return;
 }
 
+document.addEventListener('paste', (event) => {
+    if(getComputedStyle(document.querySelector('.settingsPage')).display == 'none') return;
+    const clipboardData = event.clipboardData || window.clipboardData;
+    const pastedText = clipboardData.getData('text/plain');
+    const words = pastedText.split('\n');
+    for(let i = 0; i<words.length; i++) addWord(words[i]);
+});
+
+
+
 impostorCountInput.onchange = () => {
     impostorCount = impostorCountInput.value;
 }
