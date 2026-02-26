@@ -78,7 +78,7 @@
 .playerDisplay > .textDisplay {
     position:absolute;
     left:50%;
-    top:50%;
+    top:40%;
     transform:translate(-50%,-50%);
     font-size:4vh;
     font-family: Arial, Helvetica, sans-serif;
@@ -98,7 +98,7 @@
     color:#ac2f2f;
 }
 
-.backButton {
+.gamePage > .backButton {
     position:absolute;
     left:2.5vh;
     top:3vh;
@@ -107,3 +107,28 @@
     color:#FFF;
 }
 
+.playerDisplay > .backButton {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    position:absolute;
+    left:45vw;
+    bottom:30%;
+    width:10vw;
+    height:10vw;
+    color:#FFF;
+    text-align:center;
+}
+
+.playerDisplay > .backButtonBackground {
+    position:absolute;
+    left:45vw;
+    bottom:30%;
+    width:10vw;
+    height:10vw;
+    color:#FFF;
+    background: rgba(131, 55, 179, 1);
+    box-shadow: 0px 0px 1vh 1.5vh rgba(131, 55, 179, 1);
+    border-radius:100%;
+    z-index:-1;
+}
