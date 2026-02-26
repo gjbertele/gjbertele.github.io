@@ -2,20 +2,19 @@ const wordData =
 {
   "Locations": [
     "School", "Library", "Mall", "Beach", "Airport", "Movie Theater", "Stadium", "Park", "Zoo", "Museum",
-    "Restaurant", "Cafe", "Gym", "Hospital", "Police Station", "Fire Station", "Supermarket", "Gas Station", "Subway Station", "Train Station",
-    "Bus Stop", "Amusement Park", "Water Park", "Aquarium", "Bowling Alley", "Arcade", "Skate Park", "Camping Site", "Lake", "River",
-    "Mountain", "Desert", "Forest", "Island", "Bridge", "Tunnel", "Highway", "Farm", "Barn", "Castle",
-    "Hotel", "Resort", "Concert Hall", "Theater Stage", "Classroom", "Auditorium", "Courthouse", "City Hall", "Bank", "Post Office",
-    "Salon", "Barbershop", "Bakery", "Butcher Shop", "Pharmacy", "Tech Store", "Bookstore", "Clothing Store", "Shoe Store", "Toy Store",
-    "Basketball Court", "Soccer Field", "Baseball Field", "Tennis Court", "Swimming Pool", "Ice Rink", "Locker Room", "Science Lab", "Computer Lab", "Art Room",
-    "Principal's Office", "Rooftop", "Basement", "Attic", "Garage", "Kitchen", "Living Room", "Bedroom", "Bathroom", "Balcony",
-    "Elevator", "Escalator", "Parking Lot", "Playground", "Volcano", "Cave", "Harbor", "Dock", "Lighthouse", "Observatory",
-    "Planetarium", "Studio", "News Station", "Radio Station", "Factory", "Warehouse", "Greenhouse", "Courtyard", "Fountain", "Plaza",
-    "Fox Den", "Wannan Gym"
+    "Restaurant", "Cafe", "Gym", "Hospital", "Grocery Store", "Gas Station", "Subway Station",
+    "Amusement Park", "Aquarium", "Bowling Alley", "Arcade", "Lake",
+    "Mountain", "Desert", "Forest", "Island", "Bridge", "Tunnel", "Farm", "Barn",
+    "Hotel", "Resort", "Classroom", "Courthouse", "Bank", "Post Office",
+    "Barbershop", "Bakery",
+    "Basketball Court", "Soccer Field", "Baseball Field", "Tennis Court", "Swimming Pool", "Ice Rink", "Locker Room",
+    "Rooftop", "Basement", "Attic", "Garage", "Kitchen", "Living Room", "Bedroom", "Bathroom", "Balcony",
+    "Elevator", "Escalator", "Parking Lot", "Playground", "Volcano", "Cave", "Harbor", "Lighthouse",
+    "Factory"
   ],
   "Objects": [
-    "Phone", "Laptop", "Tablet", "Headphones", "Backpack", "Notebook", "Pencil", "Pen", "Marker", "Highlighter",
-    "Water Bottle", "Charger", "Keyboard", "Mouse", "Controller", "Television", "Remote", "Camera", "Tripod", "Microphone",
+    "Phone", "Headphones", "Backpack", "Notebook", "Pencil", "Pen", "Highlighter",
+    "Water Bottle", "Charger", "Keyboard", "Mouse", "Controller", "Television", "Remote", "Camera", "Microphone",
     "Speaker", "Watch", "Clock", "Sunglasses", "Wallet", "Keys", "Umbrella", "Jacket", "Sneakers", "Hat",
     "Helmet", "Skateboard", "Bicycle", "Scooter", "Car", "Bus", "Drone", "Flashlight", "Compass", "Map",
     "Trophy", "Medal", "Whistle", "Backboard", "Basketball", "Soccer Ball", "Baseball Bat", "Glove", "Tennis Racket", "Football",
@@ -97,7 +96,6 @@ const wordData =
         "Mr. Gross",
         "Dr. Speece",
         "Mamadou",
-        "Debnam",
-        "there is no word just say random stuff"
+        "Debnam"
     ]
 }
