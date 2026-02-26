@@ -7,7 +7,7 @@ let chosenWord = '';
 let chosenCategory = '';
 
 let chosenImpostors = [];
-
+let seenWords = [];
 
 const startGame = () => {
     document.querySelector('.settingsPage').style.display = 'none';
@@ -57,18 +57,26 @@ const addPlayerToGrid = (player, i) => {
     return;
 }
 
-const chooseWord = () => {
+const getRandomWord = () => {
     if(words.length > 0 && Math.random() < 0.4){
         let randomIdx = Math.floor(Math.random()*words.length);
-        chosenWord = words[randomIdx].word;
-        chosenCategory = 'Custom Word';
+        return [words[randomIdx].word, 'customWord'];
     } else {
         let randomCategoryIdx = Math.floor(Math.random()*Object.keys(wordData).length);
-        chosenCategory = Object.keys(wordData)[randomCategoryIdx];
-        let randomIdx = Math.floor(Math.random()*wordData[chosenCategory].length)
-        chosenWord = wordData[chosenCategory][randomIdx];
+        let category = Object.keys(wordData)[randomCategoryIdx];
+        let randomIdx = Math.floor(Math.random()*wordData[category].length)
+        return [wordData[category][randomIdx], category];
     }
+}
 
+const chooseWord = () => {
+    let [randomWord, randomCategory] = getRandomWord();
+
+    while(seenWords.includes(randomWord)) [randomWord, randomCategory] = getRandomWord();
+
+    seenWords.push(randomWord);
+    chosenWord = randomWord;
+    chosenCategory = randomCategory;
     return;
 }
 
