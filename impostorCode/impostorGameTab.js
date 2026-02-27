@@ -65,7 +65,7 @@ const addPlayerToGrid = (player, i) => {
 const getRandomWord = () => {
     if(words.length > 0 && Math.random() < 0.4){
         let randomIdx = Math.floor(Math.random()*words.length);
-        return [words[randomIdx].word, 'customWord'];
+        return [words[randomIdx].word, 'Custom Word'];
     } else {
         let randomCategoryIdx = Math.floor(Math.random()*Object.keys(wordData).length);
         let category = Object.keys(wordData)[randomCategoryIdx];
