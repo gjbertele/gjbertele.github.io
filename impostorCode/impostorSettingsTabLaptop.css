@@ -1,0 +1,360 @@
+body {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    overflow:hidden;
+    user-select: none;
+}
+
+:root {
+    --gradient: linear-gradient(90deg,rgba(5, 165, 225, 1) 0%, rgba(137, 155, 249, 1) 50%, rgba(191, 121, 252, 1) 100%);
+    --gradientAlternate: linear-gradient(90deg,rgba(212, 85, 90, 1) 0%, rgba(216, 121, 208, 1) 50%, rgba(195, 123, 255, 1) 100%);
+}
+
+.card {
+    background: #0c0c0d;
+    border-radius:1dvh;
+}
+
+.settingsPage {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    color:rgba(0,0,0,0);
+    background:rgba(0,0,0,0);
+    border:rgba(0,0,0,0);
+}
+
+.settingsPage > .title {
+    position:absolute;
+    left:50%;
+    top:4dvw;
+    transform:translateX(-50%);
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight: bolder;
+    font-size: 4em;
+    background-image: var(--gradient);
+    color: transparent;
+    background-clip: text;
+    margin:0;
+}
+
+.settingsPage > .playerHolderCard {
+    position:absolute;
+    left:6dvw;
+    top:25%;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:600;
+    font-size:2em;
+    color:#FFF;
+    width:25%;
+    height:50%;
+}
+
+.playerHolderCard > .playerTitle {
+    position:absolute;
+    left:7%;
+    top:2.5dvh;
+    width:93%;
+    height:10%;
+}
+
+.playerTitle > .playerIcon {
+    position:absolute;
+    width:2dvw;
+    height:2dvw;
+    background:var(--gradient);
+    padding:0.5dvw;
+    border-radius:0.5dvw;
+}
+.playerTitle > span {
+    position:absolute;
+    left:4dvw;
+    height:100%;
+    line-height:3dvw;
+    font-size:1.75dvw;
+    vertical-align: middle;
+}
+.playerTitle > .addPlayer {
+    position:absolute;
+    width:2dvw;
+    height:2dvw;
+    background:var(--gradient);
+    padding:0.5dvw;
+    border-radius:0.5dvw;
+    right:3dvh;
+}
+
+.playerTitle > .addPlayer:hover {
+    cursor:pointer;
+}
+
+.playerHolder {
+    position:absolute;
+    left:7%;
+    top:12dvh;
+    width:86%;
+    height:80%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
+.playerHolder::-webkit-scrollbar {
+    background:transparent;
+    width:0.2dvw;
+  }
+  
+  .playerHolder::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
+  }
+
+.playerHolder > .playerCard {
+    position:absolute;
+    background:#1a1a1b;
+    width:95%;
+    height:6dvh;
+}
+.playerCard > .removeButton {
+    position:absolute;
+    right:1.5dvw;
+    top:0.5dvh;
+    height:3dvh;
+    aspect-ratio: 1/1;
+    display:none;
+}
+
+.playerCard > .editableLabel {
+    position:absolute;
+    left:2dvh;
+    line-height:6dvh;
+    background:transparent;
+    border:none;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    font-size:2dvh;
+}
+
+input:focus {
+    outline:none;
+}
+
+.playerCard:hover {
+    border: 1px solid #FFF;
+}
+.playerCard:hover .removeButton{
+    display:inline-block;
+}
+
+.impostorCount {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:25%;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:600;
+    font-size:2em;
+    color:#FFF;
+    width:25%;
+    height:50%;
+}
+
+.impostorCount > .countLabel {
+    position:absolute;
+    left:7%;
+    top:2.5dvh;
+    width:93%;
+    height:10%;
+}
+
+.countLabel > .impostorIcon {
+    position:absolute;
+    width:2dvw;
+    height:2dvw;
+    background:linear-gradient(45deg,rgba(212, 85, 90, 1) 0%, rgba(216, 121, 208, 1) 50%, rgba(195, 123, 255, 1) 100%);
+    padding:0.5dvw;
+    border-radius:0.5dvw;
+}
+.countLabel > span {
+    position:absolute;
+    left:4dvw;
+    height:100%;
+    line-height:3dvw;
+    font-size:1.75dvw;
+    vertical-align: middle;
+}
+
+.impostorCount > #impostorCount {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:10dvw;
+    height:10dvw;
+    border-radius:1dvw;
+    padding:1dvw;
+    transform:translate(-50%,-50%);
+    aspect-ratio: 1/1;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:600;
+    font-size:4em;
+    border:none;
+    text-align:center;
+    background:var(--gradientAlternate);
+    color:transparent;
+    background-clip:text;
+}
+
+.impostorCount > .subtractIcon {
+    position:absolute;
+    width:2.5dvw;
+    height:2.5dvw;
+    background:#1a1a1b;
+    padding:0.5dvw;
+    border-radius:100%;
+    color:#cdcdcd;
+    left:25%;
+    bottom:15%;
+}
+
+.impostorCount > .addIcon {
+    position:absolute;
+    width:2.25dvw;
+    height:2.25dvw;
+    background:#1a1a1b;
+    padding:0.75dvw;
+    border-radius:100%;
+    color:#cdcdcd;
+    right:25%;
+    bottom:15%;
+}
+
+
+.settingsPage > .wordHolderCard {
+    position:absolute;
+    right:6dvw;
+    top:25%;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:600;
+    font-size:2em;
+    color:#FFF;
+    width:25%;
+    height:50%;
+}
+
+.wordHolderCard > .wordTitle {
+    position:absolute;
+    left:7%;
+    top:2.5dvh;
+    width:93%;
+    height:10%;
+}
+
+.wordTitle > .wordIcon {
+    position:absolute;
+    width:2dvw;
+    height:2dvw;
+    background:var(--gradient);
+    padding:0.5dvw;
+    border-radius:0.5dvw;
+}
+.wordTitle > span {
+    position:absolute;
+    left:4dvw;
+    height:100%;
+    line-height:3dvw;
+    font-size:1.75dvw;
+    vertical-align: middle;
+}
+.wordTitle > .addWord {
+    position:absolute;
+    width:2dvw;
+    height:2dvw;
+    background:var(--gradient);
+    padding:0.5dvw;
+    border-radius:0.5dvw;
+    right:3dvh;
+}
+
+.wordTitle > .addWord:hover {
+    cursor:pointer;
+}
+
+.wordHolder {
+    position:absolute;
+    left:7%;
+    top:12dvh;
+    width:86%;
+    height:80%;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.wordHolder::-webkit-scrollbar {
+    background:transparent;
+    width:0.2dvw;
+  }
+
+  .wordHolder::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
+  }
+  
+  
+
+.wordHolder > .wordCard {
+    position:absolute;
+    background:#1a1a1b;
+    width:95%;
+    height:6dvh;
+}
+.wordCard > .removeButton {
+    position:absolute;
+    right:1.5dvw;
+    top:0.5dvh;
+    height:3dvh;
+    aspect-ratio: 1/1;
+    display:none;
+}
+
+.wordCard > .editableLabel {
+    position:absolute;
+    left:2dvh;
+    line-height:6dvh;
+    background:transparent;
+    border:none;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    font-size:2dvh;
+}
+
+.wordCard:hover > .removeButton {
+    display:inline-block;
+}
+
+.startGame {
+    position:absolute;
+    left:50%;
+    bottom:10%;
+    width:15dvw;
+    height:3dvw;
+    border-radius:3dvw;
+    background:var(--gradientAlternate);
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+    font-size:4dvh;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    line-height:3dvw;
+}
+
+.startGame:hover {
+    cursor: pointer;
+}

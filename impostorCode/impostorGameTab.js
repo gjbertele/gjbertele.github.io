@@ -40,12 +40,17 @@ const addPlayerToGrid = (player, i) => {
 
     playerGrid.appendChild(newPlayerElement);
 
-    if(i % 2 == 0) newPlayerElement.style.left = '10%';
-    else newPlayerElement.style.right = '10%';
+    if(isIOS){
+        if(i % 2 == 0) newPlayerElement.style.left = '10%';
+        else newPlayerElement.style.right = '10%';
 
-    newPlayerElement.style.top = (Math.floor(i/2)*42.5)+'vw';
+        newPlayerElement.style.top = (Math.floor(i/2)*42.5)+'vw';
+        playerGrid.style.height = ((Math.floor(i/2)+1)*42.5)+'vw';
+    } else {
+        newPlayerElement.style.left = ((i%5)*90/5)+"dvw";
+        newPlayerElement.style.top = (Math.floor(i/5)*17.5)+'dvw';
 
-    playerGrid.style.height = ((Math.floor(i/2)+1)*42.5)+'vw';
+    }
 
     newPlayerElement.onclick = () => {
         displayPlayer(player, newPlayerElement);
@@ -158,14 +163,3 @@ document.querySelector('.gamePage > .backButton').addEventListener('click', () =
     document.querySelector('.settingsPage').style.display = 'inline-block';
     document.querySelector('.gamePage').style.display = 'none';
 });
-
-let backSize = document.body.clientWidth*0.08;
-const backButtonSVG = `<svg width="${0.5895892351*backSize}" height="${backSize}" viewBox="0 0 14.15 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_6_13443)">
-<path d="M11.67 3.86998L9.9 2.09998L0 12L9.9 21.9L11.67 20.13L3.54 12L11.67 3.86998Z" fill="#FFF"/>
-</g>
-</svg>
-`
-
-backButtons[0].innerHTML = backButtonSVG;
-backButtons[1].innerHTML = backButtonSVG;
