@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impostor</title>
+    
+    <link rel="stylesheet" href="impostorCode/impostorSettingsTabLaptop.css">
+    <link rel="stylesheet" href="impostorCode/impostorGameTabLaptop.css">
+</head>
+<body>
+
+    
+
+    <div class="settingsPage">
+        <h1 class="title">Impostor</h1>
+        <div class="card playerHolderCard">
+            <div class="playerTitle">
+                <svg class="playerIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Players</span>
+                <svg class="addButton addPlayer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                </svg>
+            </div>
+            <div class="playerHolder"></div>
+        </div>
+        <div class="card impostorCount">
+            <div class="label countLabel">
+                <svg class="impostorIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" data-fg-d3bl68="0.8:1.11736:/src/app/App.tsx:193:17:8168:567:e:svg:e"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <span>Impostors</span>
+            </div>
+            <input type="number" class="editableLabel" readonly id="impostorCount" placeholder="1">
+            <svg class="subtractIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path></svg>
+            <svg class="addIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="M12 5v14"></path>
+            </svg>
+        </div>
+        <div class="card wordHolderCard">
+            <div class="wordTitle">
+                <svg class="wordIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Custom Words</span>
+                <svg class="addButton addWord" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                </svg>
+            </div>
+            <div class="wordHolder"></div>
+        </div>
+        <div class="afterPlayerHolder"></div>
+        <div class="afterWordHolder"></div>
+        <div class="startGame">Start</div>
+    </div>
+    <div class="gamePage">
+        <h1 class="title">Players</h1>
+        <span class="playerStart">Player Starts the Round</span>
+        <div class="playerGrid"></div>
+        <svg class="backButton" width="24" height="24" viewBox="0 0 14.15 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_6_13443)">
+            <path d="M11.67 3.86998L9.9 2.09998L0 12L9.9 21.9L11.67 20.13L3.54 12L11.67 3.86998Z" fill="#FFF"/>
+            </g>
+        </svg>
+    </div>
+    <div class="playerDisplay">
+        <div class="textDisplay">
+            <span class="default">The word for </span>
+            <span class="highlighted">Player</span>
+            <span class="default"> is </span>
+            <span class="highlighted">word</span> 
+            <span class="default"> and the category is </span>
+            <span class="highlighted">Category</span>
+        </div>
+        <svg class="backButton" width="24" height="24" viewBox="0 0 14.15 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_6_13443)">
+            <path d="M11.67 3.86998L9.9 2.09998L0 12L9.9 21.9L11.67 20.13L3.54 12L11.67 3.86998Z" fill="#FFF"/>
+            </g>
+        </svg>
+    </div>
+    <script src="impostorCode/impostorMain.js"></script>
+    <script src="impostorCode/wordData.js"></script>
+    <script src="impostorCode/impostorGameTab.js"></script>
+    <script src="impostorCode/impostorSettingsTab.js"></script>
+</body>
+</html>

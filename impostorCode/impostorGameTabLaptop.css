@@ -1,0 +1,137 @@
+:root {
+    --gradient: linear-gradient(90deg,rgba(5, 165, 225, 1) 0%, rgba(137, 155, 249, 1) 50%, rgba(191, 121, 252, 1) 100%);
+    --gradientAlternate: linear-gradient(90deg,rgba(212, 85, 90, 1) 0%, rgba(216, 121, 208, 1) 50%, rgba(195, 123, 255, 1) 100%);
+}
+
+.gamePage > .backButton {
+    position:absolute;
+    left:3dvw;
+    top:3dvw;
+    width:2dvw;
+    height:2dvw;
+}
+
+.backButton:hover {
+    cursor:pointer;
+}
+
+.gamePage > .title {
+    position:absolute;
+    left:50%;
+    top:8dvh;
+    transform:translateX(-50%);
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight: bolder;
+    font-size: 4em;
+    color:#FFF;
+}
+
+.gamePage > .playerStart {
+    position:absolute;
+    left:50%;
+    top:27dvh;
+    transform:translateX(-50%);
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight: 500;
+    font-size: 1em;
+    color:#6c6c6c;
+}
+
+.gamePage > .playerGrid {
+    position:absolute;
+    left:50%;
+    top:30dvh;
+    width:90dvw;
+    height:min(10dvh,fit-content);
+    transform:translateX(-50%);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+}
+
+.gridCard {
+    position:absolute;
+    width:15dvw;
+    height:15dvw;
+    margin:2dvw;
+    background:#1a1a1b;
+    box-shadow: 0px 0px 1vh 0.3vh rgba(131, 55, 179, 1);
+}
+
+.gridCard > .playerName {
+    position:absolute;
+    left:50%;
+    bottom:1.5vh;
+    width:100%;
+    height:1em;
+    font-size:2vh;
+    color:#fff;
+    font-family: Arial, Helvetica, sans-serif;
+    transform:translateX(-50%);
+    text-align:center;
+    overflow:visible;
+    font-weight:bold;
+}
+
+
+.gridCard > .playerProfile {
+    position:absolute;
+    left:50%;
+    top:40%;
+    width:7.5dvw;
+    height:7.5dvw;
+    border-radius:100%;
+    transform:translate(-50%,-50%);
+    background: #3477DA;
+    background: linear-gradient(135deg,rgba(52, 119, 218, 1) 0%, rgba(131, 55, 179, 1) 100%);
+    color:#FFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:bolder;
+    text-align:center;
+    font-size:5dvw;
+    line-height:7.5dvw;
+    vertical-align: middle;
+}
+
+.playerDisplay {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.playerDisplay > .textDisplay {
+    position:absolute;
+    left:50%;
+    top:40%;
+    transform:translate(-50%,-50%);
+    font-size:4vh;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    width:80%;
+    text-align:center;
+}
+
+.playerDisplay > .textDisplay > .default {
+    color:#9595a4;
+}
+
+.playerDisplay > .textDisplay > .highlighted {
+    color:#d5baf2;
+}
+.playerDisplay > .textDisplay > .highlightedRed {
+    color:rgba(212, 85, 90, 1);
+}
+
+.playerDisplay > .backButton {
+    position:absolute;
+    left:50%;
+    bottom:25%;
+    width:4dvw;
+    height:4dvw;
+    transform:translate(-50%,-50%);
+    background:var(--gradient);
+    border-radius:100%;
+    padding:0.5dvw;
+}
