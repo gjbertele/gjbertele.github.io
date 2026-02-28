@@ -298,12 +298,12 @@ input:focus {
 .wordHolder::-webkit-scrollbar {
     background:transparent;
     width:0.2dvw;
-  }
+}
 
-  .wordHolder::-webkit-scrollbar-thumb {
+.wordHolder::-webkit-scrollbar-thumb {
     background-color: #FFF;
     border-radius:1em;
-  }
+}
   
   
 
@@ -334,6 +334,7 @@ input:focus {
     font-size:2dvh;
 }
 
+
 .wordCard:hover > .removeButton {
     display:inline-block;
 }
@@ -355,6 +356,37 @@ input:focus {
     line-height:3dvw;
 }
 
+.startGame:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    inset:0;
+    background: var(--gradientAlternate);
+    z-index: -1;
+    filter: blur(0.3dvw); 
+    border-radius: inherit; 
+    opacity: 0.8;
+    transition:filter 0.25s;
+}
+
+.settingsPage > .title::before {
+    content: "Impostor";
+    background:inherit;
+    color:transparent;
+    position:absolute;
+    left:0;
+    top:0;
+    inset:0;
+    opacity:0.8;
+    filter: blur(0.8dvw);
+}
+
 .startGame:hover {
     cursor: pointer;
+}
+.startGame:hover::before{
+    filter:blur(0.8dvw);
 }

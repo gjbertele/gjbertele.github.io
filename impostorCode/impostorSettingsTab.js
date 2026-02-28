@@ -196,7 +196,7 @@ if(document.querySelector('.impostorCount > .addIcon')){
     }
 
     document.querySelector('.impostorCount > .subtractIcon').onclick = () => {
-        impostorCount = Math.max(0, impostorCount - 1);
+        impostorCount = Math.max(1, impostorCount - 1);
         impostorCountInput.value = impostorCount;
     }
 }

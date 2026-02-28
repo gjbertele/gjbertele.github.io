@@ -42,11 +42,24 @@
     left:50%;
     top:30dvh;
     width:90dvw;
-    height:min(10dvh,fit-content);
+    height:65dvh;
     transform:translateX(-50%);
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto auto;
+    overflow-y:scroll;
 }
+
+
+.playerGrid::-webkit-scrollbar {
+    background:transparent;
+    width:0.2dvw;
+}
+
+.playerGrid::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
+}
+  
 
 .gridCard {
     position:absolute;
@@ -128,10 +141,26 @@
     position:absolute;
     left:50%;
     bottom:25%;
-    width:4dvw;
-    height:4dvw;
+    width:3dvw;
+    height:3dvw;
     transform:translate(-50%,-50%);
     background:var(--gradient);
     border-radius:100%;
     padding:0.5dvw;
+    z-index:1;
 }
+
+.playerDisplay > .backButtonBackground {
+    position:absolute;
+    left:50%;
+    bottom:25%;
+    width:3dvw;
+    height:3dvw;
+    transform:translate(-50%,-50%);
+    border-radius:100%;
+    padding:0.5dvw;
+    background:var(--gradient);
+    z-index:0;
+    filter:blur(0.8dvw);
+}
+
