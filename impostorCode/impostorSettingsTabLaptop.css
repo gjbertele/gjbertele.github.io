@@ -4,6 +4,7 @@ body {
     top:0;
     width:100%;
     height:100%;
+    margin:0;
     background:#000;
     overflow:hidden;
     user-select: none;
@@ -103,16 +104,6 @@ body {
     overflow-y:scroll;
     overflow-x:hidden;
 }
-
-.playerHolder::-webkit-scrollbar {
-    background:transparent;
-    width:0.2dvw;
-  }
-  
-  .playerHolder::-webkit-scrollbar-thumb {
-    background-color: #FFF;
-    border-radius:1em;
-  }
 
 .playerHolder > .playerCard {
     position:absolute;
@@ -295,12 +286,12 @@ input:focus {
     overflow-y:scroll;
 }
 
-.wordHolder::-webkit-scrollbar {
+.scrollable::-webkit-scrollbar {
     background:transparent;
     width:0.2dvw;
 }
 
-.wordHolder::-webkit-scrollbar-thumb {
+.scrollable:-webkit-scrollbar-thumb {
     background-color: #FFF;
     border-radius:1em;
 }
@@ -339,10 +330,32 @@ input:focus {
     display:inline-block;
 }
 
+.startGameHolder {
+    position:absolute;
+    left:37.5dvw;
+    bottom:10%;
+    width:20dvw;
+    height:3dvw;
+    transform:translateY(-50%);
+}
+
+.settingsButton {
+    position:absolute;
+    left:1dvw;
+    top:0.5dvw;
+    width:2dvw;
+    height:2dvw;
+    color:#FFF;
+    fill:#FFF;
+}
+
+.settingsButton:hover {
+    cursor:pointer;
+}
+
 .startGame {
     position:absolute;
-    left:50%;
-    bottom:10%;
+    left:5dvw;
     width:15dvw;
     height:3dvw;
     border-radius:3dvw;
@@ -351,7 +364,6 @@ input:focus {
     font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
     font-weight:500;
     font-size:4dvh;
-    transform:translate(-50%,-50%);
     text-align:center;
     line-height:3dvw;
 }
@@ -389,4 +401,178 @@ input:focus {
 }
 .startGame:hover::before{
     filter:blur(0.8dvw);
+}
+
+.settingsPopupPage {
+    display:none;
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    margin:0;
+}
+
+.settingsPopupPage > .grayBackground {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    opacity:0.4;
+    background:#1a1a1b;
+}
+
+.settingsPopupPage > .settingsCard {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:30%;
+    height:40dvw;
+    background:#1a1a1b;
+    border-radius:3dvw;
+    transform:translate(-50%,-50%);
+}
+
+.settingsTitle {
+    position:absolute;
+    left:50%;
+    top:1.5dvw;
+    color:#FFF;
+    transform:translateX(-50%);
+    font-size:3dvw;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:600;
+}
+
+.settingsEntryTitle {
+    font-size:2dvw;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+}
+
+.settingsEntrySwitch {
+    position:absolute;
+    right: 2dvw;
+    top:0dvw;
+    width:4dvw;
+    height:1.75dvw;
+    background: #010101;
+    border-radius:1dvw;
+    border:1px solid #FFF;
+    overflow:hidden;
+}
+
+.settingsEntryCheck {
+    position:absolute;
+    appearance:none;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    border-radius:inherit;
+    z-index:2;
+}
+
+
+.settingsEntryCheck:hover{
+    cursor:pointer;
+}
+
+.settingsEntryCheckSlider {
+    position:absolute;
+    left:-2dvw;
+    top:0;
+    width:3dvw;
+    height:100%;
+    background:var(--gradientAlternate);
+    transition: left 0.2s;
+    z-index:1;
+}
+
+.settingsEntryCheck:checked + .settingsEntryCheckSlider {
+    left:0dvw;
+}
+
+.settingsEntryCheckSlider::before{
+    position:absolute;
+    right:-1dvw;
+    top:0;
+    width:2dvw;
+    height:100%;
+    border-radius:1dvw;
+    background:#FFF;
+    content:"";
+}
+
+.categoriesAllowed {
+    position:absolute;
+    left:0;
+    top:10dvw;
+    width:100%;
+    height:30dvw;
+}
+
+.settingsEntryCategoryCard {
+    position:relative;
+    left:0dvw;
+    width:26dvw;
+    height:3dvw;
+    margin-top:0.5dvw;
+    background:#0b0b0c;
+    border-radius:2dvw;
+}
+
+.settingsEntryCategoryCard > .settingsEntryTitle {
+    position:absolute;
+    left:1.5dvw;
+    font-size:1.2dvw;
+    top:1.5dvw;
+    transform:translateY(-50%);
+}
+
+.settingsEntryCategoryCard > .settingsEntrySwitch {
+    position:absolute;
+    right:1dvw;
+    top:1.5dvw;
+    height:1.5dvw;
+    transform:translateY(-50%);
+}
+
+.categoryHolder {
+    position:absolute;
+    left:2dvw;
+    top:3dvw;
+    width:27dvw;
+    height:26dvw;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
+.categoriesAllowedTitle {
+    position:absolute;
+    left:1.75dvw;
+    top:0;
+    font-size:1.75dvw;
+}
+
+
+.seeOtherImpostors {
+    position:absolute;
+    top:6.5dvw;
+    width:100%;
+    height:2dvw;
+}
+
+.seeOtherImpostors > .settingsEntryTitle {
+    position:absolute;
+    font-size: 1.4dvw;
+    left:2dvw;
+}
+
+.settingsCard > .backButton {
+    position:absolute;
+    left:2dvw;
+    top:2dvw;
 }
