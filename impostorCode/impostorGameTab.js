@@ -100,7 +100,8 @@ const chooseImpostors = () => {
         playersClone.push(players[i]);
     }
 
-    for(let i = 0; i<Math.min(impostorCount,playersClone.length); i++){
+    let numPlayers = playersClone.length;
+    for(let i = 0; i<Math.min(impostorCount,numPlayers); i++){
         let randomIdx = Math.floor(Math.random()*playersClone.length);
         chosenImpostors.push(playersClone[randomIdx]);
         playersClone.splice(randomIdx, 1);
@@ -132,13 +133,32 @@ const displayPlayer = (player, element) => {
         <span class="highlighted">${chosenCategory}</span>
         `
     } else {
-        displayTextArea.innerHTML = `
+        if(chosenImpostors.length == 1){
+            displayTextArea.innerHTML = `s
         <span class="highlighted">${player.name}</span>
         <span class="default"> is an </span>
         <span class="highlightedRed">Impostor</span> 
         <span class="default"> and the category is </span>
-        <span class="highlighted">${chosenCategory}</span>
+        <span class="highlighted">${chosenCategory}.</span>
         `
+        } else {
+            let otherImpostors = chosenImpostors;
+            console.log(otherImpostors);
+            for(let i = 0; i<otherImpostors.length; i++) if(otherImpostors[i].name == player.name) otherImpostors.splice(i, 1);
+            console.log(otherImpostors);
+            otherImpostors = otherImpostors.map(i => i = i.name);
+            console.log(otherImpostors);
+            
+            displayTextArea.innerHTML = `
+        <span class="highlighted">${player.name}</span>
+        <span class="default"> is an </span>
+        <span class="highlightedRed">Impostor</span> 
+        <span class="default"> and the category is </span>
+        <span class="highlighted">${chosenCategory}.</span>
+        <span class="default"> The other impostors are </span>
+        <span class="highlightedRed">${otherImpostors.join(", ")}</span>
+        `
+        }  
     }
 
     document.querySelector('.gamePage').style.display = 'none';
