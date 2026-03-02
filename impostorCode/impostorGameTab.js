@@ -151,10 +151,9 @@ const displayPlayer = (player, element) => {
         <span class="default"> is an </span>
         <span class="highlightedRed">Impostor</span> 
         <span class="default"> and the category is </span>
-        <span class="highlighted">${chosenCategory}</span>
-        <span class="default">. The other impostor is </span>
-        <span class="highlightedRed">${otherImpostors.join(", ")}</span>
-        <span class="default">.</span>`
+        <span class="highlighted">${chosenCategory}.</span>
+        <span class="default"> The other impostor is </span>
+        <span class="highlightedRed">${otherImpostors.join(", ")}.</span>`
             
         } else {
             let otherImpostors = chosenImpostors;
@@ -166,10 +165,9 @@ const displayPlayer = (player, element) => {
         <span class="default"> is an </span>
         <span class="highlightedRed">Impostor</span> 
         <span class="default"> and the category is </span>
-        <span class="highlighted">${chosenCategory}</span>
-        <span class="default">. The other impostors are </span>
-        <span class="highlightedRed">${otherImpostors.join(", ")}</span>
-        <span class="default">.</span>
+        <span class="highlighted">${chosenCategory}.</span>
+        <span class="default"> The other impostors are </span>
+        <span class="highlightedRed">${otherImpostors.join(", ")}.</span>
         `
         }  
     }
