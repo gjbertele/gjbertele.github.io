@@ -16,6 +16,8 @@ const wordElementHolder = document.querySelector('.wordHolder');
 const afterWordHolder = document.querySelector('.afterWordHolder');
 const addWordButton = document.querySelector('.addWord');
 const startGameButton = document.querySelector('.startGame');
+const settingsButton = document.querySelector('.settingsButton');
+const impostorSightToggle = document.querySelector('.seeOtherImpostorsBox');
 
 impostorCountInput.value = 1;
 
@@ -188,6 +190,51 @@ document.addEventListener('paste', (event) => {
 impostorCountInput.onchange = () => {
     impostorCount = impostorCountInput.value;
 }
+
+if(settingsButton) settingsButton.onclick = () => {
+    document.querySelector('.settingsPopupPage').style.display = 'inline-block';
+    let categoryHolder = document.querySelector('.categoryHolder');
+    categoryHolder.innerHTML = '';
+    for(let i in categoriesAllowed){
+        let categoryTitle = document.createElement('div');
+        categoryTitle.textContent = i;
+        categoryTitle.className = 'settingsEntryTitle categoryTitle';
+
+        let categoryToggle = document.createElement('div');
+        categoryToggle.className = 'settingsEntrySwitch';
+        let categoryCheckbox = document.createElement('input');
+        categoryCheckbox.type = 'checkbox';
+        categoryCheckbox.className = 'settingsEntryCheck';
+        let slider = document.createElement('div');
+        slider.className = 'settingsEntryCheckSlider';
+        categoryToggle.appendChild(categoryCheckbox);
+        categoryToggle.appendChild(slider);
+        
+        let container = document.createElement('div');
+        container.className = 'settingsEntryCategoryCard';
+
+        container.appendChild(categoryTitle);
+        container.appendChild(categoryToggle);
+
+        categoryHolder.appendChild(container);
+
+        categoryCheckbox.checked = categoriesAllowed[i];
+        categoryCheckbox.onclick = () => {
+            categoriesAllowed[i] = !categoriesAllowed[i];
+        }
+    }
+}
+
+if(document.querySelector('.settingsCard > .backButton')){
+    document.querySelector('.settingsCard > .backButton').onclick = () => {
+        document.querySelector('.settingsPopupPage').style.display = 'none';
+    }
+}
+
+if(impostorSightToggle) impostorSightToggle.onclick = () => {
+    showOtherImpostors = !showOtherImpostors;
+}
+
 
 if(document.querySelector('.impostorCount > .addIcon')){
     document.querySelector('.impostorCount > .addIcon').onclick = () => {

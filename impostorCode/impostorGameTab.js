@@ -9,6 +9,14 @@ let chosenCategory = '';
 let chosenImpostors = [];
 let seenWords = [];
 
+let showOtherImpostors = false;
+let categoriesAllowed = [];
+
+for(let i = 0; i<Object.keys(wordData).length; i++){
+   categoriesAllowed[Object.keys(wordData)[i]] = true;
+}
+
+
 const startGame = () => {
     document.querySelector('.settingsPage').style.display = 'none';
     document.querySelector('.gamePage').style.display = 'inline-block';
@@ -76,8 +84,8 @@ const getRandomWord = () => {
 
 const chooseWord = () => {
     let [randomWord, randomCategory] = getRandomWord();
-
-    while(seenWords.includes(randomWord)) [randomWord, randomCategory] = getRandomWord();
+    console.log(randomCategory);
+    while(seenWords.includes(randomWord) || !categoriesAllowed[randomCategory]) [randomWord, randomCategory] = getRandomWord();
 
     seenWords.push(randomWord);
     chosenWord = randomWord;
@@ -133,7 +141,7 @@ const displayPlayer = (player, element) => {
         <span class="highlighted">${chosenCategory}</span>
         `
     } else {
-        if(chosenImpostors.length == 1){
+        if(chosenImpostors.length == 1 || !showOtherImpostors){
             displayTextArea.innerHTML = `s
         <span class="highlighted">${player.name}</span>
         <span class="default"> is an </span>

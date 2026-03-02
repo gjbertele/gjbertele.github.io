@@ -102,6 +102,7 @@ body {
     top: 2dvh;
     width:4dvh;
     height:4dvh;
+    color:#FFF;
 }
 
 .settingsPage > .afterPlayerHolder > .impostorCount {
