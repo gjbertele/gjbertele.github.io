@@ -141,22 +141,35 @@ const displayPlayer = (player, element) => {
         <span class="default"> and the category is </span>
         <span class="highlighted">${chosenCategory}.</span>
         `
-        } else {
+        } else if(chosenImpostors.length == 2){
             let otherImpostors = chosenImpostors;
-            console.log(otherImpostors);
             for(let i = 0; i<otherImpostors.length; i++) if(otherImpostors[i].name == player.name) otherImpostors.splice(i, 1);
-            console.log(otherImpostors);
             otherImpostors = otherImpostors.map(i => i = i.name);
-            console.log(otherImpostors);
             
             displayTextArea.innerHTML = `
         <span class="highlighted">${player.name}</span>
         <span class="default"> is an </span>
         <span class="highlightedRed">Impostor</span> 
         <span class="default"> and the category is </span>
-        <span class="highlighted">${chosenCategory}.</span>
-        <span class="default"> The other impostors are </span>
+        <span class="highlighted">${chosenCategory}</span>
+        <span class="default">. The other impostor is </span>
         <span class="highlightedRed">${otherImpostors.join(", ")}</span>
+        <span class="default">.</span>`
+            
+        } else {
+            let otherImpostors = chosenImpostors;
+            for(let i = 0; i<otherImpostors.length; i++) if(otherImpostors[i].name == player.name) otherImpostors.splice(i, 1);
+            otherImpostors = otherImpostors.map(i => i = i.name);
+            
+            displayTextArea.innerHTML = `
+        <span class="highlighted">${player.name}</span>
+        <span class="default"> is an </span>
+        <span class="highlightedRed">Impostor</span> 
+        <span class="default"> and the category is </span>
+        <span class="highlighted">${chosenCategory}</span>
+        <span class="default">. The other impostors are </span>
+        <span class="highlightedRed">${otherImpostors.join(", ")}</span>
+        <span class="default">.</span>
         `
         }  
     }
