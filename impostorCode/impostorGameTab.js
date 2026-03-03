@@ -85,7 +85,7 @@ const getRandomWord = () => {
 const chooseWord = () => {
     let [randomWord, randomCategory] = getRandomWord();
     console.log(randomCategory);
-    while(seenWords.includes(randomWord) || !categoriesAllowed[randomCategory]) [randomWord, randomCategory] = getRandomWord();
+    while(randomWord.length == 0 || seenWords.includes(randomWord) || !categoriesAllowed[randomCategory]) [randomWord, randomCategory] = getRandomWord();
 
     seenWords.push(randomWord);
     chosenWord = randomWord;
@@ -183,6 +183,7 @@ const displayPlayer = (player, element) => {
     document.querySelector('.gamePage').style.display = 'none';
     document.querySelector('.playerDisplay').style.display = 'inline-block';
 }
+
 
 
 let lastBackTime = 0;

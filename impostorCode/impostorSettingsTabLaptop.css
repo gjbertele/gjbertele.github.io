@@ -430,7 +430,7 @@ input:focus {
     width:30%;
     height:40dvw;
     background:#1a1a1b;
-    border-radius:3dvw;
+    border-radius:1dvw;
     transform:translate(-50%,-50%);
 }
 
