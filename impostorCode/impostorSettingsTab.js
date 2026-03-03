@@ -77,6 +77,10 @@ const addPlayer = () => {
         return;
     }
 
+    playerName.onkeydown = (e) => {
+        if(e.key == 'Enter') addPlayer().focus();
+    }
+
     removeButton.addEventListener('click',() => {
         afterPlayerHolderTop -= 10;
         afterPlayerHolder.style.top = afterPlayerHolderTop+'vh';
@@ -103,7 +107,7 @@ const addPlayer = () => {
         return;
     });
 
-    return;
+    return playerName;
 }
 
 const addWord = (wordValue = '') => {
@@ -150,6 +154,10 @@ const addWord = (wordValue = '') => {
         return;
     }
 
+    wordContent.onkeydown = (e) => {
+        if(e.key == 'Enter') addWord().focus();
+    }
+
     removeButton.addEventListener('click',() => {
         afterWordHolderTop -= 10;
         afterWordHolder.style.top = afterWordHolderTop+'vh';
@@ -174,7 +182,7 @@ const addWord = (wordValue = '') => {
         return;
     });
 
-    return;
+    return wordContent;
 }
 
 document.addEventListener('paste', (event) => {
