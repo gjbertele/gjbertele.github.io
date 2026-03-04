@@ -521,12 +521,12 @@ input:focus {
     height:3dvw;
     margin-top:0.5dvw;
     background:#0b0b0c;
-    border-radius:2dvw;
+    border-radius:1dvw;
 }
 
 .settingsEntryCategoryCard > .settingsEntryTitle {
     position:absolute;
-    left:1.5dvw;
+    left:1dvw;
     font-size:1.2dvw;
     top:1.5dvw;
     transform:translateY(-50%);

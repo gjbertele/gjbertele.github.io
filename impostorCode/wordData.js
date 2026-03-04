@@ -38,8 +38,8 @@ const wordData =
   ],
   "Sports": [
     "Basketball", "Soccer", "Baseball", "Football", "Tennis", "Volleyball", "Hockey", "Golf", "Swimming", "Track",
-    "Cross Country", "Wrestling", "Boxing", "Martial Arts", "Karate", "Taekwondo", "Judo", "Skateboarding", "Surfing", "Snowboarding",
-    "Skiing", "Biking", "BMX", "Rock Climbing", "Gymnastics", "Cheerleading", "Dance", "Rowing", "Sailing", "Archery",
+    "Cross Country", "Wrestling", "Boxing", "Martial Arts", "Skateboarding", "Surfing", "Snowboarding",
+    "Skiing", "Biking", "Rock Climbing", "Gymnastics", "Cheerleading", "Dance", "Rowing", "Sailing", "Archery",
     "Fencing", "Ping Pong", "Badminton", "Lacrosse", "Softball",
     "Dodgeball", "Pickleball", "Weightlifting", "Triathlon", "Marathon", "Long Jump", "Pole Vault",
     "Shot Put", "Discus", "Shotgun Shooting", "Esports", "Bowling", "Formula 1", "Figure Skating",
@@ -74,7 +74,7 @@ const wordData =
         "Miley Cyrus", "Noah Kahan",
         "Kendrick Lamar", "Lil Nas X",
         "Morgan Wallen", "Baby Keem", "GloRilla", "Yuno Miles", "Bad Bunny"],
-    "People": [
+    "Celebrities": [
         "Timothée Chalamet",
         "Tom Holland",
         "Jacob Elordi",

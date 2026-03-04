@@ -28,14 +28,20 @@ let players = [];
 let words = [];
 let impostorCount = 1;
 
-const addPlayer = () => {
+const addPlayer = (name = null) => {
     let newPlayerElement = document.createElement('div');
     newPlayerElement.className = 'card playerCard';
+
+
+    let chosenName = 'Player '+(players.length + 1);
+    if(name != null) chosenName = name;
+
 
     let playerName = document.createElement('input');
     playerName.type = 'text';
     playerName.className = 'editableLabel'
-    playerName.value = 'Player '+(players.length + 1);
+    playerName.value = chosenName;
+    playerName.placeholder = 'Type here'
 
     let removeButton = document.createElement('div');
     let svgRemoveChild = document.createElement('svg');
@@ -60,9 +66,8 @@ const addPlayer = () => {
     afterPlayerHolderTop+=10;
     afterPlayerHolder.style.top = afterPlayerHolderTop+'vh';
 
-
     players.push({
-        name: 'Player '+(players.length + 1),
+        name: chosenName,
         isImpostor:null,
         id: playerID
     });
@@ -148,7 +153,7 @@ const addWord = (wordValue = '') => {
 
 
     wordContent.onchange = () => {
-        for(let i = 0; i<players.length; i++){
+        for(let i = 0; i<words.length; i++){
             if(words[i].id == wordID) words[i].word = wordContent.value;
         }
         return;
