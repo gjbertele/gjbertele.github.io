@@ -78,7 +78,7 @@ const addPlayer = () => {
     }
 
     playerName.onkeydown = (e) => {
-        if(e.key == 'Enter') addPlayer().focus();
+        if(e.key == 'Enter') addPlayer('').focus();
     }
 
     removeButton.addEventListener('click',() => {
