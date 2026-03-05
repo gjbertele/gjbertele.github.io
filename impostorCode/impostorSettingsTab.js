@@ -264,6 +264,7 @@ if(document.querySelector('.impostorCount > .addIcon')){
 
 addPlayerButton.onclick = addPlayer;
 addPlayer();
+addWord('');
 
 addWordButton.onclick = addWord;
 startGameButton.onclick = startGame;
