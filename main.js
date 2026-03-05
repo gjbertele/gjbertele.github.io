@@ -25,7 +25,7 @@ const buildLinkBox = () => {
     linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html/math%20utils','Self-Contained JS Math Utils/UI'));
     linkList.push(createLink('matrixSolver.html','Self-Contained JS Matrix Utils'));
     linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html','Projects Archive'));
-    linkList.push(createLink('Identities.pdf','Newish Equations'));
+    linkList.push(createLink('Identities.pdf','Equations'));
     linkList.push(createLink('DiffEqWriteup.pdf','Interesting PDEs'));
     linkList.push(createLink('eigenvalue_derivative.pdf','Eigenvalue Derivatives'));
     linkList.push(createLink('Generalized_Permutations.pdf','Generalized Permutations'));
@@ -47,3 +47,5 @@ const getDefaultFontSize = () => {
     document.body.removeChild(div);
     return pixels;
 }
+
+buildLinkBox();
