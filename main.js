@@ -20,15 +20,15 @@ const createLink = (href, title) => {
 }
 
 const buildLinkBox = () => {
-    linkList.push(createLink('proof_2.pdf','Zeta-Gamma Proof'));
+    linkList.push(createLink('pdfs/proof_2.pdf','Zeta-Gamma Proof'));
     linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html/AI','Self-Contained JS Neural Net'));
     linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html/math%20utils','Self-Contained JS Math Utils/UI'));
-    linkList.push(createLink('matrixSolver.html','Self-Contained JS Matrix Utils'));
+    linkList.push(createLink('matrixSolver/matrixSolver.html','Self-Contained JS Matrix Utils'));
     linkList.push(createLink('https://github.com/gjbertele/projects/tree/main/html','Projects Archive'));
-    linkList.push(createLink('Identities.pdf','Equations'));
-    linkList.push(createLink('DiffEqWriteup.pdf','Interesting PDEs'));
-    linkList.push(createLink('eigenvalue_derivative.pdf','Eigenvalue Derivatives'));
-    linkList.push(createLink('Generalized_Permutations.pdf','Generalized Permutations'));
+    linkList.push(createLink('pdfs/Identities.pdf','Equations'));
+    linkList.push(createLink('pdfs/DiffEqWriteup.pdf','Interesting PDEs'));
+    linkList.push(createLink('pdfs/eigenvalue_derivative.pdf','Eigenvalue Derivatives'));
+    linkList.push(createLink('pdfs/Generalized_Permutations.pdf','Generalized Permutations'));
     linkList.push(createLink('https://github.com/gjbertele/projects/blob/main/html/DEOlder/PDE.js','PDE Solver'));
 
     for(let i = 0; i<linkList.length; i++){
