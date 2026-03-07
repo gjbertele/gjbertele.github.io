@@ -18,7 +18,7 @@ if(isIOS){
 }
 
 const heightScaleOffset = isIOS ? 0.13 : 0.185;
-const apiURL = 'https://3f95-2600-4040-2a81-2200-616d-ebc1-e59-4338.ngrok-free.app';
+const apiURL = 'https://8f03-2600-4040-2a81-2200-616d-ebc1-e59-4338.ngrok-free.app';
 
 const swipePage = () => {
     let name = formatName(document.querySelector('.nameInput').value);
