@@ -22,7 +22,15 @@ const apiURL = 'https://8f03-2600-4040-2a81-2200-616d-ebc1-e59-4338.ngrok-free.a
 
 const swipePage = () => {
     let name = formatName(document.querySelector('.nameInput').value);
-    if(name.length == 0) return;
+    if(name.length == 0){
+        document.querySelector('.incorrectInput').textContent = 'You must enter your name';
+        return;
+    }
+
+    if(['sophie', 'claire', 'daniel', 'lucas', 'avery'].includes(name.toLowerCase().split(' ')[0])){
+        document.querySelector('.incorrectInput').textContent = 'Include your last name or last initial';
+        return;
+    }
 
     document.querySelector('.enterName').style.left = '150%';
     document.querySelector('.enterFriends').style.left = '50%';
@@ -130,9 +138,10 @@ const removeFriendFromList = (friendID) => {
 
 const formatName = (name) => {
     let words = name.split(' ');
+    if(words.length == 0) return '';
     for(let i = 0; i<words.length; i++){
         let chars = words[i].toLowerCase().split('');
-        chars[0] = chars[0].toUpperCase();
+        if(chars[0]) chars[0] = chars[0].toUpperCase();
         words[i] = chars.join('');
     }
 
