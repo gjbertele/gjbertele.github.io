@@ -7,6 +7,26 @@ body {
     margin:0;
     overflow:hidden;
     padding:0;
+    background:#000;
+}
+
+.scrollable::-webkit-scrollbar {
+    background:#000;
+    width:0.2dvw;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
+}
+
+.graph {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
 }
 
 .mainCanvas {
@@ -15,4 +35,150 @@ body {
     top:0;
     width:100%;
     height:100%;
+}
+
+
+.setup {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+.enterName {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:30%;
+    height:20dvw;
+    transform:translate(-50%,-50%);
+    transition: left 0.5s;
+}
+
+.text {
+    position:absolute;
+    left:50%;
+    top:7dvw;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    font-size:2dvh;
+    transform:translateX(-50%);
+}
+
+.enterName > .nextButton {
+    position:absolute;
+    left: 22.5dvw;
+    top:50%;
+    width:2dvh;
+    height:2dvh;
+    padding:1dvh;
+    border-radius:100%;
+    background:#1a1a1b;
+    cursor:pointer;
+}
+
+.editableLabel {
+    position:absolute;
+    width:15dvw;
+    line-height:100%;
+    padding:0.5em;
+    background:#1a1a1b;
+    border:none;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    font-size:1.8dvh;
+    border-radius:0.5dvw;
+    text-indent:1dvw;
+}
+
+
+.enterName > .editableLabel {
+    position:absolute;
+    left:6dvw;
+    top:50%;
+}
+
+
+input:focus{
+    outline:none;
+}
+
+.enterFriends {
+    position:absolute;
+    left:-50%;
+    top:calc(50dvh - 10dvw);
+    width:30%;
+    height:calc(50dvh + 10dvw);
+    transform:translateX(-50%);
+    transition:left 0.5s;
+}
+
+.friendHolder {
+    position:absolute;
+    left:50%;
+    top:17dvh;
+    width:20dvw;
+    height:34dvh;
+    overflow-x:hidden;
+    overflow-y:scroll;
+    transform:translateX(-50%);
+}
+
+.friendHolder > .editableLabel {
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.addFriendButton {
+    position:absolute;
+    left:50%;
+    top:30%;
+    transform:translate(-50%,-50%);
+    width:15dvw;
+    height:4dvh;
+    color:#FFF;
+    font-size:1.8dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+    background:#1a1a1b;
+    border-radius:1dvh;
+    text-align:center;
+    line-height:4dvh;
+    vertical-align: middle;
+    cursor:pointer;
+}
+
+.submit {
+    position:absolute;
+    left:50%;
+    top:40%;
+    transform:translate(-50%,-50%);
+    width:15dvw;
+    height:4dvh;
+    color:#000;
+    font-size:1.8dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+    background:#FFF;
+    border-radius:1dvh;
+    text-align:center;
+    line-height:4dvh;
+    vertical-align: middle;
+    cursor:pointer;
+}
+
+.overlayText {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:15dvw;
+    height:4dvh;
+    color:#FFF;
+    font-size:1.8dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
 }
