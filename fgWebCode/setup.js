@@ -1,16 +1,13 @@
 /*
-    todo: add non-removal warning
-    require name input is nonempty
-    link names to ip
+    todo: 
     add refresh graph & add button to graph page
-    add enter hotkeys
 */
 
 const enterNameNextButton = document.querySelector('.enterName > .nextButton');
 const friendHolder = document.querySelector('.friendHolder');
 const addFriendButton = document.querySelector('.addFriendButton');
 const submitButton = document.querySelector('.submit');
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isIOS = true || (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
 
 if(isIOS){
     const stylesheet = document.createElement('link');
@@ -148,6 +145,11 @@ const formatName = (name) => {
 const submitFriendsToServer = () => {
     document.querySelector('.setup').style.display = 'none';
     
+    if(friendNames.length == 0){
+        startGraphing();
+        return;
+    }
+
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i)).join(';'));
 

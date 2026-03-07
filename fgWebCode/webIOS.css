@@ -222,3 +222,12 @@ input:focus{
     width:100%;
     height:100%;
 }
+
+.refreshButton {
+    position:absolute;
+    right:2.5dvw;
+    bottom:2.5dvw;
+    height:6dvh;
+    width:6dvh;
+    cursor:pointer;
+}
