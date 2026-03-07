@@ -6,24 +6,24 @@ const springConstant = 10;
 const vDamp = 0.95;
 const defaultLength = 200;
 const gravConstant = 10;
-const dt = 1/60;
+const dt = 1 / 60;
 let stepping = false;
 
 let nodePositions = [];
 let names = [];
 let adjacencyList = [];
 let mouse = {
-    x:0,
-    y:0,
-    down:false,
-    hovering:false,
-    selected:-1
+    x: 0,
+    y: 0,
+    down: false,
+    hovering: false,
+    selected: -1
 }
 let camera = {
-    x:0,
-    y:0,
-    sx:1,
-    sy:1
+    x: 0,
+    y: 0,
+    sx: 1,
+    sy: 1
 }
 
 canvas.width = width;
@@ -34,8 +34,8 @@ const gravityStep = () => {
 
     let newNodePositions = [];
 
-    for(let i = 0; i<n; i++){
-        if(mouse.hovering && mouse.selected == i){
+    for (let i = 0; i < n; i++) {
+        if (mouse.hovering && mouse.selected == i) {
             newNodePositions.push(nodePositions[i]);
             continue;
         }
@@ -43,24 +43,24 @@ const gravityStep = () => {
         let netForceX = 0;
         let netForceY = 0;
 
-        for(let j = 0; j<n; j++){
-            if(i == j) continue;
+        for (let j = 0; j < n; j++) {
+            if (i == j) continue;
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
 
-            let dist = Math.sqrt(dx*dx + dy*dy);
-        
-            if(dist > 200 || dist == 0) continue;
+            let dist = Math.sqrt(dx * dx + dy * dy);
 
-            let fMag = 1/dist*dist;
+            if (dist > 200 || dist == 0) continue;
 
-            netForceX += -gravConstant*fMag*dx/dist;
-            netForceY += -gravConstant*fMag*dy/dist;
+            let fMag = 1 / dist * dist;
+
+            netForceX += -gravConstant * fMag * dx / dist;
+            netForceY += -gravConstant * fMag * dy / dist;
         }
 
         newNodePositions.push({
-            x: nodePositions[i].x + vDamp * clampMag(nodePositions[i].x - nodePositions[i].lx) + netForceX*dt*dt,
-            y: nodePositions[i].y + vDamp * clampMag(nodePositions[i].y - nodePositions[i].ly) + netForceY*dt*dt,
+            x: nodePositions[i].x + vDamp * clampMag(nodePositions[i].x - nodePositions[i].lx) + netForceX * dt * dt,
+            y: nodePositions[i].y + vDamp * clampMag(nodePositions[i].y - nodePositions[i].ly) + netForceY * dt * dt,
             lx: nodePositions[i].x,
             ly: nodePositions[i].y
         });
@@ -70,7 +70,7 @@ const gravityStep = () => {
 }
 
 const clampMag = (max) => {
-    if(max < -5) return -5;
+    if (max < -5) return -5;
     return Math.min(max, 5);
 }
 
@@ -79,29 +79,29 @@ const physicsStep = () => {
 
     let newNodePositions = [];
 
-    for(let i = 0; i<n; i++){
+    for (let i = 0; i < n; i++) {
         let netForceX = 0;
         let netForceY = 0;
-        for(let k = 0; k<adjacencyList[i].length; k++){
+        for (let k = 0; k < adjacencyList[i].length; k++) {
             let j = adjacencyList[i][k];
 
-            if(j >= n) break;
-            if(i == j) continue;
+            if (j >= n) break;
+            if (i == j) continue;
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
 
-            let dist = Math.sqrt(dx*dx + dy*dy);
+            let dist = Math.sqrt(dx * dx + dy * dy);
             let dl = dist - defaultLength;
 
-            if(dist == 0) continue;
+            if (dist == 0) continue;
 
-            netForceX += springConstant*dl*dx/dist;
-            netForceY += springConstant*dl*dy/dist;
+            netForceX += springConstant * dl * dx / dist;
+            netForceY += springConstant * dl * dy / dist;
         }
 
         newNodePositions.push({
-            x: nodePositions[i].x + vDamp * (nodePositions[i].x - nodePositions[i].lx) + netForceX*dt*dt,
-            y: nodePositions[i].y + vDamp * (nodePositions[i].y - nodePositions[i].ly) + netForceY*dt*dt,
+            x: nodePositions[i].x + vDamp * (nodePositions[i].x - nodePositions[i].lx) + netForceX * dt * dt,
+            y: nodePositions[i].y + vDamp * (nodePositions[i].y - nodePositions[i].ly) + netForceY * dt * dt,
             lx: nodePositions[i].x,
             ly: nodePositions[i].y
         });
@@ -111,7 +111,7 @@ const physicsStep = () => {
 }
 
 const addNode = (name = 'Unnamed', connected = []) => {
-    for(let i = 0; i<connected.length; i++){
+    for (let i = 0; i < connected.length; i++) {
         adjacencyList[connected[i]].push(adjacencyList.length);
     }
     adjacencyList.push(connected);
@@ -119,66 +119,66 @@ const addNode = (name = 'Unnamed', connected = []) => {
     let minPotential = 10000000;
     let bestX = -1;
     let bestY = -1;
-    for(let i = 0; i<100; i++){
-        let randomX = camera.x + Math.random()*width/2 - width/8;
-        let randomY = camera.y + Math.random()*height/2 - height/8;
-        
+    for (let i = 0; i < 100; i++) {
+        let randomX = camera.x + Math.random() * width / 2 - width / 8;
+        let randomY = camera.y + Math.random() * height / 2 - height / 8;
+
         let energy = computePotential(randomX, randomY, connected);
-        if(energy > minPotential) continue;
-        
+        if (energy > minPotential) continue;
+
         minPotential = energy;
         bestX = randomX;
         bestY = randomY;
     }
 
     nodePositions.push({
-        x:bestX,
-        y:bestY,
-        lx:bestX,
-        ly:bestY
+        x: bestX,
+        y: bestY,
+        lx: bestX,
+        ly: bestY
     });
 
 
     names.push(name);
-    for(let j = 0; j<20; j++) physicsStep();
+    for (let j = 0; j < 20; j++) physicsStep();
 }
 
 const computePotential = (x, y, connections) => {
     let netForceX = 0;
     let netForceY = 0;
 
-    for(let k = 0; k<connections.length; k++){
+    for (let k = 0; k < connections.length; k++) {
         let j = connections[k];
 
-        if(!nodePositions[j]) continue;
+        if (!nodePositions[j]) continue;
 
         let dx = nodePositions[j].x - x;
         let dy = nodePositions[j].y - y;
 
-        let dist = Math.sqrt(dx*dx + dy*dy);
+        let dist = Math.sqrt(dx * dx + dy * dy);
         let dl = dist - defaultLength;
 
-        netForceX += springConstant*dl*dx/dist;
-        netForceY += springConstant*dl*dy/dist;
+        netForceX += springConstant * dl * dx / dist;
+        netForceY += springConstant * dl * dy / dist;
 
     }
 
-    for(let j = 0; j<nodePositions.length; j++){
+    for (let j = 0; j < nodePositions.length; j++) {
         let dx = nodePositions[j].x - x;
         let dy = nodePositions[j].y - y;
 
-        let dist = Math.sqrt(dx*dx + dy*dy);
-    
-        if(dist > 200) continue;
-        if(dist == 0) return 1000000000;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-        let fMag = 10/dist*dist;
+        if (dist > 200) continue;
+        if (dist == 0) return 1000000000;
 
-        netForceX += -gravConstant*fMag*dx/dist;
-        netForceY += -gravConstant*fMag*dy/dist;
+        let fMag = 10 / dist * dist;
+
+        netForceX += -gravConstant * fMag * dx / dist;
+        netForceY += -gravConstant * fMag * dy / dist;
     }
 
-    return netForceX*netForceX+netForceY*netForceY;
+    return netForceX * netForceX + netForceY * netForceY;
 
 }
 
@@ -193,57 +193,60 @@ const drawGraph = () => {
 
     ctx.fillStyle = '#FFF';
     ctx.strokeStyle = '#FFF';
-    ctx.lineWidth = 2*camera.sx;
+    ctx.lineWidth = 2 * camera.sx;
     ctx.font = `${12*camera.sx}px Arial`;
 
-    for(let i = 0; i<n; i++){
-        for(let j = 0; j<adjacencyList[i].length; j++){
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < adjacencyList[i].length; j++) {
             let k = adjacencyList[i][j];
-            if(i == k) continue;
+            if (i == k) continue;
 
             let dx = nodePositions[i].x - nodePositions[k].x;
             let dy = nodePositions[i].y - nodePositions[k].y;
 
             let theta = Math.atan2(dy, dx);
-            let nx1 = nodePositions[i].x - defaultLength*0.2*Math.cos(theta);
-            let ny1 = nodePositions[i].y - defaultLength*0.2*Math.sin(theta);
-            let nx2 = nodePositions[k].x + defaultLength*0.2*Math.cos(theta);
-            let ny2 = nodePositions[k].y + defaultLength*0.2*Math.sin(theta);
+            let nx1 = nodePositions[i].x - defaultLength * 0.2 * Math.cos(theta);
+            let ny1 = nodePositions[i].y - defaultLength * 0.2 * Math.sin(theta);
+            let nx2 = nodePositions[k].x + defaultLength * 0.2 * Math.cos(theta);
+            let ny2 = nodePositions[k].y + defaultLength * 0.2 * Math.sin(theta);
 
             ctx.beginPath();
-            ctx.moveTo((nx1 - camera.x)*camera.sx + width/2, (ny1 - camera.y)*camera.sy + height/2);
-            ctx.lineTo((nx2 - camera.x)*camera.sx + width/2, (ny2 - camera.y)*camera.sy + height/2);
+            ctx.moveTo((nx1 - camera.x) * camera.sx + width / 2, (ny1 - camera.y) * camera.sy + height / 2);
+            ctx.lineTo((nx2 - camera.x) * camera.sx + width / 2, (ny2 - camera.y) * camera.sy + height / 2);
             ctx.stroke();
         }
     }
 
-    for(let i = 0; i<n; i++){
-        let computedWidth = names[i].length*5*camera.sx;
+    for (let i = 0; i < n; i++) {
+        let computedWidth = names[i].length * 5 * camera.sx;
 
-        let centerX =  (nodePositions[i].x - camera.x)*camera.sx + width/2;
-        let centerY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
+        let centerX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
+        let centerY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
 
-        ctx.fillText(names[i], centerX - computedWidth/2, centerY);
+        ctx.fillText(names[i], centerX - computedWidth / 2, centerY);
     }
 }
 
-let lastMouse = {x:0, y:0};
+let lastMouse = {
+    x: 0,
+    y: 0
+};
 
 const step = () => {
     physicsStep();
-    for(let i = 0; i<10; i++) gravityStep();
+    for (let i = 0; i < 10; i++) gravityStep();
 
-    if(mouse.down){
-        if(mouse.hovering){
-            nodePositions[mouse.selected].x = (mouse.x - width/2)/camera.sx + camera.x;
-            nodePositions[mouse.selected].y = (mouse.y - height/2)/camera.sy + camera.y;
+    if (mouse.down) {
+        if (mouse.hovering) {
+            nodePositions[mouse.selected].x = (mouse.x - width / 2) / camera.sx + camera.x;
+            nodePositions[mouse.selected].y = (mouse.y - height / 2) / camera.sy + camera.y;
         } else {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
-            if(dmx*dmx + dmy*dmy < 1000){
-                camera.x += (lastMouse.x - mouse.x)/camera.sx;
-                camera.y += (lastMouse.y - mouse.y)/camera.sx;
+            if (dmx * dmx + dmy * dmy < 1000) {
+                camera.x += (lastMouse.x - mouse.x) / camera.sx;
+                camera.y += (lastMouse.y - mouse.y) / camera.sx;
             }
         }
     }
@@ -256,10 +259,10 @@ const step = () => {
 }
 
 document.body.onmousewheel = (e) => {
-    if(camera.sx <= 0.2 && e.deltaY < 0) return;
-    if(camera.sx >= 2 && e.deltaY > 0) return;
+    if (camera.sx <= 0.2 && e.deltaY < 0) return;
+    if (camera.sx >= 2 && e.deltaY > 0) return;
 
-    camera.sx += e.deltaY/1000;
+    camera.sx += e.deltaY / 1000;
     camera.sx = Math.max(camera.sx, 0.2);
     camera.sx = Math.min(camera.sx, 2);
 
@@ -269,26 +272,26 @@ document.body.onmousewheel = (e) => {
 const processDrag = (ex, ey) => {
     lastMouse.x = mouse.x;
     lastMouse.y = mouse.y;
-    
+
     mouse.x = ex;
     mouse.y = ey;
-    
-    if(!mouse.down){
+
+    if (!mouse.down) {
         mouse.hovering = false;
 
-        for(let i = 0; i<nodePositions.length; i++){
-            let transformedX = (nodePositions[i].x - camera.x)*camera.sx + width/2;
-            let transformedY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
-    
+        for (let i = 0; i < nodePositions.length; i++) {
+            let transformedX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
+            let transformedY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
+
             let dx = transformedX - mouse.x;
             let dy = transformedY - mouse.y;
-    
-            let dist = Math.sqrt(dx*dx+dy*dy);
-    
-            nodePositions[i].hovering = dist <= defaultLength*0.2*camera.sx;
-    
-            if(dist > defaultLength*0.2*camera.sx) continue;
-            
+
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            nodePositions[i].hovering = dist <= defaultLength * 0.2 * camera.sx;
+
+            if (dist > defaultLength * 0.2 * camera.sx) continue;
+
             mouse.hovering = true;
             mouse.selected = i;
             break;
@@ -318,18 +321,22 @@ document.body.ontouchstart = document.body.onmousedown;
 document.body.ontouchend = document.body.onmouseup;
 
 const initializeGraph = async () => {
-    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt', { cache: 'no-store'});
+    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt', {
+        cache: 'no-store'
+    });
     const namesText = await fetchedNames.text();
     const newNames = namesText.split(",");
 
-    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt', { cache: 'no-store'});
+    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt', {
+        cache: 'no-store'
+    });
     const connectionsText = await fetchedConnections.text();
-    
+
     let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
     let newAdjacencyList = [];
-    for(let i = 0; i<adj.length; i++){
+    for (let i = 0; i < adj.length; i++) {
         let newList = [];
-        for(let j = 0; j<adj[i].length; j++){
+        for (let j = 0; j < adj[i].length; j++) {
             newList.push(newNames.indexOf(adj[i][j]));
         }
         newAdjacencyList.push(newList);
@@ -339,8 +346,8 @@ const initializeGraph = async () => {
     adjacencyList = [];
     nodePositions = [];
 
-    for(let i = 0; i<newAdjacencyList.length; i++){
-        addNode(newNames[i], newAdjacencyList[i].filter(j => j<i));
+    for (let i = 0; i < newAdjacencyList.length; i++) {
+        addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
     }
 }
 
@@ -349,24 +356,24 @@ const startGraphing = async () => {
     document.querySelector('.graph').style.display = 'inline-block';
     await initializeGraph();
 
-    let avgX = 0;
-    let avgY = 0;
+    setTimeout(() => {
+        let avgX = 0;
+        let avgY = 0;
 
-    for(let i = 0; i<nodePositions.length; i++){
-        let transformedX = (nodePositions[i].x - camera.x)*camera.sx + width/2;
-        let transformedY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
+        for (let i = 0; i < nodePositions.length; i++) {
+            let transformedX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
+            let transformedY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
 
 
-        avgX += (transformedX - width/2) / nodePositions.length;
-        avgY += (transformedY - height/2) / nodePositions.length;
-    }
+            avgX += (transformedX - width / 2) / nodePositions.length;
+            avgY += (transformedY - height / 2) / nodePositions.length;
+        }
 
-    camera.x += avgX;
-    camera.y += avgY;
+        camera.x += avgX;
+        camera.y += avgY;
 
-    if(!stepping) step();
-    stepping = true;
+        if (!stepping) step();
+        stepping = true;
+    }, 500);
     return;
 }
-
-//startGraphing();
