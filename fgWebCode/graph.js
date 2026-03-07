@@ -14,7 +14,9 @@ let adjacencyList = [];
 let mouse = {
     x:0,
     y:0,
-    down:false
+    down:false,
+    hovering:false,
+    selected:-1
 }
 let camera = {
     x:0,
@@ -32,9 +34,14 @@ const gravityStep = () => {
     let newNodePositions = [];
 
     for(let i = 0; i<n; i++){
+        if(mouse.hovering && mouse.selected == i){
+            newNodePositions.push(nodePositions[i]);
+            continue;
+        }
+
         let netForceX = 0;
         let netForceY = 0;
-    
+
         for(let j = 0; j<n; j++){
             if(i == j) continue;
             let dx = nodePositions[j].x - nodePositions[i].x;
@@ -42,7 +49,7 @@ const gravityStep = () => {
 
             let dist = Math.sqrt(dx*dx + dy*dy);
         
-            if(dist > 200) continue;
+            if(dist > 200 || dist == 0) continue;
 
             let fMag = 1/dist*dist;
 
@@ -51,8 +58,8 @@ const gravityStep = () => {
         }
 
         newNodePositions.push({
-            x: nodePositions[i].x + vDamp * (nodePositions[i].x - nodePositions[i].lx) + netForceX*dt*dt,
-            y: nodePositions[i].y + vDamp * (nodePositions[i].y - nodePositions[i].ly) + netForceY*dt*dt,
+            x: nodePositions[i].x + vDamp * clampMag(nodePositions[i].x - nodePositions[i].lx) + netForceX*dt*dt,
+            y: nodePositions[i].y + vDamp * clampMag(nodePositions[i].y - nodePositions[i].ly) + netForceY*dt*dt,
             lx: nodePositions[i].x,
             ly: nodePositions[i].y
         });
@@ -61,8 +68,13 @@ const gravityStep = () => {
     nodePositions = newNodePositions;
 }
 
+const clampMag = (max) => {
+    if(max < -5) return -5;
+    return Math.min(max, 5);
+}
+
 const physicsStep = () => {
-    let n = nodePositions.length;
+    let n = adjacencyList.length;
 
     let newNodePositions = [];
 
@@ -80,6 +92,8 @@ const physicsStep = () => {
             let dist = Math.sqrt(dx*dx + dy*dy);
             let dl = dist - defaultLength;
 
+            if(dist == 0) continue;
+
             netForceX += springConstant*dl*dx/dist;
             netForceY += springConstant*dl*dy/dist;
         }
@@ -95,19 +109,9 @@ const physicsStep = () => {
     nodePositions = newNodePositions;
 }
 
-const initializeGraphPositions = () => {
-    for(let i = 0; i<6; i++){
-        addNode();
-        for(let j = 0; j<20; j++) physicsStep();
-    }
-}
-
-const addNode = () => {
-    let connected = [adjacencyList.length];
-    for(let i = 0; i<adjacencyList.length; i++){
-        if(Math.random()>0.5) continue;
-        connected.push(i);
-        adjacencyList[i].push(adjacencyList.length);
+const addNode = (name = 'Unnamed', connected = []) => {
+    for(let i = 0; i<connected.length; i++){
+        adjacencyList[connected[i]].push(adjacencyList.length);
     }
     adjacencyList.push(connected);
 
@@ -133,7 +137,9 @@ const addNode = () => {
         ly:bestY
     });
 
-    names.push('Person '+(names.length+1));
+
+    names.push(name);
+    for(let j = 0; j<20; j++) physicsStep();
 }
 
 const computePotential = (x, y, connections) => {
@@ -198,12 +204,10 @@ const drawGraph = () => {
             let dy = nodePositions[i].y - nodePositions[k].y;
 
             let theta = Math.atan2(dy, dx);
-            let nx1 = nodePositions[i].x - defaultLength*0.2*Math.cos(theta);
-            let ny1 = nodePositions[i].y - defaultLength*0.2*Math.sin(theta);
-            let nx2 = nodePositions[k].x + defaultLength*0.2*Math.cos(theta);
-            let ny2 = nodePositions[k].y + defaultLength*0.2*Math.sin(theta);
-
-            console.log(nx1, ny1, nx2, ny2);
+            let nx1 = nodePositions[i].x - defaultLength*0.2*camera.sx*Math.cos(theta);
+            let ny1 = nodePositions[i].y - defaultLength*0.2*camera.sx*Math.sin(theta);
+            let nx2 = nodePositions[k].x + defaultLength*0.2*camera.sx*Math.cos(theta);
+            let ny2 = nodePositions[k].y + defaultLength*0.2*camera.sx*Math.sin(theta);
 
             ctx.beginPath();
             ctx.moveTo((nx1 - camera.x)*camera.sx + width/2, (ny1 - camera.y)*camera.sy + height/2);
@@ -226,14 +230,24 @@ let lastMouse = {x:0, y:0};
 
 const step = () => {
     physicsStep();
-    for(let i = 0; i<50; i++) gravityStep();
-    drawGraph();
-    requestAnimationFrame(step);
+    for(let i = 0; i<10; i++) gravityStep();
 
     if(mouse.down){
-        camera.x += (lastMouse.x - mouse.x)/camera.sx;
-        camera.y += (lastMouse.y - mouse.y)/camera.sx;
+        if(mouse.hovering){
+            document.body.style.cursor = 'pointer';
+            console.log(mouse.selected, nodePositions);
+            nodePositions[mouse.selected].x = (mouse.x - width/2)/camera.sx + camera.x;
+            nodePositions[mouse.selected].y = (mouse.y - height/2)/camera.sy + camera.y;
+        } else {
+            document.body.style.cursor = 'default';
+            camera.x += (lastMouse.x - mouse.x)/camera.sx;
+            camera.y += (lastMouse.y - mouse.y)/camera.sx;
+        }
     }
+
+
+    drawGraph();
+    requestAnimationFrame(step);
 }
 
 document.body.onmousewheel = (e) => {
@@ -257,11 +271,70 @@ document.body.onmousemove = (e) => {
 
 document.body.onmousedown = () => {
     mouse.down = true;
+    for(let i = 0; i<nodePositions.length; i++){
+        let transformedX = (nodePositions[i].x - camera.x)*camera.sx + width/2;
+        let transformedY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
+
+        let dx = transformedX - mouse.x;
+        let dy = transformedY - mouse.y;
+
+        let dist = Math.sqrt(dx*dx+dy*dy);
+
+        nodePositions[i].hovering = dist <= defaultLength*0.2*camera.sx;
+
+        if(dist > defaultLength*0.2*camera.sx) continue;
+
+        mouse.hovering = true;
+        mouse.selected = i;
+        break;
+    }
 }
 
 document.body.onmouseup = () => {
     mouse.down = false;
+    mouse.hovering = false;
 }
 
-initializeGraphPositions();
-step();
+const initializeGraph = async () => {
+    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt', { cache: 'no-store'});
+    const namesText = await fetchedNames.text();
+    names = namesText.split(",");
+
+    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt', { cache: 'no-store'});
+    const connectionsText = await fetchedConnections.text();
+    
+    let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
+    let newAdjacencyList = [];
+    for(let i = 0; i<adj.length; i++){
+        let newList = [];
+        for(let j = 0; j<adj[i].length; j++){
+            newList.push(names.indexOf(adj[i][j]));
+        }
+        newAdjacencyList.push(newList);
+    }
+
+    for(let i = 0; i<newAdjacencyList.length; i++){
+        addNode(names[i], newAdjacencyList[i].filter(j => j<i));
+    }
+}
+
+const startGraphing = async () => {
+    document.querySelector('.graph').style.display = 'inline-block';
+    await initializeGraph();
+
+    let avgX = 0;
+    let avgY = 0;
+
+    for(let i = 0; i<nodePositions.length; i++){
+        avgX += nodePositions[i].x / nodePositions.length;
+        avgY += nodePositions[i].y / nodePositions.length;
+    }
+
+    camera.x += avgX;
+    camera.y += avgY;
+
+    step();
+    return;
+}
+
+//startGraphing();
