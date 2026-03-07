@@ -262,11 +262,17 @@ if(document.querySelector('.impostorCount > .addIcon')){
 }
 
 
-addPlayerButton.onclick = addPlayer;
+addPlayerButton.onclick = () => {
+    addPlayer('');
+}
+
 addPlayer();
 addWord('');
 
-addWordButton.onclick = addWord;
+addWordButton.onclick = () => {
+    addWord('');
+}
+
 startGameButton.onclick = startGame;
 
 

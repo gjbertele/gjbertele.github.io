@@ -10,23 +10,76 @@ const enterNameNextButton = document.querySelector('.enterName > .nextButton');
 const friendHolder = document.querySelector('.friendHolder');
 const addFriendButton = document.querySelector('.addFriendButton');
 const submitButton = document.querySelector('.submit');
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+if(isIOS){
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'fgWebCode/webIOS.css';
+    document.head.appendChild(stylesheet);
+} else {
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'fgWebCode/webLaptop.css';
+    document.head.appendChild(stylesheet);
+}
+
+const heightScaleOffset = isIOS ? 0.13 : 0.185;
 
 const swipePage = () => {
+    let name = document.querySelector('.nameInput').value;
+    if(name.length == 0) return;
+
     document.querySelector('.enterName').style.left = '150%';
     document.querySelector('.enterFriends').style.left = '50%';
+    document.cookie = "name="+name;
+
+    document.querySelector('.bottomWarning').textContent = 'You can add more friends later, but you cannot remove any.';
+
+    let firstCalculatedHeight = Math.min(heightScaleOffset*document.body.clientHeight,document.body.clientHeight*0.535);
+    addFriendButton.style.top = firstCalculatedHeight+'px';
+    submitButton.style.top = (firstCalculatedHeight + 0.06*document.body.clientHeight)+'px';
+
+    return;
 }
 
 enterNameNextButton.onclick = swipePage;
+document.querySelector('.nameInput').onkeydown = (e) => {
+    if(e.key == 'Enter') swipePage();
+    return;
+}
+
 
 let friendNames = [];
 
 const addFriendToHolder = () => {
-    const newFriendCard = document.createElement('input');
-    newFriendCard.className = 'friendCard editableLabel';
-    newFriendCard.placeholder = 'Type here'
-    friendHolder.appendChild(newFriendCard);
+    let friendID = Math.floor(100000*Math.random());
+    const friendCardContainer = document.createElement('div');
+    friendCardContainer.className = 'friendCard';
+    friendCardContainer.id = friendID;
 
-    let friendID = Math.random();
+
+    const newFriendCard = document.createElement('input');
+    newFriendCard.className = 'editableLabel';
+    newFriendCard.placeholder = 'Type here'
+    friendCardContainer.appendChild(newFriendCard);
+
+    const removeButton = document.createElement('div');
+    removeButton.className = 'removeButton';
+    friendCardContainer.appendChild(removeButton);
+    const removeSVG = document.createElement('svg');
+    removeButton.appendChild(removeSVG);
+    removeSVG.outerHTML = `<svg class="removeButtonSVG" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+    <line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line>
+    </svg>`;
+    
+    removeButton.onclick = () => {
+        removeFriendFromList(friendID);
+    }
+
+    friendHolder.appendChild(friendCardContainer);
+
     friendNames.push({
         name:'',
         id:friendID
@@ -39,16 +92,49 @@ const addFriendToHolder = () => {
     }
 
     let n = friendHolder.childNodes.length;
-    let heightPerBox = newFriendCard.clientHeight+0.5*document.body.clientWidth/100;
-    let calculatedHeight = Math.min(n*heightPerBox+0.005*document.body.clientWidth+0.185*document.body.clientHeight,document.body.clientHeight*0.535);
+    let heightPerBox = friendCardContainer.clientHeight;
+    
+    if(!isIOS) heightPerBox += 0.5*document.body.clientWidth/100;
+    else heightPerBox += 2*document.body.clientHeight/100;
 
-    newFriendCard.style.top = (n-1)*heightPerBox + 'px';
+    let calculatedHeight = Math.min(n*heightPerBox+0.005*document.body.clientWidth+heightScaleOffset*document.body.clientHeight,document.body.clientHeight*0.535);
+
+    friendCardContainer.style.top = (n-1)*heightPerBox + 'px';
     addFriendButton.style.top = calculatedHeight+'px';
     submitButton.style.top = (calculatedHeight + 0.06*document.body.clientHeight)+'px';
 } 
 
+const removeFriendFromList = (friendID) => {
+    let children = friendHolder.childNodes;
+    for(let i = 0; i<children.length; i++){
+        if(children[i].id == friendID) friendHolder.removeChild(children[i]);
+    }
+
+    for(let i = 0; i<friendNames.length; i++){
+        if(friendNames[i].id = friendID) friendNames.splice(i, 1);
+    }
+        
+    children = friendHolder.childNodes;
+
+    let firstCalculatedHeight = Math.min(heightScaleOffset*document.body.clientHeight,document.body.clientHeight*0.535);
+    addFriendButton.style.top = firstCalculatedHeight+'px';
+    submitButton.style.top = (firstCalculatedHeight + 0.06*document.body.clientHeight)+'px';
+
+    for(let i = 0; i<children.length; i++){
+        let n = (i+1);
+        let heightPerBox = children[i].clientHeight;
+        if(!isIOS) heightPerBox += 0.5*document.body.clientWidth/100;
+        else heightPerBox += 2*document.body.clientHeight/100;
+
+        let calculatedHeight = Math.min(n*heightPerBox+0.005*document.body.clientWidth+heightScaleOffset*document.body.clientHeight,document.body.clientHeight*0.535);
+        
+        children[i].style.top = (n-1)*heightPerBox + 'px';
+        addFriendButton.style.top = calculatedHeight+'px';
+        submitButton.style.top = (calculatedHeight + 0.06*document.body.clientHeight)+'px';
+    }
+}
+
 const formatName = (name) => {
-    console.log(name);
     let words = name.split(' ');
     for(let i = 0; i<words.length; i++){
         let chars = words[i].split('');
@@ -65,7 +151,7 @@ const submitFriendsToServer = () => {
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i)).join(';'));
 
-    fetch(`http://fgconnections.vercel.app/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
+    fetch(`https://fgconnections.vercel.app/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
         startGraphing();
     }).catch(() => {
         document.querySelector('.overlayText').textContent = 'Something went wrong, try again later.'
@@ -74,3 +160,10 @@ const submitFriendsToServer = () => {
 
 addFriendButton.onclick = addFriendToHolder;
 submitButton.onclick = submitFriendsToServer;
+
+
+if(document.cookie.startsWith('name=')){
+    document.querySelector('.nameInput').value = document.cookie.slice(5);
+    swipePage();
+}
+

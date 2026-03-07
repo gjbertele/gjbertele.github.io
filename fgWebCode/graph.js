@@ -2,11 +2,12 @@ const canvas = document.querySelector('.mainCanvas');
 const ctx = canvas.getContext('2d');
 const width = document.body.clientWidth;
 const height = document.documentElement.clientHeight;
-const springConstant = 3;
+const springConstant = 10;
 const vDamp = 0.95;
 const defaultLength = 200;
 const gravConstant = 10;
 const dt = 1/60;
+let stepping = false;
 
 let nodePositions = [];
 let names = [];
@@ -192,7 +193,7 @@ const drawGraph = () => {
 
     ctx.fillStyle = '#FFF';
     ctx.strokeStyle = '#FFF';
-    ctx.lineWidth = 3*camera.sx;
+    ctx.lineWidth = 2*camera.sx;
     ctx.font = `${12*camera.sx}px Arial`;
 
     for(let i = 0; i<n; i++){
@@ -204,10 +205,10 @@ const drawGraph = () => {
             let dy = nodePositions[i].y - nodePositions[k].y;
 
             let theta = Math.atan2(dy, dx);
-            let nx1 = nodePositions[i].x - defaultLength*0.2*camera.sx*Math.cos(theta);
-            let ny1 = nodePositions[i].y - defaultLength*0.2*camera.sx*Math.sin(theta);
-            let nx2 = nodePositions[k].x + defaultLength*0.2*camera.sx*Math.cos(theta);
-            let ny2 = nodePositions[k].y + defaultLength*0.2*camera.sx*Math.sin(theta);
+            let nx1 = nodePositions[i].x - defaultLength*0.2*Math.cos(theta);
+            let ny1 = nodePositions[i].y - defaultLength*0.2*Math.sin(theta);
+            let nx2 = nodePositions[k].x + defaultLength*0.2*Math.cos(theta);
+            let ny2 = nodePositions[k].y + defaultLength*0.2*Math.sin(theta);
 
             ctx.beginPath();
             ctx.moveTo((nx1 - camera.x)*camera.sx + width/2, (ny1 - camera.y)*camera.sy + height/2);
@@ -234,16 +235,20 @@ const step = () => {
 
     if(mouse.down){
         if(mouse.hovering){
-            document.body.style.cursor = 'pointer';
-            console.log(mouse.selected, nodePositions);
             nodePositions[mouse.selected].x = (mouse.x - width/2)/camera.sx + camera.x;
             nodePositions[mouse.selected].y = (mouse.y - height/2)/camera.sy + camera.y;
         } else {
-            document.body.style.cursor = 'default';
-            camera.x += (lastMouse.x - mouse.x)/camera.sx;
-            camera.y += (lastMouse.y - mouse.y)/camera.sx;
+            let dmx = lastMouse.x - mouse.x;
+            let dmy = lastMouse.y - mouse.y;
+
+            if(dmx*dmx + dmy*dmy < 1000){
+                camera.x += (lastMouse.x - mouse.x)/camera.sx;
+                camera.y += (lastMouse.y - mouse.y)/camera.sx;
+            }
         }
     }
+
+    document.body.style.cursor = (mouse.hovering) ? 'pointer' : 'default';
 
 
     drawGraph();
@@ -261,33 +266,47 @@ document.body.onmousewheel = (e) => {
     camera.sy = camera.sx;
 }
 
-document.body.onmousemove = (e) => {
+const processDrag = (ex, ey) => {
     lastMouse.x = mouse.x;
     lastMouse.y = mouse.y;
+    
+    mouse.x = ex;
+    mouse.y = ey;
+    
+    if(!mouse.down){
+        mouse.hovering = false;
 
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+        for(let i = 0; i<nodePositions.length; i++){
+            let transformedX = (nodePositions[i].x - camera.x)*camera.sx + width/2;
+            let transformedY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
+    
+            let dx = transformedX - mouse.x;
+            let dy = transformedY - mouse.y;
+    
+            let dist = Math.sqrt(dx*dx+dy*dy);
+    
+            nodePositions[i].hovering = dist <= defaultLength*0.2*camera.sx;
+    
+            if(dist > defaultLength*0.2*camera.sx) continue;
+            
+            mouse.hovering = true;
+            mouse.selected = i;
+            break;
+        }
+    }
+}
+
+document.body.onmousemove = (e) => {
+    processDrag(e.clientX, e.clientY);
+}
+
+
+document.body.ontouchmove = (e) => {
+    processDrag(e.touches[0].clientX, e.touches[0].clientY);
 }
 
 document.body.onmousedown = () => {
     mouse.down = true;
-    for(let i = 0; i<nodePositions.length; i++){
-        let transformedX = (nodePositions[i].x - camera.x)*camera.sx + width/2;
-        let transformedY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
-
-        let dx = transformedX - mouse.x;
-        let dy = transformedY - mouse.y;
-
-        let dist = Math.sqrt(dx*dx+dy*dy);
-
-        nodePositions[i].hovering = dist <= defaultLength*0.2*camera.sx;
-
-        if(dist > defaultLength*0.2*camera.sx) continue;
-
-        mouse.hovering = true;
-        mouse.selected = i;
-        break;
-    }
 }
 
 document.body.onmouseup = () => {
@@ -295,10 +314,13 @@ document.body.onmouseup = () => {
     mouse.hovering = false;
 }
 
+document.body.ontouchstart = document.body.onmousedown;
+document.body.ontouchend = document.body.onmouseup;
+
 const initializeGraph = async () => {
     const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt', { cache: 'no-store'});
     const namesText = await fetchedNames.text();
-    names = namesText.split(",");
+    const newNames = namesText.split(",");
 
     const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt', { cache: 'no-store'});
     const connectionsText = await fetchedConnections.text();
@@ -308,17 +330,22 @@ const initializeGraph = async () => {
     for(let i = 0; i<adj.length; i++){
         let newList = [];
         for(let j = 0; j<adj[i].length; j++){
-            newList.push(names.indexOf(adj[i][j]));
+            newList.push(newNames.indexOf(adj[i][j]));
         }
         newAdjacencyList.push(newList);
     }
 
+    names = [];
+    adjacencyList = [];
+    nodePositions = [];
+
     for(let i = 0; i<newAdjacencyList.length; i++){
-        addNode(names[i], newAdjacencyList[i].filter(j => j<i));
+        addNode(newNames[i], newAdjacencyList[i].filter(j => j<i));
     }
 }
 
 const startGraphing = async () => {
+    document.querySelector('.setup').style.display = 'none';
     document.querySelector('.graph').style.display = 'inline-block';
     await initializeGraph();
 
@@ -326,14 +353,19 @@ const startGraphing = async () => {
     let avgY = 0;
 
     for(let i = 0; i<nodePositions.length; i++){
-        avgX += nodePositions[i].x / nodePositions.length;
-        avgY += nodePositions[i].y / nodePositions.length;
+        let transformedX = (nodePositions[i].x - camera.x)*camera.sx + width/2;
+        let transformedY = (nodePositions[i].y - camera.y)*camera.sy + height/2;
+
+
+        avgX += (transformedX - width/2) / nodePositions.length;
+        avgY += (transformedY - height/2) / nodePositions.length;
     }
 
     camera.x += avgX;
     camera.y += avgY;
 
-    step();
+    if(!stepping) step();
+    stepping = true;
     return;
 }
 

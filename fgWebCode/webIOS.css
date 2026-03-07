@@ -1,0 +1,224 @@
+body, html {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    padding:0;
+    background:#000;
+}
+
+.bottomWarning {
+    position:absolute;
+    left:50%;
+    bottom:2%;
+    transform:translateX(-50%);
+    height:4dvh;
+    color:#FFF;
+    font-size:2dvh;
+    width:100%;
+    text-align:center;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+}
+
+.scrollable::-webkit-scrollbar {
+    background:#000;
+    width:0.2dvw;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
+}
+
+.graph {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.mainCanvas {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+
+.setup {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+.enterName {
+    position:absolute;
+    left:50%;
+    top:30%;
+    transform:translateX(-50%);
+    width:90%;
+    height:20%;
+}
+
+.text {
+    position:absolute;
+    left:50%;
+    top:5dvw;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    font-size:2.2dvh;
+    transform:translateX(-50%);
+}
+
+.enterName > .nextButton {
+    position:absolute;
+    left: 80%;
+    top:50%;
+    width:2.5dvh;
+    height:2.5dvh;
+    padding:1dvh;
+    border-radius:100%;
+    background:#1a1a1b;
+    cursor:pointer;
+}
+
+.editableLabel {
+    position:absolute;
+    width:50%;
+    line-height:100%;
+    padding:0.5em;
+    background:#1a1a1b;
+    border:none;
+    color:#FFF;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    font-size:2.2dvh;
+    border-radius:2dvw;
+    text-indent:1dvw;
+}
+
+
+.enterName > .editableLabel {
+    position:absolute;
+    left:20%;
+    top:50%;
+}
+
+input:focus{
+    outline:none;
+}
+
+.enterFriends {
+    position:absolute;
+    left:-50%;
+    top:30%;
+    width:90%;
+    height:calc(60dvh + 10dvw);
+    transform:translateX(-50%);
+    transition:left 0.5s;
+}
+.friendHolder {
+    position:absolute;
+    left:50%;
+    top:15%;
+    width:90%;
+    height:34dvh;
+    overflow-x:hidden;
+    overflow-y:scroll;
+    transform:translateX(-50%);
+}
+
+.friendCard {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:50%;
+    height:4dvh;
+}
+
+.friendCard > .editableLabel {
+    width:100%;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.addFriendButton {
+    position:absolute;
+    left:50%;
+    top:30%;
+    transform:translate(-50%,-50%);
+    width:50%;
+    height:5dvh;
+    color:#FFF;
+    font-size:2.2dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+    background:#1a1a1b;
+    border-radius:1dvh;
+    text-align:center;
+    line-height:5dvh;
+    vertical-align: middle;
+    cursor:pointer;
+}
+
+
+.submit {
+    position:absolute;
+    left:50%;
+    top:41%;
+    transform:translate(-50%,-50%);
+    width:50%;
+    height:5dvh;
+    color:#1a1a1b;
+    font-size:2.2dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+    background:#FFF;
+    border-radius:1dvh;
+    text-align:center;
+    line-height:5dvh;
+    vertical-align: middle;
+    cursor:pointer;
+}
+
+
+.overlayText {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:15dvw;
+    height:4dvh;
+    color:#FFF;
+    font-size:1.8dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:500;
+}
+
+.friendCard > .removeButton {
+    position:absolute;
+    right:1dvw;
+    top:0.75dvh;
+    height:2.5dvh;
+    aspect-ratio: 1/1;
+    cursor:pointer;
+}
+
+
+.removeButtonSVG {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
