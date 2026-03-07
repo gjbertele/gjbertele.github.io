@@ -356,24 +356,18 @@ const startGraphing = async () => {
     document.querySelector('.graph').style.display = 'inline-block';
     await initializeGraph();
 
-    setTimeout(() => {
-        let avgX = 0;
-        let avgY = 0;
+    let username = document.querySelector('.nameInput').value;
 
-        for (let i = 0; i < nodePositions.length; i++) {
-            let transformedX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
-            let transformedY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
+    for(let i = 0; i<names.length; i++){
+        if(names[i] != username) continue;
+        camera.x = nodePositions[i].x;
+        camera.y = nodePositions[i].y;
+    }
 
 
-            avgX += (transformedX - width / 2) / nodePositions.length;
-            avgY += (transformedY - height / 2) / nodePositions.length;
-        }
-
-        camera.x += avgX;
-        camera.y += avgY;
-
-        if (!stepping) step();
-        stepping = true;
-    }, 500);
+    if (!stepping) step();
+    stepping = true;
     return;
 }
+
+document.querySelector('.refreshButton').onclick = startGraphing;
