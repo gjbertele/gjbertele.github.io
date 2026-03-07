@@ -109,9 +109,9 @@ input:focus{
 .enterFriends {
     position:absolute;
     left:-50%;
-    top:calc(50dvh - 10dvw);
+    top:calc(40dvh - 10dvw);
     width:30%;
-    height:calc(50dvh + 10dvw);
+    height:calc(60dvh + 10dvw);
     transform:translateX(-50%);
     transition:left 0.5s;
 }
@@ -127,7 +127,15 @@ input:focus{
     transform:translateX(-50%);
 }
 
-.friendHolder > .editableLabel {
+.friendCard {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    height:4dvh;
+}
+
+.friendCard > .editableLabel {
     left:50%;
     transform:translateX(-50%);
 }
@@ -181,4 +189,40 @@ input:focus{
     font-size:1.8dvh;
     font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
     font-weight:500;
+}
+
+.friendCard > .removeButton {
+    position:absolute;
+    right:2.5dvw;
+    top:0.75dvh;
+    height:2.5dvh;
+    aspect-ratio: 1/1;
+    display:none;
+    cursor:pointer;
+}
+
+.friendCard:hover > .removeButton {
+    display:inline-block;
+}
+
+.removeButtonSVG {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+.bottomWarning {
+    position:absolute;
+    left:50%;
+    bottom:2%;
+    transform:translateX(-50%);
+    height:4dvh;
+    color:#FFF;
+    font-size:1.3dvh;
+    font-family: Inter var,ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-weight:400;
+    width:100%;
+    text-align:center;
 }
