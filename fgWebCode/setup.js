@@ -131,7 +131,7 @@ const removeFriendFromList = (friendID) => {
 const formatName = (name) => {
     let words = name.split(' ');
     for(let i = 0; i<words.length; i++){
-        let chars = words[i].split('');
+        let chars = words[i].toLowerCase().split('');
         chars[0] = chars[0].toUpperCase();
         words[i] = chars.join('');
     }
