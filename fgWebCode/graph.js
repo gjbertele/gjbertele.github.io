@@ -85,8 +85,8 @@ const physicsStep = () => {
         for (let k = 0; k < adjacencyList[i].length; k++) {
             let j = adjacencyList[i][k];
 
-            if (j >= n) break;
-            if (i == j) continue;
+            if (i == j || !nodePositions[j] || !nodePositions[i]) continue;
+
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
 
@@ -112,6 +112,7 @@ const physicsStep = () => {
 
 const addNode = (name = 'Unnamed', connected = []) => {
     for (let i = 0; i < connected.length; i++) {
+        if(!adjacencyList[connected[i]]) continue;
         adjacencyList[connected[i]].push(adjacencyList.length);
     }
     adjacencyList.push(connected);
@@ -199,7 +200,7 @@ const drawGraph = () => {
     for (let i = 0; i < n; i++) {
         for (let j = 0; j < adjacencyList[i].length; j++) {
             let k = adjacencyList[i][j];
-            if (i == k) continue;
+            if (i == k || !nodePositions[i] || !nodePositions[k]) continue;
 
             let dx = nodePositions[i].x - nodePositions[k].x;
             let dy = nodePositions[i].y - nodePositions[k].y;
@@ -321,13 +322,13 @@ document.body.ontouchstart = document.body.onmousedown;
 document.body.ontouchend = document.body.onmouseup;
 
 const initializeGraph = async () => {
-    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt', {
+    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt?timestamp='+Date.now(), {
         cache: 'no-store'
     });
     const namesText = await fetchedNames.text();
     const newNames = namesText.split(",");
 
-    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt', {
+    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt?timestamp='+Date.now(), {
         cache: 'no-store'
     });
     const connectionsText = await fetchedConnections.text();
@@ -364,10 +365,56 @@ const startGraphing = async () => {
         camera.y = nodePositions[i].y;
     }
 
-
-    if (!stepping) step();
+    if (!stepping){
+        step();
+        setInterval(checkForNewNodes, 1000);
+    }
     stepping = true;
     return;
+}
+
+const checkForNewNodes = async () => {
+    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt?timestamp='+Date.now(), {
+        cache: 'no-store'
+    });
+    const namesText = await fetchedNames.text();
+    const newNames = namesText.split(",");
+
+    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt?timestamp='+Date.now(), {
+        cache: 'no-store'
+    });
+    const connectionsText = await fetchedConnections.text();
+
+    let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
+    let newAdjacencyList = [];
+    for (let i = 0; i < adj.length; i++) {
+        let newList = [];
+        for (let j = 0; j < adj[i].length; j++) {
+            newList.push(newNames.indexOf(adj[i][j]));
+        }
+        newAdjacencyList.push(newList);
+    }
+    console.log('checked',Date.now());
+    if(newAdjacencyList.map(i => i = i.join(',')).join(';') == adjacencyList.map(i => i = i.join(',')).join(';')) return;
+    console.log('detected difference');
+    console.log(newNames, names, newAdjacencyList, adjacencyList);
+    if(newNames.length == names.length){
+        console.log('new join');
+        adjacencyList = newAdjacencyList;
+    } else if(newNames.length < names.length){
+        console.log('deletion');
+        startGraphing();
+    } else {
+        console.log('new person');
+        for(let i = 0; i<newNames.length; i++){
+            console.log(newNames[i])
+            if(!names.includes(newNames[i])){
+                console.log('added',newNames[i]);
+                addNode(newNames[i], newAdjacencyList[i]);
+            }
+        }
+    }
+
 }
 
 document.querySelector('.refreshButton').onclick = startGraphing;

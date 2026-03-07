@@ -1,8 +1,3 @@
-/*
-    todo: 
-    add refresh graph & add button to graph page
-*/
-
 const enterNameNextButton = document.querySelector('.enterName > .nextButton');
 const friendHolder = document.querySelector('.friendHolder');
 const addFriendButton = document.querySelector('.addFriendButton');
@@ -152,6 +147,8 @@ const submitFriendsToServer = () => {
 
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i)).join(';'));
+
+    console.log(`https://fgconnections.vercel.app/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`);
 
     fetch(`https://fgconnections.vercel.app/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
         startGraphing();
