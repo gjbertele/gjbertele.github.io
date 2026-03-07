@@ -18,10 +18,10 @@ if(isIOS){
 }
 
 const heightScaleOffset = isIOS ? 0.13 : 0.185;
-const apiURL = !isProd ? 'http://127.0.0.1:3000' : 'https://fgconnections.vercel.app';
+const apiURL = 'https://3f95-2600-4040-2a81-2200-616d-ebc1-e59-4338.ngrok-free.app';
 
 const swipePage = () => {
-    let name = document.querySelector('.nameInput').value;
+    let name = formatName(document.querySelector('.nameInput').value);
     if(name.length == 0) return;
 
     document.querySelector('.enterName').style.left = '150%';
@@ -136,6 +136,8 @@ const formatName = (name) => {
         words[i] = chars.join('');
     }
 
+    if(!['Sophie', 'Claire', 'Daniel', 'Lucas', 'Avery'].includes(words[0])) return words[0];
+
     return words[0]+(words.length>1?(' '+words[1].charAt(0)):'');
 }
 
@@ -152,7 +154,11 @@ const submitFriendsToServer = () => {
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(filteredFriends);
 
-    fetch(`${apiURL}/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
+    fetch(`${apiURL}/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`, {
+        'headers':{
+            'ngrok-skip-browser-warning':'true'
+        }
+    }).then(() => {
         startGraphing();
     }).catch(() => {
         document.querySelector('.overlayText').textContent = 'Something went wrong, try again later.'

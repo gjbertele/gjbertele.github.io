@@ -123,8 +123,8 @@ const addNode = (name = 'Unnamed', connected = []) => {
     let bestX = -1;
     let bestY = -1;
     for (let i = 0; i < 100; i++) {
-        let randomX = camera.x + Math.random() * width / 2 - width / 8;
-        let randomY = camera.y + Math.random() * height / 2 - height / 8;
+        let randomX = camera.x + Math.random() * width - width / 2;
+        let randomY = camera.y + Math.random() * height - height / 2;
 
         let energy = computePotential(randomX, randomY, connected);
         if (energy > minPotential) continue;
@@ -325,16 +325,17 @@ document.body.ontouchstart = document.body.onmousedown;
 document.body.ontouchend = document.body.onmouseup;
 
 const initializeGraph = async () => {
-    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt?timestamp='+Date.now(), {
-        cache: 'no-store'
+    const fetchedData = await fetch(`${apiURL}/recentData`, {
+        'headers':{
+            'ngrok-skip-browser-warning':'true'
+        }
     });
-    const namesText = await fetchedNames.text();
-    const newNames = namesText.split(",");
+    const fetchedText = await fetchedData.text();
 
-    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt?timestamp='+Date.now(), {
-        cache: 'no-store'
-    });
-    const connectionsText = await fetchedConnections.text();
+    const namesText = fetchedText.split("||")[0];
+    const connectionsText = fetchedText.split("||")[1];
+
+    const newNames = namesText.split(",");
 
     let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
     let newAdjacencyList = [];
@@ -355,6 +356,63 @@ const initializeGraph = async () => {
     }
 }
 
+const checkForUpdates = async () => {
+    if(document.hidden){
+        console.log('Hidden, defer');
+        setTimeout(checkForUpdates, 1000);
+        return;
+    }
+
+    console.log('Checking',Date.now());
+     const fetchedData = await fetch(`${apiURL}/waitForData`, {
+        'headers':{
+            'ngrok-skip-browser-warning':'true'
+        }
+    });
+    const fetchedText = await fetchedData.text();
+    if(fetchedText != ''){
+        const namesText = fetchedText.split("||")[0];
+        const connectionsText = fetchedText.split("||")[1];
+
+        const newNames = namesText.split(",");
+
+        let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
+        let newAdjacencyList = [];
+        for (let i = 0; i < adj.length; i++) {
+            let newList = [];
+            for (let j = 0; j < adj[i].length; j++) {
+                newList.push(newNames.indexOf(adj[i][j]));
+            }
+            newAdjacencyList.push(newList);
+        }
+
+        if(newNames.length == names.length){
+            console.log('New connection');
+            adjacencyList = newAdjacencyList;
+        } else if(newNames.length < names.length){
+            console.log('Deletion');
+
+            names = [];
+            adjacencyList = [];
+            nodePositions = [];
+
+            for (let i = 0; i < newAdjacencyList.length; i++) {
+                addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
+            }
+        } else {
+            console.log('New Person');
+            for(let i = 0; i<newNames.length; i++){
+                if(!names.includes(newNames[i])){
+                    console.log('Added',newNames[i],newAdjacencyList[i]);
+                    addNode(newNames[i], newAdjacencyList[i]);
+                }
+            }
+        }
+    }
+    checkForUpdates();
+}
+
+
 const startGraphing = async () => {
     document.querySelector('.setup').style.display = 'none';
     document.querySelector('.graph').style.display = 'none';
@@ -371,9 +429,13 @@ const startGraphing = async () => {
             if(names[i] != username) continue;
             camera.x = nodePositions[i].x;
             camera.y = nodePositions[i].y;
+            console.log('set to ',i);
         }
 
-        if (!stepping) step();
+        if (!stepping){
+            step();
+            checkForUpdates();
+        }
         stepping = true;
     },1000);
     return;
