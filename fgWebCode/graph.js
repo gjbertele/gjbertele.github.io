@@ -80,12 +80,14 @@ const physicsStep = () => {
     let newNodePositions = [];
 
     for (let i = 0; i < n; i++) {
+        if(!nodePositions[i]) continue;
+
         let netForceX = 0;
         let netForceY = 0;
         for (let k = 0; k < adjacencyList[i].length; k++) {
             let j = adjacencyList[i][k];
 
-            if (i == j || !nodePositions[j] || !nodePositions[i]) continue;
+            if (i == j || !nodePositions[j]) continue;
 
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
@@ -219,6 +221,7 @@ const drawGraph = () => {
     }
 
     for (let i = 0; i < n; i++) {
+        if(!names[i] || !nodePositions[i]) continue;
         let computedWidth = names[i].length * 5 * camera.sx;
 
         let centerX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
@@ -354,67 +357,26 @@ const initializeGraph = async () => {
 
 const startGraphing = async () => {
     document.querySelector('.setup').style.display = 'none';
-    document.querySelector('.graph').style.display = 'inline-block';
-    await initializeGraph();
+    document.querySelector('.graph').style.display = 'none';
+    document.querySelector('.loading').style.display = 'inline-block';
 
-    let username = document.querySelector('.nameInput').value;
+    setTimeout(async () => {
+        await initializeGraph();
+        document.querySelector('.graph').style.display = 'inline-block';
+        document.querySelector('.loading').style.display = 'none';
+        
+        let username = document.querySelector('.nameInput').value;
 
-    for(let i = 0; i<names.length; i++){
-        if(names[i] != username) continue;
-        camera.x = nodePositions[i].x;
-        camera.y = nodePositions[i].y;
-    }
+        for(let i = 0; i<names.length; i++){
+            if(names[i] != username) continue;
+            camera.x = nodePositions[i].x;
+            camera.y = nodePositions[i].y;
+        }
 
-    if (!stepping){
-        step();
-        setInterval(checkForNewNodes, 1000);
-    }
-    stepping = true;
+        if (!stepping) step();
+        stepping = true;
+    },1000);
     return;
-}
-
-const checkForNewNodes = async () => {
-    const fetchedNames = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/nameMap.txt?timestamp='+Date.now(), {
-        cache: 'no-store'
-    });
-    const namesText = await fetchedNames.text();
-    const newNames = namesText.split(",");
-
-    const fetchedConnections = await fetch('https://xisjyr6lxyeisi9b.public.blob.vercel-storage.com/connections.txt?timestamp='+Date.now(), {
-        cache: 'no-store'
-    });
-    const connectionsText = await fetchedConnections.text();
-
-    let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
-    let newAdjacencyList = [];
-    for (let i = 0; i < adj.length; i++) {
-        let newList = [];
-        for (let j = 0; j < adj[i].length; j++) {
-            newList.push(newNames.indexOf(adj[i][j]));
-        }
-        newAdjacencyList.push(newList);
-    }
-    console.log('checked',Date.now());
-    if(newAdjacencyList.map(i => i = i.join(',')).join(';') == adjacencyList.map(i => i = i.join(',')).join(';')) return;
-    console.log('detected difference');
-    console.log(newNames, names, newAdjacencyList, adjacencyList);
-    if(newNames.length == names.length){
-        console.log('new join');
-        adjacencyList = newAdjacencyList;
-    } else if(newNames.length < names.length){
-        console.log('deletion');
-        startGraphing();
-    } else {
-        console.log('new person');
-        for(let i = 0; i<newNames.length; i++){
-            console.log(newNames[i])
-            if(!names.includes(newNames[i])){
-                console.log('added',newNames[i]);
-                addNode(newNames[i], newAdjacencyList[i]);
-            }
-        }
-    }
-
 }
 
 document.querySelector('.refreshButton').onclick = startGraphing;
