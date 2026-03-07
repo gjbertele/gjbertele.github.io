@@ -248,10 +248,18 @@ const step = () => {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
-            if (dmx * dmx + dmy * dmy < 1000) {
-                camera.x += (lastMouse.x - mouse.x) / camera.sx;
-                camera.y += (lastMouse.y - mouse.y) / camera.sx;
+            if(dmx != 0 || dmy != 0){
+
+                let distanceScale = Math.min(1,50/Math.sqrt(dmx*dmx + dmy*dmy));
+                dmx *= distanceScale;
+                dmy *= distanceScale;
+
+                camera.x += dmx / camera.sx;
+                camera.y += dmy / camera.sx;
             }
+
+            lastMouse.x = mouse.x;
+            lastMouse.y = mouse.y;
         }
     }
 
