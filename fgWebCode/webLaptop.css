@@ -235,3 +235,35 @@ input:focus{
     width:4dvh;
     cursor:pointer;
 }
+
+.loading {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.loadingIcon {
+    position:absolute;
+    left:calc(50% - 3dvw);
+    top:calc(50% - 3dvw);
+    width: 6dvw;
+    height:6dvw;
+    border: 0.5dvw solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 

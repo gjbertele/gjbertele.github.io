@@ -3,6 +3,7 @@ const friendHolder = document.querySelector('.friendHolder');
 const addFriendButton = document.querySelector('.addFriendButton');
 const submitButton = document.querySelector('.submit');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isProd = true||!window.location.href.includes(127);
 
 if(isIOS){
     const stylesheet = document.createElement('link');
@@ -17,6 +18,7 @@ if(isIOS){
 }
 
 const heightScaleOffset = isIOS ? 0.13 : 0.185;
+const apiURL = !isProd ? 'http://127.0.0.1:3000' : 'https://fgconnections.vercel.app';
 
 const swipePage = () => {
     let name = document.querySelector('.nameInput').value;
@@ -140,17 +142,17 @@ const formatName = (name) => {
 const submitFriendsToServer = () => {
     document.querySelector('.setup').style.display = 'none';
     
-    if(friendNames.length == 0){
+    let filteredFriends = friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i)).join(';');
+
+    if(filteredFriends.length == 0){
         startGraphing();
         return;
     }
 
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
-    let encodedFriendNames = encodeURIComponent(friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i)).join(';'));
+    let encodedFriendNames = encodeURIComponent(filteredFriends);
 
-    console.log(`https://fgconnections.vercel.app/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`);
-
-    fetch(`https://fgconnections.vercel.app/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
+    fetch(`${apiURL}/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
         startGraphing();
     }).catch(() => {
         document.querySelector('.overlayText').textContent = 'Something went wrong, try again later.'
