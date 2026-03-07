@@ -7,7 +7,7 @@ const enterNameNextButton = document.querySelector('.enterName > .nextButton');
 const friendHolder = document.querySelector('.friendHolder');
 const addFriendButton = document.querySelector('.addFriendButton');
 const submitButton = document.querySelector('.submit');
-const isIOS = true || (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 if(isIOS){
     const stylesheet = document.createElement('link');
