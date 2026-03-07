@@ -415,6 +415,7 @@ const checkForUpdates = async () => {
                     addNode(newNames[i], newAdjacencyList[i]);
                 }
             }
+            adjacencyList = newAdjacencyList;
         }
     }
     checkForUpdates();
