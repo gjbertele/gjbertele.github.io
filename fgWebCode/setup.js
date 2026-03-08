@@ -18,7 +18,7 @@ if(isIOS){
 }
 
 const heightScaleOffset = isIOS ? 0.13 : 0.185;
-const apiURL = 'https://unpedagogic-tyrone-exuberant.ngrok-free.dev';
+const apiURL = 'https://api.math.gb.net';
 
 const swipePage = () => {
     let name = formatName(document.querySelector('.nameInput').value);
