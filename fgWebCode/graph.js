@@ -2,10 +2,10 @@ const canvas = document.querySelector('.mainCanvas');
 const ctx = canvas.getContext('2d');
 const width = document.body.clientWidth;
 const height = document.documentElement.clientHeight;
-const springConstant = 10;
+const springConstant = 7;
 const vDamp = 0.95;
 const defaultLength = 200;
-const gravConstant = 10;
+const gravConstant = 100;
 const dt = 1 / 60;
 let stepping = false;
 
