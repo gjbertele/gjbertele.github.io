@@ -35,7 +35,7 @@ const gravityStep = () => {
     let newNodePositions = [];
 
     for (let i = 0; i < n; i++) {
-        if (mouse.hovering && mouse.selected == i) {
+        if (mouse.hovering && mouse.selected == i && mouse.down) {
             newNodePositions.push(nodePositions[i]);
             continue;
         }
@@ -93,7 +93,8 @@ const physicsStep = () => {
             let dy = nodePositions[j].y - nodePositions[i].y;
 
             let dist = Math.sqrt(dx * dx + dy * dy);
-            let dl = dist - defaultLength;
+            let dl = dist - defaultLength*2;
+            if(dist < defaultLength) dl = -(defaultLength - dist);
 
             if (dist == 0) continue;
 
@@ -451,3 +452,7 @@ const startGraphing = async () => {
 }
 
 document.querySelector('.refreshButton').onclick = startGraphing;
+
+document.querySelector('.backButton').onclick = () => {
+    window.location.replace(window.location.href);
+}
