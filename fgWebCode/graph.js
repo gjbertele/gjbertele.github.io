@@ -384,7 +384,7 @@ const initializeGraph = async () => {
     let bestNodePositions = [];
     let minPotential = 10**10;
 
-    for(let i = 0; i<100; i++){
+    for(let i = 0; i<1; i++){
         let [netPotential, newNodePositions] = generateGraphLayout(newNames, newAdjacencyList);
 
         if(netPotential < minPotential){
@@ -404,11 +404,11 @@ const generateGraphLayout = (newNames, newAdjacencyList) => {
     adjacencyList = [];
     nodePositions = [];
 
-    let rootIdx = newNames.indexOf(username);
-    addNode(newNames[rootIdx], [])
+    //let rootIdx = newNames.indexOf(username);
+    //addNode(newNames[rootIdx], [])
 
     for (let i = 0; i < newAdjacencyList.length; i++) {
-        if(i == rootIdx) continue;
+        //if(i == rootIdx) continue;
         addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
     }
 
