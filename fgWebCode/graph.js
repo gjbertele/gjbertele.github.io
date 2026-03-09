@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 const width = document.body.clientWidth;
 const height = document.documentElement.clientHeight;
 const springConstant = 7;
-const vDamp = 0.95;
+const vDamp = 0.9;
 const defaultLength = 200;
 const gravConstant = 100;
 const dt = 1 / 60;
@@ -383,7 +383,7 @@ const initializeGraph = async () => {
     }
 
     let bestNodePositions = [];
-    let minPotential = 10**10;
+    let minPotential = 50000000*newNames.length;
 
     for(let i = 0; i<100; i++){
         let [netPotential, newNodePositions] = generateGraphLayout(newNames, newAdjacencyList);
