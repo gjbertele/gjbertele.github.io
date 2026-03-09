@@ -360,7 +360,11 @@ const initializeGraph = async () => {
     adjacencyList = [];
     nodePositions = [];
 
+    let rootIdx = newNames.indexOf(document.querySelector('.nameInput').value);
+    addNode(newNames[rootIdx], [])
+
     for (let i = 0; i < newAdjacencyList.length; i++) {
+        if(i == rootIdx) continue;
         addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
     }
 }
