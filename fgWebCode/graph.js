@@ -98,8 +98,11 @@ const physicsStep = () => {
 
             if (dist == 0) continue;
 
-            netForceX += springConstant * dl * dx / dist;
-            netForceY += springConstant * dl * dy / dist;
+            let deg = 1;
+            if(dist < defaultLength) deg += adjacencyList[j].length / 3;
+
+            netForceX += deg*springConstant * dl * dx / dist;
+            netForceY += deg*springConstant * dl * dy / dist;
         }
 
         newNodePositions.push({
@@ -200,6 +203,7 @@ const drawGraph = () => {
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2 * camera.sx;
     ctx.font = `${12*camera.sx}px Arial`;
+    ctx.globalAlpha = 0.6;
 
     for (let i = 0; i < n; i++) {
         for (let j = 0; j < adjacencyList[i].length; j++) {
@@ -225,6 +229,7 @@ const drawGraph = () => {
         }
     }
 
+    ctx.globalAlpha = 1;
 
     ctx.fillStyle = '#000';
     for (let i = 0; i < n; i++) {
