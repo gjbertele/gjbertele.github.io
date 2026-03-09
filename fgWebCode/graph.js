@@ -147,7 +147,7 @@ const addNode = (name = 'Unnamed', connected = []) => {
     for (let j = 0; j < 20; j++) physicsStep();
 }
 
-const computePotential = (x, y, connections) => {
+const computePotential = (x, y, connections, idx = -1) => {
     let netForceX = 0;
     let netForceY = 0;
 
@@ -168,6 +168,7 @@ const computePotential = (x, y, connections) => {
     }
 
     for (let j = 0; j < nodePositions.length; j++) {
+        if(j == idx) continue;
         let dx = nodePositions[j].x - x;
         let dy = nodePositions[j].y - y;
 
@@ -214,6 +215,9 @@ const drawGraph = () => {
             let nx2 = nodePositions[k].x + defaultLength * 0.2 * Math.cos(theta);
             let ny2 = nodePositions[k].y + defaultLength * 0.2 * Math.sin(theta);
 
+            if(mouse.down && mouse.hovering && (mouse.selected == i || mouse.selected == k)) ctx.lineWidth = 3.5*camera.sx;
+            else ctx.lineWidth = 2 * camera.sx;
+
             ctx.beginPath();
             ctx.moveTo((nx1 - camera.x) * camera.sx + width / 2, (ny1 - camera.y) * camera.sy + height / 2);
             ctx.lineTo((nx2 - camera.x) * camera.sx + width / 2, (ny2 - camera.y) * camera.sy + height / 2);
@@ -221,13 +225,29 @@ const drawGraph = () => {
         }
     }
 
+
+    ctx.fillStyle = '#000';
     for (let i = 0; i < n; i++) {
         if(!names[i] || !nodePositions[i]) continue;
-        let computedWidth = names[i].length * 5 * camera.sx;
+        let computedWidth = ctx.measureText(names[i]).width + camera.sx;
+        let computedHeight = 23*camera.sx;
 
         let centerX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
         let centerY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
 
+        ctx.fillRect(centerX - computedWidth/2, centerY - computedHeight/2, computedWidth, computedHeight);
+    }
+
+
+    ctx.fillStyle = '#FFF';
+    for (let i = 0; i < n; i++) {
+        if(!names[i] || !nodePositions[i]) continue;
+        let computedWidth = ctx.measureText(names[i]).width;
+        let computedHeight = ctx.measureText(names[i]).height;
+
+        let centerX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
+        let centerY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
+        
         ctx.fillText(names[i], centerX - computedWidth / 2, centerY);
     }
 }
@@ -356,6 +376,25 @@ const initializeGraph = async () => {
         newAdjacencyList.push(newList);
     }
 
+    let bestNodePositions = [];
+    let minPotential = 10**10;
+
+    for(let i = 0; i<100; i++){
+        let [netPotential, newNodePositions] = generateGraphLayout(newNames, newAdjacencyList);
+
+        if(netPotential < minPotential){
+            minPotential = netPotential;
+            bestNodePositions = newNodePositions;
+            console.log()
+        }
+    }
+
+    nodePositions = bestNodePositions;
+
+    
+}
+
+const generateGraphLayout = (newNames, newAdjacencyList) => {
     names = [];
     adjacencyList = [];
     nodePositions = [];
@@ -367,6 +406,14 @@ const initializeGraph = async () => {
         if(i == rootIdx) continue;
         addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
     }
+
+    let netPotential = 0;
+
+    for(let i = 0; i<newAdjacencyList.length; i++){
+        netPotential += computePotential(nodePositions[i].x, nodePositions[i].y, newAdjacencyList[i], i)
+    }
+
+    return [netPotential, nodePositions];
 }
 
 const checkForUpdates = async () => {
