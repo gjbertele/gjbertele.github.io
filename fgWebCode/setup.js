@@ -27,7 +27,7 @@ const swipePage = () => {
         return;
     }
 
-    if(['sophie', 'claire', 'daniel', 'lucas', 'avery'].includes(name.toLowerCase().split(' ')[0])){
+    if(['sophie', 'claire', 'daniel', 'lucas', 'avery'].includes(name.toLowerCase().split(' ')[0] && name.split(' ').length == 1)){
         document.querySelector('.incorrectInput').textContent = 'Include your last name or last initial';
         return;
     }

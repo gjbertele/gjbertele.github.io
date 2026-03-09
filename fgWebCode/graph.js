@@ -50,7 +50,7 @@ const gravityStep = () => {
 
             let dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist > 200 || dist == 0) continue;
+            if (dist > 400 || dist == 0) continue;
 
             let fMag = 1 / dist * dist;
 
