@@ -4,6 +4,8 @@ const addFriendButton = document.querySelector('.addFriendButton');
 const submitButton = document.querySelector('.submit');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const isProd = true||!window.location.href.includes(127);
+let gradeList = ["Daniel Aalemansour", "Nathan Aguiar", "Clara Aksakal", "Louis Anderson", "Vir Arora", "Lara Asch", "Lilah Baez", "Nicole Ban", "Graham Bertele", "Julia Bertele", "Madeline Blizzard", "Lucas Bockner", "Willow Boison", "Zach Boukkouri", "Sened Brhane", "Omar Burik", "Coco Campbell", "Emma Canan", "Sophie Cao", "Claire Chi", "JL Chretien", "Vincent Cohen", "Jay Collingwood", "Rafi Cressall", "Madeleine Davant", "Areg Louis Devoyans", "Angela Ding", "Sophia Douoguih", "Cody Encarnacion", "Alex Fagell", "Alexandra Finn", "Elie Fisher", "Autumn Fleary", "Teddy Friedman", "Hani Garside", "Kenzie Goldsteen", "Andrew Gorman", "Gobind Gosal", "Connor Graham", "AJ Greenberg", "Jackman Grossman", "Ivaylo Guenov", "Eshaan Gupta", "Sophie Haar", "Hedy Hao", "Langston Hill", "Okan Holmes", "Ethan Huang", "Vivienne Huang", "Delaney Hughes", "Isaac Jain", "Lauren Jain", "Patrick Jiminez", "Sadie Johnson", "Zuri Johnson", "Graciana Kabwe", "Jude Kelly", "Merritt Kelso", "Rajan Khanna", "Sara Khoury", "Palden Kim", "Claire Kinnier", "Stephen Koopersmith", "Sisi Kostorowski", "Luca Kountoupes", "Zara Lakhanpal", "Colette Lee", "Cameron Linehan", "Lukas Malachowski", "Paige Margie", "Maggie McDonald", "Parker Medlin", "Trevor Minton", "Caroline Mohamadi", "Vivian Morris", "Avery Mullen", "Lindsay Neal", "Tyler Nguyen", "Emi Nyhan", "Sophie Ochiai", "Seneca Oehrle", "Osewe Ogada", "Lexi Orr", "Jacob Osorio-Buitrago", "Cate Oswald", "William Panner", "Daniel Piho", "Sophie Pitt", "Faris Price", "Linus Rhee", "Tai Robbins", "Daniel Rodriguez", "Yossi Rosen", "Genesis Schneeberg", "Kai Schropfer", "Lucas Schwinden", "Naomi Sedwick", "Zoe Shrank", "Eyob Sisay", "Avery Slover", "Chloe Son", "Ella Song", "Leonardo Soriano", "Eliane Soukou", "Porter Speece", "Stella Stone", "Karan Tholan", "Elisa Tsao", "Romy Ugel", "Maina Vaidya", "Gillian Vaswani", "Amelia Vaughn", "Dylan Verma", "Lucy Verma", "Astrid Virk", "Aditya Viswanathan", "Noah Walliser", "Naiah Weetjens", "Avery Wincup", "Tessa Wiseman", "Sophie Xu", "Justin Yarborough", "Ava Yoon", "Daphne Zwicker"];
+
 
 if(isIOS){
     const stylesheet = document.createElement('link');
@@ -38,7 +40,7 @@ const swipePage = () => {
 
     document.querySelector('.bottomWarning').textContent = 'You can add more friends later, but you cannot remove any.';
 
-    let firstCalculatedHeight = Math.min(heightScaleOffset*document.body.clientHeight,document.body.clientHeight*0.535);
+    let firstCalculatedHeight = Math.max(document.body.clientHeight*0.2,Math.min(heightScaleOffset*document.body.clientHeight,document.body.clientHeight*0.535));
     addFriendButton.style.top = firstCalculatedHeight+'px';
     submitButton.style.top = (firstCalculatedHeight + 0.06*document.body.clientHeight)+'px';
 
@@ -150,15 +152,49 @@ const formatName = (name) => {
     return words[0]+(words.length>1?(' '+words[1].charAt(0)):'');
 }
 
-const submitFriendsToServer = () => {
-    document.querySelector('.setup').style.display = 'none';
-    
-    let filteredFriends = friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i)).join(';');
+gradeList = gradeList.map(i => i = formatName(i));
 
-    if(filteredFriends.length == 0){
+const conjugateList = (list) => {
+    if(list.length <= 1) return list.join(' ');
+    if(list.length == 2) return list.join(' and ')
+    let clone = list;
+    clone[list.length-1] = 'and '+clone[list.length-1];
+    return clone.join(', ');
+}
+
+const submitFriendsToServer = () => {
+    let friendsList = friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i));
+
+    let invalidNames = [];
+    let invalidInitials = [];
+
+    for(let i = 0; i<friendsList.length; i++){
+        if(['Sophie', 'Claire', 'Daniel', 'Lucas', 'Avery'].includes(friendsList[i]) && friendsList[i].split(' ').length == 1) invalidInitials.push(friendsList[i]);
+        else if(!gradeList.includes(friendsList[i])) invalidNames.push(friendsList[i]);
+        
+    }
+
+    console.log(invalidNames, invalidInitials);
+
+    if(invalidNames.length > 0 && invalidInitials.length > 0){
+        document.querySelector('.incorrectInputFriends').innerHTML = `Don't use nicknames for for <b>${conjugateList(invalidNames)}</b> and include a last initial for <b>${conjugateList(invalidInitials)}</b>.`;
+        return;
+    } else if(invalidNames.length > 0){
+        document.querySelector('.incorrectInputFriends').innerHTML = `Don't use nicknames for for <b>${conjugateList(invalidNames)}</b>.`
+        return;
+    } else if(invalidInitials.length > 0){
+        document.querySelector('.incorrectInputFriends').innerHTML = `Include a last initial for <b>${conjugateList(invalidInitials)}</b>.`
+        return;
+    }
+
+    document.querySelector('.setup').style.display = 'none';
+
+    if(friendsList.length == 0){
         startGraphing();
         return;
     }
+
+    let filteredFriends = friendsList.join(';');
 
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(filteredFriends);

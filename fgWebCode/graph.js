@@ -491,7 +491,7 @@ const startGraphing = async () => {
         document.querySelector('.loading').style.display = 'none';
 
         for(let i = 0; i<names.length; i++){
-            if(names[i] != username) continue;
+            if(names[i] != username || !nodePositions[i]) continue;
             camera.x = nodePositions[i].x;
             camera.y = nodePositions[i].y;
             console.log('set to ',i);
