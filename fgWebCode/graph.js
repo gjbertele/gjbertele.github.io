@@ -50,12 +50,14 @@ const gravityStep = () => {
 
             let dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist > 200 || dist == 0) continue;
+            if(dist == 0) continue;
 
-            let fMag = 1 / dist * dist;
+            let fMag = 1 / dist;
 
-            netForceX += -gravConstant * fMag * dx / dist;
-            netForceY += -gravConstant * fMag * dy / dist;
+            let deg = adjacencyList[j].length + 1;
+
+            netForceX += -deg*gravConstant * fMag * dx / dist;
+            netForceY += -deg*gravConstant * fMag * dy / dist;
         }
 
         newNodePositions.push({
@@ -98,11 +100,8 @@ const physicsStep = () => {
 
             if (dist == 0) continue;
 
-            let deg = 1;
-            if(dist < defaultLength) deg += adjacencyList[j].length / 3;
-
-            netForceX += deg*springConstant * dl * dx / dist;
-            netForceY += deg*springConstant * dl * dy / dist;
+            netForceX += springConstant * dl * dx / dist;
+            netForceY += springConstant * dl * dy / dist;
         }
 
         newNodePositions.push({
@@ -163,7 +162,8 @@ const computePotential = (x, y, connections, idx = -1) => {
         let dy = nodePositions[j].y - y;
 
         let dist = Math.sqrt(dx * dx + dy * dy);
-        let dl = dist - defaultLength;
+        let dl = dist - defaultLength*2;
+        if(dist < defaultLength) dl = -(defaultLength - dist);
 
         netForceX += springConstant * dl * dx / dist;
         netForceY += springConstant * dl * dy / dist;
@@ -177,13 +177,14 @@ const computePotential = (x, y, connections, idx = -1) => {
 
         let dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist > 200) continue;
         if (dist == 0) return 1000000000;
 
-        let fMag = 10 / dist * dist;
+        let fMag = 1/dist;
 
-        netForceX += -gravConstant * fMag * dx / dist;
-        netForceY += -gravConstant * fMag * dy / dist;
+        let deg = adjacencyList[j].length + 1;
+
+        netForceX += -deg*gravConstant * fMag * dx / dist;
+        netForceY += -deg*gravConstant * fMag * dy / dist;
     }
 
     return netForceX * netForceX + netForceY * netForceY;
