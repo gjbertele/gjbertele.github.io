@@ -19,22 +19,22 @@ if(isIOS){
 
 const heightScaleOffset = isIOS ? 0.13 : 0.185;
 const apiURL = 'https://unpedagogic-tyrone-exuberant.ngrok-free.dev';
-
+let username;
 const swipePage = () => {
-    let name = formatName(document.querySelector('.nameInput').value);
-    if(name.length == 0){
+    username = formatName(document.querySelector('.nameInput').value);
+    if(username.length == 0){
         document.querySelector('.incorrectInput').textContent = 'You must enter your name';
         return;
     }
 
-    if(['sophie', 'claire', 'daniel', 'lucas', 'avery'].includes(name.toLowerCase().split(' ')[0]) && name.indexOf(' ') == -1){
+    if(['sophie', 'claire', 'daniel', 'lucas', 'avery'].includes(username.toLowerCase().split(' ')[0]) && username.indexOf(' ') == -1){
         document.querySelector('.incorrectInput').textContent = 'Include your last name or last initial';
         return;
     }
 
     document.querySelector('.enterName').style.left = '150%';
     document.querySelector('.enterFriends').style.left = '50%';
-    document.cookie = "name="+name;
+    document.cookie = "name="+username;
 
     document.querySelector('.bottomWarning').textContent = 'You can add more friends later, but you cannot remove any.';
 

@@ -399,7 +399,7 @@ const generateGraphLayout = (newNames, newAdjacencyList) => {
     adjacencyList = [];
     nodePositions = [];
 
-    let rootIdx = newNames.indexOf(document.querySelector('.nameInput').value);
+    let rootIdx = newNames.indexOf(username);
     addNode(newNames[rootIdx], [])
 
     for (let i = 0; i < newAdjacencyList.length; i++) {
@@ -483,8 +483,6 @@ const startGraphing = async () => {
         await initializeGraph();
         document.querySelector('.graph').style.display = 'inline-block';
         document.querySelector('.loading').style.display = 'none';
-        
-        let username = document.querySelector('.nameInput').value;
 
         for(let i = 0; i<names.length; i++){
             if(names[i] != username) continue;
