@@ -300,7 +300,7 @@ const step = () => {
 window.addEventListener(
     "wheel",
     (e) => {
-    let divider = 1000;
+    let divider = -1000;
       if (e.ctrlKey) {
         divider = -200;
         e.preventDefault(); 
