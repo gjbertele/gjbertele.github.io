@@ -297,16 +297,26 @@ const step = () => {
     requestAnimationFrame(step);
 }
 
-document.body.onmousewheel = (e) => {
+window.addEventListener(
+    "wheel",
+    (e) => {
+    let divider = 1000;
+      if (e.ctrlKey) {
+        divider = -200;
+        e.preventDefault(); 
+      }
+
     if (camera.sx <= 0.2 && e.deltaY < 0) return;
     if (camera.sx >= 2 && e.deltaY > 0) return;
 
-    camera.sx += e.deltaY / 1000;
+    camera.sx += e.deltaY / divider;
     camera.sx = Math.max(camera.sx, 0.2);
     camera.sx = Math.min(camera.sx, 2);
 
     camera.sy = camera.sx;
-}
+    },
+    { passive: false }
+  );
 
 const processDrag = (ex, ey) => {
     lastMouse.x = mouse.x;
