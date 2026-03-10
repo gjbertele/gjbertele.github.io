@@ -306,8 +306,9 @@ window.addEventListener(
         e.preventDefault(); 
       }
 
-    if (camera.sx <= 0.2 && e.deltaY < 0) return;
-    if (camera.sx >= 2 && e.deltaY > 0) return;
+
+    if (camera.sx <= 0.2 && e.deltaY > 0) return;
+    if (camera.sx >= 2 && e.deltaY < 0) return;
 
     camera.sx += e.deltaY / divider;
     camera.sx = Math.max(camera.sx, 0.2);
