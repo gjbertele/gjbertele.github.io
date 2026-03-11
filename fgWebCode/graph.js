@@ -260,7 +260,8 @@ const drawGraph = () => {
 
 let lastMouse = {
     x: 0,
-    y: 0
+    y: 0,
+    time:Date.now()
 };
 
 const step = () => {
@@ -275,18 +276,14 @@ const step = () => {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
-            if(dmx != 0 || dmy != 0){
-
-                let distanceScale = Math.min(1,50/Math.sqrt(dmx*dmx + dmy*dmy));
-                dmx *= distanceScale;
-                dmy *= distanceScale;
-
+            if((dmx != 0 || dmy != 0) && mouse.time-lastMouse.time < 30){
                 camera.x += dmx / camera.sx;
                 camera.y += dmy / camera.sx;
             }
 
             lastMouse.x = mouse.x;
             lastMouse.y = mouse.y;
+            lastMouse.time = mouse.time;
         }
     }
 
@@ -322,9 +319,11 @@ window.addEventListener(
 const processDrag = (ex, ey) => {
     lastMouse.x = mouse.x;
     lastMouse.y = mouse.y;
+    lastMouse.time = mouse.time;
 
     mouse.x = ex;
     mouse.y = ey;
+    mouse.time = Date.now();
 
     if (!mouse.down) {
         mouse.hovering = false;
@@ -525,3 +524,5 @@ document.querySelector('.refreshButton').onclick = startGraphing;
 document.querySelector('.backButton').onclick = () => {
     window.location.replace(window.location.href);
 }
+
+startGraphing();
