@@ -153,6 +153,8 @@ const formatName = (name) => {
 }
 
 gradeList = gradeList.map(i => i = formatName(i));
+gradeList.push("Maddie");
+
 
 const conjugateList = (list) => {
     if(list.length <= 1) return list.join(' ');
@@ -214,7 +216,7 @@ addFriendButton.onclick = addFriendToHolder;
 submitButton.onclick = submitFriendsToServer;
 
 
-if(document.cookie.startsWith('name=')){
+if(false && document.cookie.startsWith('name=')){
     document.querySelector('.nameInput').value = document.cookie.slice(5);
     swipePage();
 }
