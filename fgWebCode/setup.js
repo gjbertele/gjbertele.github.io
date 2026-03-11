@@ -154,6 +154,7 @@ const formatName = (name) => {
 
 gradeList = gradeList.map(i => i = formatName(i));
 gradeList.push("Maddie");
+gradeList[gradeList.indexOf('Vincent')] = 'Vinnie';
 
 
 const conjugateList = (list) => {
@@ -166,6 +167,8 @@ const conjugateList = (list) => {
 
 const submitFriendsToServer = () => {
     let friendsList = friendNames.map(i => i = i.name).filter(i => i.length != 0).map(i => i = formatName(i));
+
+    console.log(friendsList);
 
     let invalidNames = [];
     let invalidInitials = [];
