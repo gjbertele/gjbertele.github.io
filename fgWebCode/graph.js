@@ -183,6 +183,7 @@ const computePotential = (x, y, connections, ignoreName = -1) => {
         netForceY += -deg*gravConstant * fMag * dy / dist;
     }
 
+    
     return netForceX * netForceX + netForceY * netForceY;
 
 }
@@ -365,33 +366,18 @@ document.addEventListener('gesturechange', e => {
 document.addEventListener('gestureend', e => e.preventDefault());
 
 const initializeGraph = async () => {
-    console.log('init');
     const fetchedData = await fetch(`${apiURL}/recentData`, {
         'headers':{
             'ngrok-skip-browser-warning':'true'
         }
     });
     const fetchedText = await fetchedData.text();
-
     const newAdjacencyObject = JSON.parse(fetchedText);
 
-    console.log(newAdjacencyObject);
 
-    let bestNodePositions = {};
-    let minPotential = 50000000*Object.keys(newAdjacencyObject).length;
+    generateGraphLayout(newAdjacencyObject);
 
-    for(let i = 0; i<1; i++){
-        let [netPotential, newNodePositions] = generateGraphLayout(newAdjacencyObject);
-
-        if(netPotential < minPotential){
-            minPotential = netPotential;
-            bestNodePositions = newNodePositions;
-        }
-    }
-
-    //nodePositions = bestNodePositions;
-
-    
+    return;
 }
 
 const checkForHover = () => {
@@ -412,6 +398,8 @@ const checkForHover = () => {
         mouse.selected = i;
         break;
     }
+
+    return;
 }
 
 const generateGraphLayout = (newAdjacencyObject) => {
@@ -422,13 +410,7 @@ const generateGraphLayout = (newAdjacencyObject) => {
         addNode(i, newAdjacencyObject[i]);
     }
 
-    let netPotential = 0;
-
-    for(let i in newAdjacencyObject){
-        netPotential += computePotential(nodePositions[i].x, nodePositions[i].y, newAdjacencyObject[i], i)
-    }
-
-    return [netPotential, nodePositions];
+    return;
 }
 
 const checkForUpdates = async () => {
@@ -445,7 +427,7 @@ const checkForUpdates = async () => {
         }
     });
     const fetchedText = await fetchedData.text();
-    console.log('Received data');
+    console.log('Received data')
     if(fetchedText != ''){
         const newAdjacencyObject = JSON.parse(fetchedText);
 
@@ -485,7 +467,6 @@ const startGraphing = async () => {
             if(i != username || !nodePositions[i]) continue;
             camera.x = nodePositions[i].x;
             camera.y = nodePositions[i].y;
-            console.log('set to ',i);
         }
 
         if (!stepping){
