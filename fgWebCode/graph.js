@@ -536,5 +536,3 @@ document.querySelector('.refreshButton').onclick = startGraphing;
 document.querySelector('.backButton').onclick = () => {
     window.location.replace(window.location.href);
 }
-
-startGraphing();
