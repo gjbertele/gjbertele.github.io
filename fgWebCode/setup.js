@@ -147,6 +147,8 @@ const formatName = (name) => {
         words[i] = chars.join('');
     }
 
+    if(words[0].toLowerCase() == 'Zach') return 'Buk'
+
     if(!['Sophie', 'Claire', 'Daniel', 'Lucas', 'Avery'].includes(words[0])) return words[0];
 
     return words[0]+(words.length>1?(' '+words[1].charAt(0)):'');
@@ -155,6 +157,7 @@ const formatName = (name) => {
 gradeList = gradeList.map(i => i = formatName(i));
 gradeList.push("Maddie");
 gradeList[gradeList.indexOf('Vincent')] = 'Vinnie';
+gradeList.push("Buk");
 
 
 const conjugateList = (list) => {
