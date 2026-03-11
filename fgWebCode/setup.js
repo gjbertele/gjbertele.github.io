@@ -222,7 +222,7 @@ addFriendButton.onclick = addFriendToHolder;
 submitButton.onclick = submitFriendsToServer;
 
 
-if(false && document.cookie.startsWith('name=')){
+if(!localStorage.getItem('isGraham') && document.cookie.startsWith('name=')){
     document.querySelector('.nameInput').value = document.cookie.slice(5);
     swipePage();
 }
