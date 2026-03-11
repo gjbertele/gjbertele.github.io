@@ -10,9 +10,9 @@ const gravConstant = 100;
 const dt = 1 / 60;
 let stepping = false;
 
-let nodePositions = [];
-let names = [];
-let adjacencyList = [];
+let nodePositions = {};
+let adjacencyObject = {};
+
 let mouse = {
     x: 0,
     y: 0,
@@ -33,18 +33,18 @@ canvas.height = height;
 const gravityStep = () => {
     let n = nodePositions.length;
 
-    let newNodePositions = [];
+    let newNodePositions = {};
 
-    for (let i = 0; i < n; i++) {
+    for (let i in nodePositions) {
         if (mouse.hovering && mouse.selected == i && mouse.down) {
-            newNodePositions.push(nodePositions[i]);
+            newNodePositions[i] = nodePositions[i];
             continue;
         }
 
         let netForceX = 0;
         let netForceY = 0;
 
-        for (let j = 0; j < n; j++) {
+        for (let j in nodePositions) {
             if (i == j) continue;
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
@@ -55,18 +55,18 @@ const gravityStep = () => {
 
             let fMag = 1 / dist;
 
-            let deg = adjacencyList[j].length + 1;
+            let deg = adjacencyObject[j].length + 1;
 
             netForceX += -deg*gravConstant * fMag * dx / dist;
             netForceY += -deg*gravConstant * fMag * dy / dist;
         }
 
-        newNodePositions.push({
+        newNodePositions[i] = {
             x: nodePositions[i].x + vDamp * clampMag(nodePositions[i].x - nodePositions[i].lx) + netForceX * dt * dt,
             y: nodePositions[i].y + vDamp * clampMag(nodePositions[i].y - nodePositions[i].ly) + netForceY * dt * dt,
             lx: nodePositions[i].x,
             ly: nodePositions[i].y
-        });
+        };
     }
 
     nodePositions = newNodePositions;
@@ -78,19 +78,14 @@ const clampMag = (max) => {
 }
 
 const physicsStep = () => {
-    let n = adjacencyList.length;
+    let newNodePositions = {};
 
-    let newNodePositions = [];
-
-    for (let i = 0; i < n; i++) {
-        if(!nodePositions[i]) continue;
-
+    for (let i in nodePositions) {
         let netForceX = 0;
         let netForceY = 0;
-        for (let k = 0; k < adjacencyList[i].length; k++) {
-            let j = adjacencyList[i][k];
-
-            if (i == j || !nodePositions[j]) continue;
+        for (let k = 0; k < adjacencyObject[i].length; k++) {
+            let j = adjacencyObject[i][k];
+            if (!nodePositions[j]) continue;
 
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
@@ -105,12 +100,12 @@ const physicsStep = () => {
             netForceY += springConstant * dl * dy / dist;
         }
 
-        newNodePositions.push({
+        newNodePositions[i] = {
             x: nodePositions[i].x + vDamp * (nodePositions[i].x - nodePositions[i].lx) + netForceX * dt * dt,
             y: nodePositions[i].y + vDamp * (nodePositions[i].y - nodePositions[i].ly) + netForceY * dt * dt,
             lx: nodePositions[i].x,
             ly: nodePositions[i].y
-        });
+        };
     }
 
     nodePositions = newNodePositions;
@@ -118,17 +113,18 @@ const physicsStep = () => {
 
 const addNode = (name = 'Unnamed', connected = []) => {
     for (let i = 0; i < connected.length; i++) {
-        if(!adjacencyList[connected[i]]) continue;
-        adjacencyList[connected[i]].push(adjacencyList.length);
+        if(!adjacencyObject[connected[i]]) continue;
+        adjacencyObject[connected[i]].push(name);
     }
-    adjacencyList.push(connected);
+    
+    adjacencyObject[name] = connected;
 
     let minPotential = 10000000;
     let bestX = -1;
     let bestY = -1;
     for (let i = 0; i < 100; i++) {
-        let randomX = nodePositions.length == 0 ? 0 : camera.x + Math.random() * width*6 - width*3;
-        let randomY = nodePositions.length == 0 ? 0 : camera.y + Math.random() * width*6 - height*3;
+        let randomX = camera.x + Math.random() * width*6 - width*3;
+        let randomY = camera.y + Math.random() * width*6 - height*3;
 
         let energy = computePotential(randomX, randomY, connected);
         if (energy > minPotential) continue;
@@ -138,19 +134,18 @@ const addNode = (name = 'Unnamed', connected = []) => {
         bestY = randomY;
     }
 
-    nodePositions.push({
+    nodePositions[name] = {
         x: bestX,
         y: bestY,
         lx: bestX,
         ly: bestY
-    });
+    };
 
 
-    names.push(name);
     for (let j = 0; j < 20; j++) physicsStep();
 }
 
-const computePotential = (x, y, connections, idx = -1) => {
+const computePotential = (x, y, connections, ignoreName = -1) => {
     let netForceX = 0;
     let netForceY = 0;
 
@@ -171,8 +166,8 @@ const computePotential = (x, y, connections, idx = -1) => {
 
     }
 
-    for (let j = 0; j < nodePositions.length; j++) {
-        if(j == idx) continue;
+    for (let j in nodePositions) {
+        if(j == ignoreName) continue;
         let dx = nodePositions[j].x - x;
         let dy = nodePositions[j].y - y;
 
@@ -182,7 +177,7 @@ const computePotential = (x, y, connections, idx = -1) => {
 
         let fMag = 1/dist;
 
-        let deg = adjacencyList[j].length + 1;
+        let deg = adjacencyObject[j].length + 1;
 
         netForceX += -deg*gravConstant * fMag * dx / dist;
         netForceY += -deg*gravConstant * fMag * dy / dist;
@@ -199,29 +194,27 @@ const drawGraph = () => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
 
-    let n = adjacencyList.length;
-
     ctx.fillStyle = '#FFF';
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2 * camera.sx;
     ctx.font = `${12*camera.sx}px Arial`;
     ctx.globalAlpha = 0.6;
 
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < adjacencyList[i].length; j++) {
-            let k = adjacencyList[i][j];
-            if (i == k || !nodePositions[i] || !nodePositions[k]) continue;
-
-            let dx = nodePositions[i].x - nodePositions[k].x;
-            let dy = nodePositions[i].y - nodePositions[k].y;
+    for (let i in adjacencyObject) {
+        for (let k = 0; k<adjacencyObject[i].length; k++) {
+            let j = adjacencyObject[i][k];
+            if (i == j || !nodePositions[i] || !nodePositions[j]) continue;
+            
+            let dx = nodePositions[i].x - nodePositions[j].x;
+            let dy = nodePositions[i].y - nodePositions[j].y;
 
             let theta = Math.atan2(dy, dx);
             let nx1 = nodePositions[i].x - defaultLength * 0.2 * Math.cos(theta);
             let ny1 = nodePositions[i].y - defaultLength * 0.2 * Math.sin(theta);
-            let nx2 = nodePositions[k].x + defaultLength * 0.2 * Math.cos(theta);
-            let ny2 = nodePositions[k].y + defaultLength * 0.2 * Math.sin(theta);
+            let nx2 = nodePositions[j].x + defaultLength * 0.2 * Math.cos(theta);
+            let ny2 = nodePositions[j].y + defaultLength * 0.2 * Math.sin(theta);
 
-            if(mouse.down && mouse.hovering && (mouse.selected == i || mouse.selected == k)) ctx.lineWidth = 3.5*camera.sx;
+            if(mouse.down && mouse.hovering && (mouse.selected == i || mouse.selected == j)) ctx.lineWidth = 3.5*camera.sx;
             else ctx.lineWidth = 2 * camera.sx;
 
             ctx.beginPath();
@@ -234,10 +227,11 @@ const drawGraph = () => {
     ctx.globalAlpha = 1;
 
     ctx.fillStyle = '#000';
-    for (let i = 0; i < n; i++) {
-        if(!names[i] || !nodePositions[i]) continue;
-        let computedWidth = ctx.measureText(names[i]).width + camera.sx;
+    for (let i in adjacencyObject) {
+        if(!nodePositions[i]) continue;
+        let computedWidth = ctx.measureText(i).width + camera.sx;
         let computedHeight = 23*camera.sx;
+
 
         let centerX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
         let centerY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
@@ -247,15 +241,15 @@ const drawGraph = () => {
 
 
     ctx.fillStyle = '#FFF';
-    for (let i = 0; i < n; i++) {
-        if(!names[i] || !nodePositions[i]) continue;
-        let computedWidth = ctx.measureText(names[i]).width;
-        let computedHeight = ctx.measureText(names[i]).height;
+    for (let i in adjacencyObject) {
+        if(!nodePositions[i]) continue;
+        let computedWidth = ctx.measureText(i).width;
+        let computedHeight = ctx.measureText(i).height;
 
         let centerX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
         let centerY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
         
-        ctx.fillText(names[i], centerX - computedWidth / 2, centerY);
+        ctx.fillText(i, centerX - computedWidth / 2, centerY);
     }
 }
 
@@ -367,9 +361,11 @@ document.addEventListener('gesturechange', e => {
     camera.sx = Math.min(2*pixelRatio,Math.max(0.2*pixelRatio,Math.pow(e.scale, 0.1)*camera.sx));
     camera.sy = Math.min(2*pixelRatio,Math.max(0.2*pixelRatio,Math.pow(e.scale, 0.1)*camera.sy));
 });
+
 document.addEventListener('gestureend', e => e.preventDefault());
 
 const initializeGraph = async () => {
+    console.log('init');
     const fetchedData = await fetch(`${apiURL}/recentData`, {
         'headers':{
             'ngrok-skip-browser-warning':'true'
@@ -377,26 +373,15 @@ const initializeGraph = async () => {
     });
     const fetchedText = await fetchedData.text();
 
-    const namesText = fetchedText.split("||")[0];
-    const connectionsText = fetchedText.split("||")[1];
+    const newAdjacencyObject = JSON.parse(fetchedText);
 
-    const newNames = namesText.split(",");
+    console.log(newAdjacencyObject);
 
-    let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
-    let newAdjacencyList = [];
-    for (let i = 0; i < adj.length; i++) {
-        let newList = [];
-        for (let j = 0; j < adj[i].length; j++) {
-            newList.push(newNames.indexOf(adj[i][j]));
-        }
-        newAdjacencyList.push(newList);
-    }
+    let bestNodePositions = {};
+    let minPotential = 50000000*Object.keys(newAdjacencyObject).length;
 
-    let bestNodePositions = [];
-    let minPotential = 50000000*newNames.length;
-
-    for(let i = 0; i<100; i++){
-        let [netPotential, newNodePositions] = generateGraphLayout(newNames, newAdjacencyList);
+    for(let i = 0; i<1; i++){
+        let [netPotential, newNodePositions] = generateGraphLayout(newAdjacencyObject);
 
         if(netPotential < minPotential){
             minPotential = netPotential;
@@ -404,13 +389,13 @@ const initializeGraph = async () => {
         }
     }
 
-    nodePositions = bestNodePositions;
+    //nodePositions = bestNodePositions;
 
     
 }
 
 const checkForHover = () => {
-    for (let i = 0; i < nodePositions.length; i++) {
+    for (let i in nodePositions) {
         let transformedX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
         let transformedY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
 
@@ -429,18 +414,18 @@ const checkForHover = () => {
     }
 }
 
-const generateGraphLayout = (newNames, newAdjacencyList) => {
-    names = [];
-    adjacencyList = [];
-    nodePositions = [];
-    for (let i = 0; i < newAdjacencyList.length; i++) {
-        addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
+const generateGraphLayout = (newAdjacencyObject) => {
+    nodePositions = {};
+    adjacencyObject = {};
+
+    for (let i in newAdjacencyObject) {
+        addNode(i, newAdjacencyObject[i]);
     }
 
     let netPotential = 0;
 
-    for(let i = 0; i<newAdjacencyList.length; i++){
-        netPotential += computePotential(nodePositions[i].x, nodePositions[i].y, newAdjacencyList[i], i)
+    for(let i in newAdjacencyObject){
+        netPotential += computePotential(nodePositions[i].x, nodePositions[i].y, newAdjacencyObject[i], i)
     }
 
     return [netPotential, nodePositions];
@@ -460,46 +445,28 @@ const checkForUpdates = async () => {
         }
     });
     const fetchedText = await fetchedData.text();
+    console.log('Received data');
     if(fetchedText != ''){
-        const namesText = fetchedText.split("||")[0];
-        const connectionsText = fetchedText.split("||")[1];
+        const newAdjacencyObject = JSON.parse(fetchedText);
 
-        const newNames = namesText.split(",");
-
-        let adj = connectionsText.split(";").map(i => i.split(',').filter(i => i != ''));
-        let newAdjacencyList = [];
-        for (let i = 0; i < adj.length; i++) {
-            let newList = [];
-            for (let j = 0; j < adj[i].length; j++) {
-                newList.push(newNames.indexOf(adj[i][j]));
-            }
-            newAdjacencyList.push(newList);
-        }
-
-        if(newNames.length == names.length){
+        if(Object.keys(newAdjacencyObject).length == Object.keys(adjacencyObject).length){
             console.log('New connection');
-            adjacencyList = newAdjacencyList;
-        } else if(newNames.length < names.length){
+            adjacencyObject = newAdjacencyObject;
+        } else if(Object.keys(newAdjacencyObject).length < Object.keys(adjacencyObject).length){
             console.log('Deletion');
-
-            names = [];
-            adjacencyList = [];
-            nodePositions = [];
-
-            for (let i = 0; i < newAdjacencyList.length; i++) {
-                addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
-            }
+            startGraphing();
         } else {
             console.log('New Person');
-            for(let i = 0; i<newNames.length; i++){
-                if(!names.includes(newNames[i])){
-                    console.log('Added',newNames[i],newAdjacencyList[i]);
-                    addNode(newNames[i], newAdjacencyList[i]);
+            for(let i in newAdjacencyObject){
+                if(!adjacencyObject[i]){
+                    console.log('Added',i, newAdjacencyObject[i]);
+                    addNode(i, newAdjacencyObject[i]);
                 }
             }
-            adjacencyList = newAdjacencyList;
+            adjacencyObject = newAdjacencyObject;
         }
     }
+    
     checkForUpdates();
 }
 
@@ -514,8 +481,8 @@ const startGraphing = async () => {
         document.querySelector('.graph').style.display = 'inline-block';
         document.querySelector('.loading').style.display = 'none';
 
-        for(let i = 0; i<names.length; i++){
-            if(names[i] != username || !nodePositions[i]) continue;
+        for(let i in adjacencyObject){
+            if(i != username || !nodePositions[i]) continue;
             camera.x = nodePositions[i].x;
             camera.y = nodePositions[i].y;
             console.log('set to ',i);
