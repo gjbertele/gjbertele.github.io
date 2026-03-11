@@ -1,7 +1,8 @@
 const canvas = document.querySelector('.mainCanvas');
 const ctx = canvas.getContext('2d');
-const width = document.body.clientWidth;
-const height = document.documentElement.clientHeight;
+const pixelRatio = devicePixelRatio;
+const width = document.body.clientWidth*pixelRatio;
+const height = document.documentElement.clientHeight*pixelRatio;
 const springConstant = 7;
 const vDamp = 0.9;
 const defaultLength = 200;
@@ -269,16 +270,16 @@ const step = () => {
     for (let i = 0; i < 10; i++) gravityStep();
 
     if (mouse.down) {
-        if (mouse.hovering) {
-            nodePositions[mouse.selected].x = (mouse.x - width / 2) / camera.sx + camera.x;
-            nodePositions[mouse.selected].y = (mouse.y - height / 2) / camera.sy + camera.y;
+        if (mouse.hovering && mouse.selected != -1) {
+            nodePositions[mouse.selected].x = (mouse.x*pixelRatio - width / 2) / camera.sx + camera.x;
+            nodePositions[mouse.selected].y = (mouse.y*pixelRatio - height / 2) / camera.sy + camera.y;
         } else {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
             if((dmx != 0 || dmy != 0) && mouse.time-lastMouse.time < 30){
-                camera.x += dmx / camera.sx;
-                camera.y += dmy / camera.sx;
+                camera.x += devicePixelRatio * dmx / camera.sx;
+                camera.y += devicePixelRatio * dmy / camera.sx;
             }
 
             lastMouse.x = mouse.x;
@@ -324,28 +325,6 @@ const processDrag = (ex, ey) => {
     mouse.x = ex;
     mouse.y = ey;
     mouse.time = Date.now();
-
-    if (!mouse.down) {
-        mouse.hovering = false;
-
-        for (let i = 0; i < nodePositions.length; i++) {
-            let transformedX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
-            let transformedY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
-
-            let dx = transformedX - mouse.x;
-            let dy = transformedY - mouse.y;
-
-            let dist = Math.sqrt(dx * dx + dy * dy);
-
-            nodePositions[i].hovering = dist <= defaultLength * 0.2 * camera.sx;
-
-            if (dist > defaultLength * 0.2 * camera.sx) continue;
-
-            mouse.hovering = true;
-            mouse.selected = i;
-            break;
-        }
-    }
 }
 
 document.body.onmousemove = (e) => {
@@ -357,17 +336,38 @@ document.body.ontouchmove = (e) => {
     processDrag(e.touches[0].clientX, e.touches[0].clientY);
 }
 
-document.body.onmousedown = () => {
+document.body.onmousedown = (e) => {
     mouse.down = true;
+    if(e.touches){
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+    } else {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    }
+    mouse.time = Date.now();
+
+    checkForHover();
 }
 
 document.body.onmouseup = () => {
     mouse.down = false;
     mouse.hovering = false;
+    mouse.selected = -1;
 }
 
 document.body.ontouchstart = document.body.onmousedown;
 document.body.ontouchend = document.body.onmouseup;
+
+document.addEventListener('gesturestart', e => {
+    e.preventDefault();
+});
+document.addEventListener('gesturechange', e => {
+    e.preventDefault()
+    camera.sx = Math.min(2*pixelRatio,Math.max(0.2*pixelRatio,Math.pow(e.scale, 0.1)*camera.sx));
+    camera.sy = Math.min(2*pixelRatio,Math.max(0.2*pixelRatio,Math.pow(e.scale, 0.1)*camera.sy));
+});
+document.addEventListener('gestureend', e => e.preventDefault());
 
 const initializeGraph = async () => {
     const fetchedData = await fetch(`${apiURL}/recentData`, {
@@ -401,7 +401,6 @@ const initializeGraph = async () => {
         if(netPotential < minPotential){
             minPotential = netPotential;
             bestNodePositions = newNodePositions;
-            console.log()
         }
     }
 
@@ -410,16 +409,31 @@ const initializeGraph = async () => {
     
 }
 
+const checkForHover = () => {
+    for (let i = 0; i < nodePositions.length; i++) {
+        let transformedX = (nodePositions[i].x - camera.x) * camera.sx + width / 2;
+        let transformedY = (nodePositions[i].y - camera.y) * camera.sy + height / 2;
+
+        let dx = transformedX - mouse.x*pixelRatio;
+        let dy = transformedY - mouse.y*pixelRatio;
+
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        nodePositions[i].hovering = (dist <= defaultLength * 0.2 * camera.sx * pixelRatio);
+
+        if (dist > defaultLength * 0.2 * camera.sx) continue;
+
+        mouse.hovering = true;
+        mouse.selected = i;
+        break;
+    }
+}
+
 const generateGraphLayout = (newNames, newAdjacencyList) => {
     names = [];
     adjacencyList = [];
     nodePositions = [];
-
-    //let rootIdx = newNames.indexOf(username);
-    //addNode(newNames[rootIdx], [])
-
     for (let i = 0; i < newAdjacencyList.length; i++) {
-        //if(i == rootIdx) continue;
         addNode(newNames[i], newAdjacencyList[i].filter(j => j < i));
     }
 
@@ -513,8 +527,6 @@ const startGraphing = async () => {
         }
         stepping = true;
     },1000);
-
-    camera.sy = camera.sx = 1/1.5;
 
     return;
 }
