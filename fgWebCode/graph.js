@@ -514,6 +514,9 @@ const startGraphing = async () => {
         }
         stepping = true;
     },1000);
+
+    camera.sy = camera.sx = 1/1.5;
+
     return;
 }
 
