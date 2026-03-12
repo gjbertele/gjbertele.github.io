@@ -297,14 +297,14 @@ const step = () => {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
-            if((dmx != 0 || dmy != 0) && mouse.time-lastMouse.time < 30){
+            if(dmx != 0 || dmy != 0){
                 camera.x += devicePixelRatio * dmx / camera.sx;
                 camera.y += devicePixelRatio * dmy / camera.sx;
             }
 
             lastMouse.x = mouse.x;
             lastMouse.y = mouse.y;
-            lastMouse.time = mouse.time;
+            lastMouse.time = Date.now();
         }
     }
 
