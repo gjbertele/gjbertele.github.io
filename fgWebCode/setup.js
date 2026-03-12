@@ -5,7 +5,7 @@ const submitButton = document.querySelector('.submit');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const isProd = true||!window.location.href.includes(127);
 let gradeList = ["Daniel Aalemansour", "Nathan Aguiar", "Clara Aksakal", "Louis Anderson", "Vir Arora", "Lara Asch", "Lilah Baez", "Nicole Ban", "Graham Bertele", "Julia Bertele", "Madeline Blizzard", "Lucas Bockner", "Willow Boison", "Zach Boukkouri", "Sened Brhane", "Omar Burik", "Coco Campbell", "Emma Canan", "Sophie Cao", "Claire Chi", "JL Chretien", "Vincent Cohen", "Jay Collingwood", "Rafi Cressall", "Madeleine Davant", "Areg Louis Devoyans", "Angela Ding", "Sophia Douoguih", "Cody Encarnacion", "Alex Fagell", "Alexandra Finn", "Elie Fisher", "Autumn Fleary", "Teddy Friedman", "Hani Garside", "Kenzie Goldsteen", "Andrew Gorman", "Gobind Gosal", "Connor Graham", "AJ Greenberg", "Jackman Grossman", "Ivaylo Guenov", "Eshaan Gupta", "Sophie Haar", "Hedy Hao", "Langston Hill", "Okan Holmes", "Ethan Huang", "Vivienne Huang", "Delaney Hughes", "Isaac Jain", "Lauren Jain", "Patrick Jiminez", "Sadie Johnson", "Zuri Johnson", "Graciana Kabwe", "Jude Kelly", "Merritt Kelso", "Rajan Khanna", "Sara Khoury", "Palden Kim", "Claire Kinnier", "Stephen Koopersmith", "Sisi Kostorowski", "Luca Kountoupes", "Zara Lakhanpal", "Colette Lee", "Cameron Linehan", "Lukas Malachowski", "Paige Margie", "Maggie McDonald", "Parker Medlin", "Trevor Minton", "Caroline Mohamadi", "Vivian Morris", "Avery Mullen", "Lindsay Neal", "Tyler Nguyen", "Emi Nyhan", "Sophie Ochiai", "Seneca Oehrle", "Osewe Ogada", "Lexi Orr", "Jacob Osorio-Buitrago", "Cate Oswald", "William Panner", "Daniel Piho", "Sophie Pitt", "Faris Price", "Linus Rhee", "Tai Robbins", "Daniel Rodriguez", "Yossi Rosen", "Genesis Schneeberg", "Kai Schropfer", "Lucas Schwinden", "Naomi Sedwick", "Zoe Shrank", "Eyob Sisay", "Avery Slover", "Chloe Son", "Ella Song", "Leonardo Soriano", "Eliane Soukou", "Porter Speece", "Stella Stone", "Karan Tholan", "Elisa Tsao", "Romy Ugel", "Maina Vaidya", "Gillian Vaswani", "Amelia Vaughn", "Dylan Verma", "Lucy Verma", "Astrid Virk", "Aditya Viswanathan", "Noah Walliser", "Naiah Weetjens", "Avery Wincup", "Tessa Wiseman", "Sophie Xu", "Justin Yarborough", "Ava Yoon", "Daphne Zwicker"];
-
+let nicknames = [["Buk","Zach"],["Aj","AJ"],["Jl","JL"]];
 
 if(isIOS){
     const stylesheet = document.createElement('link');
@@ -147,8 +147,6 @@ const formatName = (name) => {
         words[i] = chars.join('');
     }
 
-    if(words[0].toLowerCase() == 'Zach') return 'Buk'
-
     if(!['Sophie', 'Claire', 'Daniel', 'Lucas', 'Avery'].includes(words[0])) return words[0];
 
     return words[0]+(words.length>1?(' '+words[1].charAt(0)):'');
@@ -204,7 +202,13 @@ const submitFriendsToServer = () => {
         return;
     }
 
+    for(let i = 0; i<nicknames.length; i++){
+        let nameIdx = friendsList.indexOf(nicknames[i][0]);
+        if(nameIdx != -1) friendsList[nameIdx] = nicknames[i][1];
+    }
+
     let filteredFriends = friendsList.join(';');
+
 
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(filteredFriends);
