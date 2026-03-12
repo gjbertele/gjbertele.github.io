@@ -529,6 +529,3 @@ function operatorNorm(M, iter = 1000){
 function conditionNumber(M){
     return operatorNorm(M)*operatorNorm(invert(M));
 }
-
-let M = new Matrix(5,5);
-M.arr = [[38,24,26,29,27],[24,31,49,34,12],[26,49,11,28,16],[29,34,28,0,9],[27,12,16,9,7]];
