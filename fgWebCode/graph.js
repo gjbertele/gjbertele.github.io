@@ -18,7 +18,8 @@ let mouse = {
     y: 0,
     down: false,
     hovering: false,
-    selected: -1
+    selected: -1,
+    clickedYet: false
 }
 let camera = {
     x: 0,
@@ -31,8 +32,6 @@ canvas.width = width;
 canvas.height = height;
 
 const gravityStep = () => {
-    let n = nodePositions.length;
-
     let newNodePositions = {};
 
     for (let i in nodePositions) {
@@ -260,9 +259,35 @@ let lastMouse = {
     time:Date.now()
 };
 
+const recenterPositions = () => {
+    let avgX = 0;
+    let avgY = 0;
+    for(let i in nodePositions){
+        avgX += nodePositions[i].x;
+        avgY += nodePositions[i].y;
+    }
+    avgX /= Object.keys(nodePositions).length;
+    avgY /= Object.keys(nodePositions).length;
+
+    for(let i in nodePositions){
+        nodePositions[i].x -= avgX;
+        nodePositions[i].lx -= avgX;
+        nodePositions[i].y -= avgY;
+        nodePositions[i].ly -= avgY;
+    }
+
+    return;
+}
+
 const step = () => {
     physicsStep();
     for (let i = 0; i < 10; i++) gravityStep();
+    recenterPositions();
+
+    if(!mouse.clickedYet){
+        camera.x = nodePositions[username].x;
+        camera.y = nodePositions[username].y;
+    }
 
     if (mouse.down) {
         if (mouse.hovering && mouse.selected != -1) {
@@ -341,6 +366,7 @@ document.body.onmousedown = (e) => {
         mouse.y = e.clientY;
     }
     mouse.time = Date.now();
+    mouse.clickedYet = true;
 
     checkForHover();
 }
@@ -457,17 +483,12 @@ const startGraphing = async () => {
     document.querySelector('.setup').style.display = 'none';
     document.querySelector('.graph').style.display = 'none';
     document.querySelector('.loading').style.display = 'inline-block';
+    mouse.clickedYet = false;
 
     setTimeout(async () => {
         await initializeGraph();
         document.querySelector('.graph').style.display = 'inline-block';
         document.querySelector('.loading').style.display = 'none';
-
-        for(let i in adjacencyObject){
-            if(i != username || !nodePositions[i]) continue;
-            camera.x = nodePositions[i].x;
-            camera.y = nodePositions[i].y;
-        }
 
         if (!stepping){
             step();
