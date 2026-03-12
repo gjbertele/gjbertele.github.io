@@ -75,7 +75,7 @@
     font-weight:400;
     font-size:2dvh;
     left:50%;
-    top:0;
+    bottom:100%;
     transform:translateX(-50%);
 }
 

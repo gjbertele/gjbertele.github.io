@@ -19,7 +19,8 @@ let mouse = {
     down: false,
     hovering: false,
     selected: -1,
-    clickedYet: false
+    clickedYet: false,
+    startingNewGesture: false
 }
 let camera = {
     x: 0,
@@ -224,6 +225,7 @@ const drawGraph = () => {
         }
     }
 
+
     ctx.globalAlpha = 1;
 
     ctx.fillStyle = '#000';
@@ -297,10 +299,12 @@ const step = () => {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
-            if((dmx != 0 || dmy != 0) && (mouse.time - lastMouse.time) < 250){
+            if((dmx != 0 || dmy != 0) && !mouse.startingNewGesture){
                 camera.x += devicePixelRatio * dmx / camera.sx;
                 camera.y += devicePixelRatio * dmy / camera.sx;
             }
+
+            mouse.startingNewGesture = false;
 
             lastMouse.x = mouse.x;
             lastMouse.y = mouse.y;
@@ -367,7 +371,6 @@ document.body.onmousedown = (e) => {
     }
     mouse.time = Date.now();
     mouse.clickedYet = true;
-
     checkForHover();
 }
 
@@ -375,6 +378,7 @@ document.body.onmouseup = () => {
     mouse.down = false;
     mouse.hovering = false;
     mouse.selected = -1;
+    mouse.startingNewGesture = true;
 }
 
 document.body.ontouchstart = document.body.onmousedown;
@@ -484,6 +488,8 @@ const startGraphing = async () => {
     document.querySelector('.graph').style.display = 'none';
     document.querySelector('.loading').style.display = 'inline-block';
     mouse.clickedYet = false;
+    camera.sx = 1;
+    camera.sy = 1;
 
     setTimeout(async () => {
         await initializeGraph();
@@ -505,3 +511,4 @@ document.querySelector('.refreshButton').onclick = startGraphing;
 document.querySelector('.backButton').onclick = () => {
     window.location.replace(window.location.href);
 }
+
