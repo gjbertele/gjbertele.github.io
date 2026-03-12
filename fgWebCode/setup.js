@@ -115,7 +115,7 @@ const removeFriendFromList = (friendID) => {
     }
 
     for(let i = 0; i<friendNames.length; i++){
-        if(friendNames[i].id = friendID) friendNames.splice(i, 1);
+        if(friendNames[i].id == friendID) friendNames.splice(i, 1);
     }
         
     children = friendHolder.childNodes;
@@ -184,11 +184,13 @@ const submitFriendsToServer = () => {
 
     console.log(invalidNames, invalidInitials);
 
+    let isOrAre = invalidNames.length > 1 ? "are" : "is";
+
     if(invalidNames.length > 0 && invalidInitials.length > 0){
-        document.querySelector('.incorrectInputFriends').innerHTML = `Don't use nicknames for for <b>${conjugateList(invalidNames)}</b> and include a last initial for <b>${conjugateList(invalidInitials)}</b>.`;
+        document.querySelector('.incorrectInputFriends').innerHTML = `Make sure <b>${conjugateList(invalidNames)}</b> ${isOrAre} in our grade and spelled correctly, and include a last initial for <b>${conjugateList(invalidInitials)}</b>.`;
         return;
     } else if(invalidNames.length > 0){
-        document.querySelector('.incorrectInputFriends').innerHTML = `Don't use nicknames for for <b>${conjugateList(invalidNames)}</b>.`
+        document.querySelector('.incorrectInputFriends').innerHTML = `Make sure <b>${conjugateList(invalidNames)}</b> ${isOrAre} in our grade and spelled correctly.`
         return;
     } else if(invalidInitials.length > 0){
         document.querySelector('.incorrectInputFriends').innerHTML = `Include a last initial for <b>${conjugateList(invalidInitials)}</b>.`
