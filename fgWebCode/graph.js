@@ -123,8 +123,8 @@ const addNode = (name = 'Unnamed', connected = []) => {
     let bestX = -1;
     let bestY = -1;
     for (let i = 0; i < 100; i++) {
-        let randomX = camera.x + Math.random() * width*6 - width*3;
-        let randomY = camera.y + Math.random() * width*6 - height*3;
+        let randomX = Math.random() * width*12 - width*6;
+        let randomY = Math.random() * width*12 - height*6;
 
         let energy = computePotential(randomX, randomY, connected);
         if (energy > minPotential) continue;
