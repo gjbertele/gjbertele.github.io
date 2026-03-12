@@ -297,7 +297,7 @@ const step = () => {
             let dmx = lastMouse.x - mouse.x;
             let dmy = lastMouse.y - mouse.y;
 
-            if(dmx != 0 || dmy != 0){
+            if((dmx != 0 || dmy != 0) && (mouse.time - lastMouse.time) < 250){
                 camera.x += devicePixelRatio * dmx / camera.sx;
                 camera.y += devicePixelRatio * dmy / camera.sx;
             }
