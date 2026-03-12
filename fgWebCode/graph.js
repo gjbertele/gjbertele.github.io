@@ -199,7 +199,7 @@ const drawGraph = () => {
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2 * camera.sx;
     ctx.font = `${12*camera.sx}px Arial`;
-    ctx.globalAlpha = 0.6;
+    ctx.globalAlpha = 0.4;
 
     for (let i in adjacencyObject) {
         for (let k = 0; k<adjacencyObject[i].length; k++) {
