@@ -71,7 +71,7 @@ const addPlayerToGrid = (player, i) => {
 }
 
 const getRandomWord = () => {
-    if(words.length > 0 && Math.random() < 0.4){
+    if(isLatin || (words.length > 0 && Math.random() < 0.4)){
         let randomIdx = Math.floor(Math.random()*words.length);
         return [words[randomIdx].word, 'Custom Word'];
     } else {
@@ -84,8 +84,10 @@ const getRandomWord = () => {
 
 const chooseWord = () => {
     let [randomWord, randomCategory] = getRandomWord();
-    console.log(randomCategory);
-    while(randomWord.length == 0 || seenWords.includes(randomWord) || !categoriesAllowed[randomCategory]) [randomWord, randomCategory] = getRandomWord();
+    console.log(randomCategory, randomWord);
+    while(randomWord.length == 0 || seenWords.includes(randomWord) || !categoriesAllowed[randomCategory]){
+        [randomWord, randomCategory] = getRandomWord();
+    }
 
     seenWords.push(randomWord);
     chosenWord = randomWord;
@@ -96,7 +98,7 @@ const chooseWord = () => {
 const choosePlayerStart = () => {
     let randomIdx = Math.floor(Math.random()*players.length);
     playerStartElement.textContent = players[randomIdx].name+" Starts";
-
+    if(isLatin) playerStartElement.textContent = players[randomIdx].name+" incipit";
     return;
 }
 
@@ -130,7 +132,27 @@ const displayPlayer = (player, element) => {
     element.style.filter = 'brightness(75%)';
     element.style.boxShadow = 'none';
     element.onclick = null;
+
+    document.querySelector('.gamePage').style.display = 'none';
+    document.querySelector('.playerDisplay').style.display = 'inline-block';
     
+    if(isLatin){
+        if(!player.isImpostor){
+            displayTextArea.innerHTML = `
+        <span class="default">Verbum pro </span>
+        <span class="highlighted">${player.name}</span>
+        <span class="default"> est </span>
+        <span class="highlighted">${chosenWord}</span> 
+        `
+        } else {
+            displayTextArea.innerHTML = `
+            <span class="highlighted">${player.name}</span>
+            <span class="default"> est </span>
+            <span class="highlightedRed">Impostor</span> `
+        }
+        return;
+    }
+
     if(!player.isImpostor){
         displayTextArea.innerHTML = `
         <span class="default">The word for </span>
@@ -179,9 +201,6 @@ const displayPlayer = (player, element) => {
         `
         }  
     }
-
-    document.querySelector('.gamePage').style.display = 'none';
-    document.querySelector('.playerDisplay').style.display = 'inline-block';
 }
 
 
