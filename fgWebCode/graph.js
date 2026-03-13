@@ -122,7 +122,7 @@ const addNode = (name = 'Unnamed', connected = []) => {
     let minPotential = 10000000;
     let bestX = -1;
     let bestY = -1;
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
         let randomX = Math.random() * width*12 - width*6;
         let randomY = Math.random() * width*12 - height*6;
 
@@ -142,7 +142,10 @@ const addNode = (name = 'Unnamed', connected = []) => {
     };
 
 
-    for (let j = 0; j < 20; j++) physicsStep();
+    for (let j = 0; j < 20; j++){
+        physicsStep();
+        gravityStep();
+    }
 }
 
 const computePotential = (x, y, connections, ignoreName = -1) => {
