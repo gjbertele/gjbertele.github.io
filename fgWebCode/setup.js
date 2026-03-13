@@ -29,6 +29,9 @@ const swipePage = () => {
         return;
     }
 
+    if(username.toLowerCase().includes('rajan')) return;
+
+
     if(['sophie', 'claire', 'daniel', 'lucas', 'avery'].includes(username.toLowerCase().split(' ')[0]) && username.indexOf(' ') == -1){
         document.querySelector('.incorrectInput').textContent = 'Include your last name or last initial';
         return;
