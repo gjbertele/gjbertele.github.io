@@ -12,6 +12,7 @@ let stepping = false;
 
 let nodePositions = {};
 let adjacencyObject = {};
+let names = [];
 
 let mouse = {
     x: 0,
@@ -44,7 +45,8 @@ const gravityStep = () => {
         let netForceX = 0;
         let netForceY = 0;
 
-        for (let j in nodePositions) {
+        for (let k = 0; k<names.length; k++) {
+            let j = names[k];
             if (i == j) continue;
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
@@ -140,6 +142,8 @@ const addNode = (name = 'Unnamed', connected = []) => {
         lx: bestX,
         ly: bestY
     };
+
+    names = Object.keys(nodePositions);
 
 
     for (let j = 0; j < 20; j++){
