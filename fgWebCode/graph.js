@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 const pixelRatio = devicePixelRatio;
 const width = document.body.clientWidth*pixelRatio;
 const height = document.documentElement.clientHeight*pixelRatio;
-const springConstant = 7;
+const springConstant = 5;
 const vDamp = 0.9;
 const defaultLength = 200;
 const gravConstant = 100;
@@ -12,6 +12,7 @@ let stepping = false;
 
 let nodePositions = {};
 let adjacencyObject = {};
+let names = [];
 
 let mouse = {
     x: 0,
@@ -44,7 +45,8 @@ const gravityStep = () => {
         let netForceX = 0;
         let netForceY = 0;
 
-        for (let j in nodePositions) {
+        for (let k = 0; k<names.length; k++) {
+            let j = names[k];
             if (i == j) continue;
             let dx = nodePositions[j].x - nodePositions[i].x;
             let dy = nodePositions[j].y - nodePositions[i].y;
@@ -53,12 +55,10 @@ const gravityStep = () => {
 
             if(dist == 0) continue;
 
-            let fMag = 1 / dist;
+            let fMag = 20 / dist;
 
-            let deg = adjacencyObject[j].length + 1;
-
-            netForceX += -deg*gravConstant * fMag * dx / dist;
-            netForceY += -deg*gravConstant * fMag * dy / dist;
+            netForceX += -gravConstant * fMag * dx / dist;
+            netForceY += -gravConstant * fMag * dy / dist;
         }
 
         newNodePositions[i] = {
@@ -122,7 +122,7 @@ const addNode = (name = 'Unnamed', connected = []) => {
     let minPotential = 10000000;
     let bestX = -1;
     let bestY = -1;
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
         let randomX = Math.random() * width*12 - width*6;
         let randomY = Math.random() * width*12 - height*6;
 
@@ -141,8 +141,13 @@ const addNode = (name = 'Unnamed', connected = []) => {
         ly: bestY
     };
 
+    names = Object.keys(nodePositions);
 
-    for (let j = 0; j < 20; j++) physicsStep();
+
+    for (let j = 0; j < 20; j++){
+        physicsStep();
+        gravityStep();
+    }
 }
 
 const computePotential = (x, y, connections, ignoreName = -1) => {
