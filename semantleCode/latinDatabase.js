@@ -1,4 +1,4 @@
-[
+const latinDB = [
     [
        [
           "a",
