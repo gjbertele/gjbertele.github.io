@@ -2241,7 +2241,7 @@ const latinDB = [
        [
           "est"
        ],
-       "hesheit"
+       "is"
     ],
     [
        [
