@@ -7,6 +7,12 @@ const startLatin = () => {
     document.querySelector('.wordHolderCard').style.display = 'none';
     document.querySelector('.settingsButton').style.display = 'none';
     document.querySelector('.gamePage > .title').textContent = 'Histriones';
+    
+    setInterval(() => {
+        for(let elem of document.querySelectorAll('.playerCard > .editableLabel')){
+            if(elem.placeholder != "Incipe hic") elem.placeholder = "Incipe hic"
+        }
+    })
 
     for(let i in categoriesAllowed){
         categoriesAllowed[i] = false;
