@@ -286,9 +286,12 @@ const recenterPositions = () => {
     return;
 }
 
+
 const step = () => {
     physicsStep();
-    for (let i = 0; i < 10; i++) gravityStep();
+    for (let i = 0; i < 10; i++){
+        gravityStep();
+    }
     recenterPositions();
 
     if(!mouse.clickedYet){
