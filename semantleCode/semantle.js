@@ -2,10 +2,11 @@ const mainInput = document.querySelector('.mainInput');
 const guessHolder = document.querySelector('.guessHolder');
 const submitButton = document.querySelector('.submitButton');
 const autocomplete = document.querySelector('.autocomplete');
+const guessableWords = ["dormio", "frater", "hora", "insula", "laboro", "lego", "meus", "pater", "rideo", "servus", "turba", "via", "cado", "cibus", "duco", "filia", "filius", "forum", "habeo", "habito", "intro", "magnus", "pecunia", "quaero", "quoque", "saluto", "specto", "video", "vinum", "voco", "ambulo", "amicus", "ancilla", "clamo", "clamor", "cum", "curro", "dico", "equus", "festino", "gladius", "laetus", "multus", "omnis", "per", "primus", "senator", "urbs", "vinco", "deus", "dominus", "donum", "laudo", "parvus", "periculum", "perterritus", "puella", "rex", "subito", "templum", "teneo", "tollo", "venio", "aqua", "audio", "cupio", "custos", "debeo", "do", "effugio", "iuvenis", "maneo", "nemo", "nolo", "nox", "porto", "possum", "pulcher", "respondeo", "taceo", "timeo", "vendo", "volo", "capio", "dies", "discedo", "exspecto", "facio", "iam", "in", "inquit", "maritus", "mater", "prope", "rogo", "sedeo", "sto", "totus", "tristis", "tuus", "uxor", "appropinquo", "epistula", "homo", "insula", "miles", "minime", "narro", "nauta", "nunc", "olim", "pars", "puer", "pugno", "res", "saepe", "silva", "tum", "vehementer", "ago", "bibo", "conspicio",  "domus", "gero", "iaceo", "incendo", "mox", "nihil", "noster", "porta", "postquam", "procedo", "senex", "surgo", "tandem", "trans", "coepi", "consumo", "intellego", "inter", "ita", "labor", "longus", "murus", "nomen", "paro", "post", "praemium", "quamquam", "qui", "semper", "summus", "suus", "tamen", "vivo", "amo", "amor", "cogito", "conficio", "consilium", "constituo", "dirus", "eos", "femina", "mons", "mors", "nec", "neco", "nescio", "numquam", "ostendo", "tempus", "terreo", "verbum", "antea", "bellum", "cena", "ceteri", "cognosco", "etiam", "hortus", "interea", "iubeo", "libertus", "multum", "nuntio", "puto", "simulatque", "villa", "aufero", "brevis", "celo", "hic", "ille", "imperium", "lego", "lux", "oro", "princeps", "rapio", "regina", "resisto", "revenio", "scio", "sentio"]
 
 let latinEmbeddings = {};
 for(let word in latinEmbeddingData) latinEmbeddings[word.toLowerCase()] = latinEmbeddingData[word];
-const randomWord = Object.keys(latinEmbeddings)[Math.floor(Math.random()*Object.keys(latinEmbeddings).length)];
+const randomWord = guessableWords[Math.floor(Math.random()*guessableWords.length)];
 
 
 
@@ -44,8 +45,14 @@ const elemSimilarity = (elem) => {
     return parseFloat(elem.getAttribute('similarity'));
 }
 
+const getOptimalOrder = (word) => {
+    let order = wordOrder.indexOf(word);
+    while(order > 0 && similarity(wordOrder[order], randomWord) == similarity(wordOrder[order - 1], randomWord)) order--;
+    return order;
+}
+
 const getWordOrder = (word) => {
-    let order = wordOrder.indexOf(word) + 1;
+    let order = getOptimalOrder(word) + 1;
     if(order > 100) return '';
     return order+"/100";
 }
@@ -125,6 +132,24 @@ mainInput.onkeyup = (e) => {
     } else {
         autocomplete.textContent = 'Do you mean '+autocompleteWords[0]+'?'
     }
+}
+
+document.querySelector('.hintButton').onclick = () => {
+    let bestGuess = "";
+    if(guessHistory.length == 0) {
+        bestGuess = wordOrder[200];
+    } else {
+        bestGuess = guessHistory[0];
+    }
+
+    let idx = getOptimalOrder(bestGuess);
+
+    mainInput.value = wordOrder[Math.floor(idx / 2)];
+    guessWord();
+
+    console.log(idx, bestGuess);
+
+    return;
 }
 
 submitButton.onclick = guessWord;
