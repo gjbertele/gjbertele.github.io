@@ -35,7 +35,7 @@ const similarity = (A, B) => {
         magB += B[i]*B[i];
     }
 
-    return Math.abs(out/Math.sqrt(magA*magB));
+    return Math.max(0,out/Math.sqrt(magA*magB));
 }
 
 let wordOrder = Object.keys(latinEmbeddings).sort((a,b) => similarity(b, randomWord) - similarity(a,randomWord));
