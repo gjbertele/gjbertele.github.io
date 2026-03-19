@@ -1,5 +1,4 @@
 const questionList = ["Held hands romantically?",
-"French kissed in public?",
 "Cheated on someone?",
 "Kicked a roommate out to commit a sexual act?",
 "Had severe memory loss due to alcohol?",
