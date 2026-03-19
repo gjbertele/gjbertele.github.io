@@ -35,4 +35,5 @@ const questionList = ["Held hands romantically?",
 "Spread a rumor about someone?",
 "Spread a rumor about someone playing right now?",
 "Broken something at a func?",
-"Stolen something from a func?"]
+"Stolen something from a func?",
+"Came to school sick and started an outbreak?"]
