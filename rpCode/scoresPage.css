@@ -1,0 +1,80 @@
+.scoresPage {
+    display:none;
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+.scoresPage > .playerHolder {
+    position:absolute;
+    left:50%;
+    top:20%;
+    width:80%;
+    height:70%;
+    transform:translateX(-50%);
+}
+
+.scoresPage > .scoreTitle {
+    position:absolute;
+    top:10%;
+    left:50%;
+    width:60%;
+    transform:translate(-50%,-50%);
+    background:#000;
+    border:none;
+    font-size:8dvh;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align:center;
+    line-height:1em;
+    vertical-align: middle;
+    font-weight:800;
+    background:var(--gradient);
+    background-clip:text;
+    color:transparent;
+}
+
+.scoreContainer {
+    position:absolute;
+    width:100%;
+    height:5dvh;
+    left:0;
+}
+
+.scoreContainer > .playerName {
+    position:absolute;
+    right:calc(100% - 10dvh);
+    font-size:2dvh;
+    height:5dvh;
+    color:#FFF;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:400;
+    line-height:5dvh;
+    vertical-align: middle;
+}
+
+.scoreContainer > .scoreBox {
+    position:absolute;
+    left:12dvh;
+    top:0;
+    height:5dvh;
+    background:#FFF;
+    overflow:nowrap;
+    white-space:nowrap;
+    border-radius:0.5dvh;
+}
+
+.scoreBox > .scoreText {
+    position:absolute;
+    right:1dvh;
+    font-size:2dvh;
+    height:5dvh;
+    color:#000;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:400;
+    line-height:5dvh;
+    vertical-align: middle;
+    overflow:visible;
+    width:fit-content;
+}

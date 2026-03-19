@@ -1,0 +1,89 @@
+.lobbyPage {
+    display:none;
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+}
+
+.card {
+    position: absolute;
+    border-radius:1dvh;
+    background:#1a1a1b;
+}
+
+.lobbyPage > .playerHolder {
+    position: absolute;
+    left:50%;
+    top:20%;
+    transform:translateX(-50%);
+    width:80%;
+    height:60%;
+}
+
+.gameCode {
+    position:absolute;
+    top:10%;
+    left:50%;
+    width:60%;
+    transform:translate(-50%,-50%);
+    background:#000;
+    border:none;
+    font-size:8dvh;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align:center;
+    line-height:1em;
+    vertical-align: middle;
+    font-weight:800;
+    background:var(--gradient);
+    background-clip:text;
+    color:transparent;
+}
+
+.lobbyPage > .playerHolder > .playerName {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:2dvh;
+    height:5dvh;
+    color:#FFF;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:400;
+    line-height:5dvh;
+    vertical-align: middle;
+}
+
+.waitingText {
+    position:absolute;
+    bottom:10%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:#FFF;
+    font-size:2dvh;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:400;
+}
+
+.playerTitle {
+    position:absolute;
+    left:50%;
+    top:0;
+    height:5dvh;
+    transform:translateX(-50%);
+    line-height:5dvh;
+    font-size:3dvh;
+    color:#FFF;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:600;
+    text-align:center;
+    vertical-align: middle;
+}
+
+.startGame {
+    position:absolute;
+    display:none;
+    bottom:10%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
