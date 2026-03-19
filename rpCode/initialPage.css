@@ -37,7 +37,7 @@ body, html {
 .num {
     width:5dvh;
     height:10dvh;
-    background:#000;
+    background:transparent;
     border:none;
     border-bottom:10px solid #2c2c2d;
     font-size:10dvh;
