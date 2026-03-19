@@ -72,6 +72,17 @@ class ServerConnection {
         return responseData;
     }
 
+    async updateQuestionsList(newList) {
+        if(this.#apiURL == null) return;
+
+        const fetchedData = await fetch(`${this.#apiURL}/roulette/updateQuestions`, {
+            'headers':{
+                'ngrok-skip-browser-warning':'true',
+                'questions': newList.map(i => i = i.toLowerCase().replaceAll('?','')).join('<BREAK>')
+            }
+        });
+    }
+
     async createGame() {
         if(this.#apiURL == null) return;
 
