@@ -147,6 +147,7 @@ submitTestButton.addEventListener('click', async () => {
 
     serverConnection = await submitTestToServer(answerString, username, confession)
     initializeEventListeners();
+    serverConnection.updateQuestionsList(questionList);
 
     testPage.style.display = 'none';
     initialPage.style.display = 'inline-block';
