@@ -137,6 +137,8 @@ submitTestButton.addEventListener('click', async () => {
         let checked = document.querySelector('.question'+idx).checked;
         answerString += checked ? '1' : '0';
     }
+    
+    document.cookie = 'answers='+answerString;
 
     let username = nameHolder.value;
     let confession = confessHolder.value;
@@ -217,10 +219,10 @@ const submitTestToServer = async (answerString, username, confession) => {
 const newRound = async (roundData) => {
     console.log('new round',roundData);
     currentRoundSelections = [];
-    submitResponsesButton.style.opacity = 1;
     displayScores(roundData.scores, roundData.players);
     setTimeout(() => {
        displayQuestion(roundData.question, roundData.players);
+       submitResponsesButton.style.opacity = 1;
     },5000);
 }
 
@@ -324,3 +326,14 @@ submitResponsesButton.addEventListener('click', async () => {
     submitResponsesButton.style.opacity = '0.6';
     return;
 });
+
+for(let cookie of document.cookie.split('; ')){
+    if(cookie.startsWith('answers=')){
+        let responses = cookie.substring(8).split('');
+        for(let i = 0; i<responses.length; i++){
+            if(document.querySelector('.question'+i)){
+                document.querySelector('.question'+i).checked = (responses[i] == '1');
+            }
+        }   
+    }
+}
