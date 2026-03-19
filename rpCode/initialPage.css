@@ -1,0 +1,132 @@
+
+:root {
+    --gradient: linear-gradient(90deg,rgba(5, 165, 225, 1) 0%, rgba(137, 155, 249, 1) 50%, rgba(191, 121, 252, 1) 100%);
+    --gradientAlternate: linear-gradient(90deg,rgba(212, 85, 90, 1) 0%, rgba(216, 121, 208, 1) 50%, rgba(195, 123, 255, 1) 100%);
+}
+
+body, html {
+    background:#000;
+    left:0;
+    top:0;
+    position:absolute;
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+.initialPage {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.inputCode {
+    position:absolute;
+    left:50%;
+    top:33%;
+    transform:translate(-50%,-50%);
+    width:23dvh;
+    height:1em;
+    font-size:10dvh;
+}
+
+.num {
+    width:5dvh;
+    height:10dvh;
+    background:#000;
+    border:none;
+    border-bottom:10px solid #2c2c2d;
+    font-size:10dvh;
+    color:#FFF;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight:800;
+    transition: border 0.3s;
+    border-radius:0.02em;
+}
+
+.num:focus {
+    border-bottom:15px solid #FFF;
+
+}
+
+input {
+    outline:none;
+}
+
+.num1 {
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+.num2 {
+    position:absolute;
+    left:6dvh;
+    top:0;
+}
+
+.num3 {
+    position:absolute;
+    left:12dvh;
+    top:0;
+}
+.num4 {
+    position:absolute;
+    left:18dvh;
+    top:0;
+}
+
+.button {
+    position:absolute;
+    width:50%;
+    height:5dvh;
+    color:#1a1a1b;
+    font-size:2.2dvh;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:500;
+    background:#FFF;
+    border-radius:1dvh;
+    text-align:center;
+    line-height:5dvh;
+    vertical-align: middle;
+    cursor:pointer;
+}
+
+.joinButton {
+    left:50%;
+    top:45%;
+    transform:translate(-50%,-50%);
+    display:none;
+}
+
+.createButton {
+    left:50%;
+    bottom:25%;
+    transform:translate(-50%,-50%);
+}
+
+.inputTitle {
+    position:absolute;
+    left:50%;
+    top:25%;
+    transform:translate(-50%,-50%);
+    font-size:2.2dvh;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:500;
+    color:#FFF;
+}
+
+.or {
+    position:absolute;
+    left:50%;
+    top:60%;
+    transform:translate(-50%,-50%);
+    font-size:2.2dvh;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:500;
+    color:#FFF;
+}

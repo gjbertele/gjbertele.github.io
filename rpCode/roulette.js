@@ -1,0 +1,326 @@
+const joinButton = document.querySelector('.joinButton');
+const createButton = document.querySelector('.createButton');
+const initialPage = document.querySelector('.initialPage');
+const lobbyPage = document.querySelector('.lobbyPage');
+const testPage = document.querySelector('.testPage');
+const scoresPage = document.querySelector('.scoresPage');
+const guessPage = document.querySelector('.guessPage');
+const numInputs = [1, 2, 3, 4].map(i => i = document.querySelector('.num'+i));
+const questionHolder = document.querySelector('.testPage > .questionHolder');
+const nameHolder = document.querySelector('.testPage > .nameHolder');
+const nameLabel = document.querySelector('.testPage > .nameLabel');
+const confessHolder = document.querySelector('.testPage > .confessHolder');
+const confessLabel = document.querySelector('.testPage > .confessLabel');
+const submitTestButton = document.querySelector('.testPage > .submitTestButton');
+const playerHolder = document.querySelector('.lobbyPage > .playerHolder');
+const startButton = document.querySelector('.lobbyPage > .startGame');
+const scoresHolder = document.querySelector('.scoresPage > .playerHolder');
+const questionText = document.querySelector('.guessPage > .question > .questionText');
+const playerSelection = document.querySelector('.guessPage > .playerHolder');
+const submitResponsesButton = document.querySelector('.guessPage > .submitSelectionButton');
+
+let serverConnection;
+let gameData;
+let currentRoundSelections = [];
+
+const checkToDisplayJoinButton = () => {
+    let allFull = true;
+    for(let i = 0; i<4; i++) allFull &= (numInputs[i].value != '');
+
+    if(allFull){
+        document.querySelector('.joinButton').style.display = 'inline-block';
+    } else {
+        document.querySelector('.joinButton').style.display = 'none';
+    }
+
+    return;
+}
+
+for(let i = 0; i<4; i++){
+    numInputs[i].addEventListener('keyup', (e) => {
+        if(e.key == 'Backspace') {
+            numInputs[i].value = '';
+            if(i != 0) numInputs[i-1].focus();
+        } else {
+            numInputs[i].value = e.key;
+            if(i != 3) numInputs[i+1].focus();
+        }
+        checkToDisplayJoinButton();
+    });
+}
+
+joinButton.addEventListener('click', async () => {
+    let gameCode = '';
+    for(let i = 0; i<4; i++) gameCode += numInputs[i].value;
+
+    const successfulJoin = await joinGameServer(gameCode);
+    if(successfulJoin == false) return;
+
+    initialPage.style.display = 'none';
+    lobbyPage.style.display = 'inline-block';
+
+    return;
+});
+
+createButton.addEventListener('click', async () => {
+    const serverData = await serverConnection.createGame();
+
+    await joinGameServer(serverData.gameCode);
+
+    document.querySelector('.waitingText').style.display = 'none';
+    initialPage.style.display = 'none';
+    startButton.style.display = 'inline-block';
+    lobbyPage.style.display = 'inline-block';
+
+    return;
+});
+
+startButton.addEventListener('click', async () => {
+    await serverConnection.startGame(gameData.gameCode);
+    return;
+});
+
+const addQuestion = (text, number) => {
+    const questionContainer = document.createElement('div');
+    questionContainer.className = 'question';
+    
+    const questionText = document.createElement('span');
+    questionText.className = 'questionText';
+    questionContainer.appendChild(questionText);
+
+    const checkLabel = document.createElement('label');
+    checkLabel.className = 'checkLabel';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'input question'+number;
+    checkLabel.appendChild(checkbox);
+
+    const checkboxInterior = document.createElement('span');
+    checkboxInterior.className = 'questionCheckbox';
+    checkLabel.appendChild(checkboxInterior);
+
+    questionContainer.appendChild(checkLabel);
+    
+    questionHolder.appendChild(questionContainer);
+
+    questionContainer.style.top = (5*number)+'dvh';
+    questionText.textContent = text;
+
+    questionText.addEventListener('click', () => {
+        checkbox.checked = !checkbox.checked;
+    });
+    
+    const elemRect = questionText.getBoundingClientRect();
+    if(elemRect.width < document.body.clientWidth*0.784) questionText.style.transform = 'translateY(50%)';
+
+    submitTestButton.style.top = (47 + 5*number)+'dvh';
+    confessLabel.style.top = (29 + 5*number)+'dvh';
+    confessHolder.style.top = (32 + 5*number)+'dvh';
+    nameLabel.style.top = (37 + 5*number)+'dvh';
+    nameHolder.style.top = (40 + 5*number)+'dvh';
+    questionHolder.style.height = (30 + 5*number)+'dvh';
+
+    return;
+}
+
+
+for(let i in questionList) addQuestion(questionList[i], i);
+
+//TODO: AUTOFILL QUESTIONS FROM COOKIES
+//TODO: force displayed gamecode to be 4 chars
+
+submitTestButton.addEventListener('click', async () => {
+    let answerString = '';
+
+    for(let idx in questionList){
+        let checked = document.querySelector('.question'+idx).checked;
+        answerString += checked ? '1' : '0';
+    }
+
+    let username = nameHolder.value;
+    let confession = confessHolder.value;
+
+    if(username.length == 0) return;
+
+    serverConnection = await submitTestToServer(answerString, username, confession)
+    initializeEventListeners();
+
+    testPage.style.display = 'none';
+    initialPage.style.display = 'inline-block';
+});
+
+const initializeEventListeners = () => {
+    serverConnection.on('playerJoin', addPlayerToHolder);
+    serverConnection.on('playerLeave', removePlayerFromHolder);
+    serverConnection.on('newRound', newRound);
+
+    return;
+}
+
+const addPlayerToHolder = (player) => {
+    const newElement = document.createElement('span');
+    newElement.className = 'playerName';
+    newElement.textContent = player.username;
+    
+    playerHolder.appendChild(newElement);
+
+    newElement.style.top = (-15 + 5*playerHolder.childNodes.length)+'dvh';
+
+    return;
+}
+
+const removePlayerFromHolder = (player) => {
+    console.log('remove event',player);
+    for(let elem of playerHolder.childNodes){
+        if(elem.textContent == player.username) elem.remove();
+    }
+
+    let counter = 0;
+    
+    for(let i in playerHolder.childNodes){
+        if(playerHolder.childNodes[i].style != undefined){
+            playerHolder.childNodes[i].style.top = (-5 + 5*counter)+'dvh';
+            counter++;
+        }
+    }
+
+    return;
+}
+
+
+const joinGameServer = async (gameCode) => {
+    gameData = await serverConnection.joinGame(gameCode);
+    if(gameData == false) return false;
+
+    for(let i in gameData.players){
+        addPlayerToHolder(gameData.players[i], i);
+    }
+
+    document.querySelector('.gameCode').textContent = gameCode;
+
+    return true;
+}
+
+const submitTestToServer = async (answerString, username, confession) => {
+    let playerData = {
+        playerID:Math.floor(Math.random()*1000000),
+        username,
+        responses:answerString.split(''),
+        netScore:0,
+        confession
+    };
+
+    return new ServerConnection(playerData);
+}
+
+const newRound = async (roundData) => {
+    console.log('new round',roundData);
+    currentRoundSelections = [];
+    submitResponsesButton.style.opacity = 1;
+    displayScores(roundData.scores, roundData.players);
+    setTimeout(() => {
+       displayQuestion(roundData.question, roundData.players);
+    },5000);
+}
+
+const addScoreBox = (playerName, scoreData, maxScore, index) => {
+    const scoreContainer = document.createElement('div');
+    scoreContainer.className = 'scoreContainer';
+
+    const playerText = document.createElement('span');
+    playerText.className = 'playerName';
+    playerText.textContent = playerName;
+    scoreContainer.appendChild(playerText);
+
+    const scoreBox = document.createElement('div');
+    scoreBox.className = 'scoreBox';
+    scoreContainer.appendChild(scoreBox);
+
+    scoreBox.style.width = Math.floor(15 + Math.max(0, scoreData.netScore * 40 / maxScore)) + '%';
+
+    let diffText = scoreData.diff >= 0 ? '+'+scoreData.diff : scoreData.diff;
+
+    const scoreText = document.createElement('div');
+    scoreText.className = 'scoreText';
+    scoreText.textContent = scoreData.netScore + ' ' + diffText;
+    scoreBox.appendChild(scoreText);
+
+    scoresHolder.appendChild(scoreContainer);
+    scoreContainer.style.top = (1+6*index) + 'dvh';
+
+    return;
+}
+
+const displayScores = (scoreData, players) => {
+    players.sort((a,b) => {
+        return scoreData[b].netScore - scoreData[a].netScore
+    });
+
+    let maxScore = 0;
+    for(let i in scoreData) maxScore = Math.max(scoreData[i].netScore, maxScore);
+    if(maxScore == 0) maxScore = 10;
+
+    scoresHolder.innerHTML = '';
+
+    for(let i in players){
+        addScoreBox(players[i], scoreData[players[i]], maxScore, i);
+    }
+
+
+    lobbyPage.style.display = 'none';
+    guessPage.style.display = 'none';
+    scoresPage.style.display = 'inline-block';
+
+    return;
+}
+
+const displayQuestion = (question, players) => {
+    questionText.textContent = question;
+
+    playerSelection.innerHTML = '';
+
+    setTimeout(() => {
+        for(let i in players){
+            addPlayerSelectionBox(players[i]);
+        }
+    }, 50);
+
+    lobbyPage.style.display = 'none';
+    guessPage.style.display = 'inline-block';
+    scoresPage.style.display = 'none';
+
+    return;
+}
+
+const addPlayerSelectionBox = (playerName) => {
+    const newElement = document.createElement('div');
+    newElement.className = 'selectionBox';
+    newElement.textContent = playerName;
+    playerSelection.appendChild(newElement);
+
+    newElement.style.top = (6*playerSelection.childNodes.length - 5)+'dvh';
+
+    let selectionEnabled = false;
+
+    newElement.addEventListener('click', () => {
+        selectionEnabled = !selectionEnabled;
+        if(selectionEnabled) {
+            newElement.style.background = '#FFF';
+            newElement.style.color = '#000';
+            currentRoundSelections.push(playerName);
+        } else {
+            newElement.style.background = '#000';
+            newElement.style.color = '#FFF';
+            currentRoundSelections = currentRoundSelections.filter(i => i != playerName);
+        }
+    });
+
+    return;
+}
+
+submitResponsesButton.addEventListener('click', async () => {
+    await serverConnection.submitResponses(currentRoundSelections);
+    submitResponsesButton.style.opacity = '0.6';
+    return;
+});

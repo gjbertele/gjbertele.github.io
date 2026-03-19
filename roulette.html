@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Roulette</title>
+    <link rel="stylesheet" href="rpCode/testPage.css">
+    <link rel="stylesheet" href="rpCode/initialPage.css">
+    <link rel="stylesheet" href="rpCode/lobbyPage.css">
+    <link rel="stylesheet" href="rpCode/scoresPage.css">
+    <link rel="stylesheet" href="rpCode/guessPage.css">
+</head>
+<body>
+    <div class="testPage">
+        <span class="introText">Rice Purity Roulette</span>
+        <div class="questionHolder"></div>
+        <span class="confessLabel">Confess to something: </span>
+        <input class="confessHolder" type="text" placeholder="Type here">
+        <span class="nameLabel">Name: </span>
+        <input class="nameHolder" type="text" placeholder="Type here">
+        <div class="button submitTestButton">Submit</div>
+    </div>
+    <div class="initialPage">
+        <span class="inputTitle">Enter Game Code</span>
+        <div class="inputCode">
+            <input class="num num1" type="number">
+            <input class="num num2" type="number">
+            <input class="num num3" type="number">
+            <input class="num num4" type="number">
+        </div>
+        <div class="button joinButton">Join Game</div>
+        <span class="or">Or Create a Game</span>
+        <div class="button createButton">Create Game</div>
+    </div>
+    <div class="lobbyPage">
+        <span class="gameCode">1234</span>
+        <div class="card playerHolder">
+            <span class="playerTitle">Players</span>
+        </div>
+        <span class="waitingText">Waiting for host to start</span>
+        <div class="startGame button">Start Game</div>
+    </div>
+    <div class="scoresPage">
+        <span class="scoreTitle">Scores</span>
+        <div class="card playerHolder"></div>
+    </div>
+    <div class="guessPage">
+        <div class="question">
+            Someone has <span class="highlightGradient questionText">Placeholder</span>
+        </div>
+        <div class="playerHolder"></div>
+        <div class="button submitSelectionButton">Submit</div>
+    </div>
+    <script src="rpCode/serverHandler.js"></script>
+    <script src="rpCode/questionData.js"></script>
+    <script src="rpCode/roulette.js"></script>
+</body>
+</html>
