@@ -404,11 +404,7 @@ document.addEventListener('gesturechange', e => {
 document.addEventListener('gestureend', e => e.preventDefault());
 
 const initializeGraph = async () => {
-    const fetchedData = await fetch(`${apiURL}/recentData`, {
-        'headers':{
-            'ngrok-skip-browser-warning':'true'
-        }
-    });
+    const fetchedData = await fetch(`${apiURL}/web/recentData`);
     const fetchedText = await fetchedData.text();
     const newAdjacencyObject = JSON.parse(fetchedText);
 
@@ -459,11 +455,7 @@ const checkForUpdates = async () => {
     }
 
     console.log('Checking',Date.now());
-     const fetchedData = await fetch(`${apiURL}/waitForData`, {
-        'headers':{
-            'ngrok-skip-browser-warning':'true'
-        }
-    });
+     const fetchedData = await fetch(`${apiURL}/web/waitForData`);
     const fetchedText = await fetchedData.text();
     console.log('Received data')
     if(fetchedText != ''){
