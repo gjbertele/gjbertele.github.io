@@ -11,7 +11,7 @@
 .guessPage > .question {
     display:block;
     position: absolute;
-    top:7.5%;
+    top:6%;
     left:50%;
     width:80%;
     height:5dvh;
@@ -32,7 +32,7 @@
 .guessPage > .playerHolder {
     position:absolute;
     left:50%;
-    top:20%;
+    top:22.5%;
     width:80%;
     transform:translateX(-50%);
 }

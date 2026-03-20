@@ -304,9 +304,7 @@ for(let cookie of document.cookie.split('; ')){
     if(cookie.startsWith('answers=')){
         let responses = cookie.substring(8).split('');
         for(let i = 0; i<responses.length; i++){
-            if(document.querySelector('.question'+i)){
-                document.querySelector('.question'+i).checked = (responses[i] == '1');
-            }
+            document.querySelector(`.questionHolder > div:nth-child(${i+1})`).setAttribute('checked',responses[i] == '1' ? 'true' : 'false');
         }   
     }
 }
