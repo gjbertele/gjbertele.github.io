@@ -48,4 +48,5 @@ const questionList = ["Held hands romantically?",
 "Bought something from Temu?",
 "Pick gay son?",
 "Broken a piece of senior center furniture?",
-"Been on the receiving end of one-sided beef?"]
+"Been on the receiving end of one-sided beef?",
+"(Recently) sent a text with 🥺 or 😈?"]
