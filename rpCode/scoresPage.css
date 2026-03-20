@@ -25,14 +25,12 @@
     background:#000;
     border:none;
     font-size:8dvh;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family:var(--titleFont);
+    color:#FFF;
     text-align:center;
     line-height:1em;
     vertical-align: middle;
     font-weight:800;
-    background:var(--gradient);
-    background-clip:text;
-    color:transparent;
 }
 
 .scoreContainer {

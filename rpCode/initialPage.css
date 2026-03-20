@@ -2,10 +2,13 @@
 :root {
     --gradient: linear-gradient(90deg,rgba(5, 165, 225, 1) 0%, rgba(137, 155, 249, 1) 50%, rgba(191, 121, 252, 1) 100%);
     --gradientAlternate: linear-gradient(90deg,rgba(212, 85, 90, 1) 0%, rgba(216, 121, 208, 1) 50%, rgba(195, 123, 255, 1) 100%);
+    --titleFont: 'Bebas Neue', sans-serif;
+    --numFont: Arial, Helvetica, sans-serif;
+    --textFont: 'DM Mono', monospace;
 }
 
 body, html {
-    background:#000;
+    background:#0a0a0a;
     left:0;
     top:0;
     position:absolute;
@@ -44,7 +47,7 @@ body, html {
     border:none;
     border-bottom:0.5dvh solid #2c2c2d;
     font-size:8dvh;
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: var(--numFont);
     font-weight:800;
     transition: border 0.3s;
     border-radius:0.02em;
@@ -57,6 +60,7 @@ body, html {
     transform:translateZ(0);
     text-align:center;
     resize:none;
+    font-family:var(--titleFont);
 }
 
 .num:focus {
@@ -71,7 +75,7 @@ body, html {
     height:5dvh;
     color:#1a1a1b;
     font-size:2.2dvh;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:var(--titleFont);
     font-weight:500;
     background:#FFF;
     border-radius:1dvh;
@@ -97,12 +101,14 @@ body, html {
 .inputTitle {
     position:absolute;
     left:50%;
-    top:25%;
+    top:20%;
     transform:translate(-50%,-50%);
-    font-size:2.2dvh;
-    font-family:Arial, Helvetica, sans-serif;
+    font-size:5dvh;
+    font-family:var(--titleFont);
     font-weight:500;
     color:#FFF;
+    width:100%;
+    text-align:center;
 }
 
 .or {
@@ -110,9 +116,11 @@ body, html {
     left:50%;
     top:60%;
     transform:translate(-50%,-50%);
-    font-size:2.2dvh;
-    font-family:Arial, Helvetica, sans-serif;
+    font-size:4dvh;
+    font-family:var(--titleFont);
     font-weight:500;
+    width:100%;
+    text-align:center;
     color:#FFF;
 }
 

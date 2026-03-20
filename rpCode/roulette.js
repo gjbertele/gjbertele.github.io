@@ -6,12 +6,12 @@ const testPage = document.querySelector('.testPage');
 const scoresPage = document.querySelector('.scoresPage');
 const guessPage = document.querySelector('.guessPage');
 const numInputs = [1, 2, 3, 4].map(i => i = document.querySelector('.num'+i));
-const questionHolder = document.querySelector('.testPage > .questionHolder');
-const nameHolder = document.querySelector('.testPage > .nameHolder');
-const nameLabel = document.querySelector('.testPage > .nameLabel');
-const confessHolder = document.querySelector('.testPage > .confessHolder');
-const confessLabel = document.querySelector('.testPage > .confessLabel');
-const submitTestButton = document.querySelector('.testPage > .submitTestButton');
+const questionHolder = document.querySelector('.testPage .questionHolder');
+const nameHolder = document.querySelector('.testPage .nameHolder');
+const nameLabel = document.querySelector('.testPage .nameLabel');
+const confessHolder = document.querySelector('.testPage .confessHolder');
+const confessLabel = document.querySelector('.testPage .confessLabel');
+const submitTestButton = document.querySelector('.testPage .submitTestButton');
 const playerHolder = document.querySelector('.lobbyPage > .playerHolder');
 const startButton = document.querySelector('.lobbyPage > .startGame');
 const scoresHolder = document.querySelector('.scoresPage > .playerHolder');
@@ -84,59 +84,34 @@ startButton.addEventListener('click', async () => {
 
 const addQuestion = (text, number) => {
     const questionContainer = document.createElement('div');
-    questionContainer.className = 'question';
+    questionContainer.className = "question";
+
+    questionContainer.innerHTML = `
+        <span class="questionText">${text}</span>
+        <div class="questionCheckbox">
+            <svg class="interior" viewBox="0 0 14 14"><polyline points="2,7 6,11 12,3"/></svg>
+        </div>
+    `
+
+    questionContainer.setAttribute('checked','false');
     
-    const questionText = document.createElement('span');
-    questionText.className = 'questionText';
-    questionContainer.appendChild(questionText);
-
-    const checkLabel = document.createElement('label');
-    checkLabel.className = 'checkLabel';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.className = 'input question'+number;
-    checkLabel.appendChild(checkbox);
-
-    const checkboxInterior = document.createElement('span');
-    checkboxInterior.className = 'questionCheckbox';
-    checkLabel.appendChild(checkboxInterior);
-
-    questionContainer.appendChild(checkLabel);
+    questionContainer.onclick = () => {
+        if(questionContainer.getAttribute('checked') == 'false') questionContainer.setAttribute('checked','true');
+        else questionContainer.setAttribute('checked','false');
+    };
     
-    questionHolder.appendChild(questionContainer);
-
-    questionContainer.style.top = (5*number)+'dvh';
-    questionText.textContent = text;
-
-    questionText.addEventListener('click', () => {
-        checkbox.checked = !checkbox.checked;
-    });
-    
-    const elemRect = questionText.getBoundingClientRect();
-    if(elemRect.width < document.body.clientWidth*0.784) questionText.style.transform = 'translateY(50%)';
-
-    submitTestButton.style.top = (47 + 5*number)+'dvh';
-    confessLabel.style.top = (29 + 5*number)+'dvh';
-    confessHolder.style.top = (32 + 5*number)+'dvh';
-    nameLabel.style.top = (37 + 5*number)+'dvh';
-    nameHolder.style.top = (40 + 5*number)+'dvh';
-    questionHolder.style.height = (30 + 5*number)+'dvh';
+    questionHolder.insertBefore(questionContainer, confessLabel);
 
     return;
 }
 
-
 for(let i in questionList) addQuestion(questionList[i], i);
-
-//TODO: AUTOFILL QUESTIONS FROM COOKIES
-//TODO: force displayed gamecode to be 4 chars
 
 submitTestButton.addEventListener('click', async () => {
     let answerString = '';
 
-    for(let idx in questionList){
-        let checked = document.querySelector('.question'+idx).checked;
+    for(let elem of questionHolder.querySelectorAll('.question')){
+        let checked = elem.getAttribute('checked') == 'true';
         answerString += checked ? '1' : '0';
     }
     
@@ -169,8 +144,6 @@ const addPlayerToHolder = (player) => {
     newElement.textContent = player.username;
     
     playerHolder.appendChild(newElement);
-
-    newElement.style.top = (-15 + 5*playerHolder.childNodes.length)+'dvh';
 
     return;
 }
@@ -302,23 +275,15 @@ const addPlayerSelectionBox = (playerName) => {
     const newElement = document.createElement('div');
     newElement.className = 'selectionBox';
     newElement.textContent = playerName;
+    newElement.setAttribute('selected','false');
     playerSelection.appendChild(newElement);
+    
 
     newElement.style.top = (6*playerSelection.childNodes.length - 5)+'dvh';
 
-    let selectionEnabled = false;
-
     newElement.addEventListener('click', () => {
-        selectionEnabled = !selectionEnabled;
-        if(selectionEnabled) {
-            newElement.style.background = '#FFF';
-            newElement.style.color = '#000';
-            currentRoundSelections.push(playerName);
-        } else {
-            newElement.style.background = '#000';
-            newElement.style.color = '#FFF';
-            currentRoundSelections = currentRoundSelections.filter(i => i != playerName);
-        }
+        if(newElement.getAttribute('selected') == 'true') newElement.setAttribute('selected','false');
+        else newElement.setAttribute('selected','true');
     });
 
     return;
