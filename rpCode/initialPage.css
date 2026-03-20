@@ -29,8 +29,10 @@ body, html {
     left:50%;
     top:33%;
     transform:translate(-50%,-50%);
-    width:23dvh;
-    height:1em;
+    height:10dvh;
+    width:auto;
+    display:flex;
+    gap:3dvh;
     font-size:10dvh;
 }
 
@@ -38,46 +40,28 @@ body, html {
     width:5dvh;
     height:10dvh;
     background:transparent;
-    border:none;
-    border-bottom:10px solid #2c2c2d;
-    font-size:10dvh;
     color:#FFF;
+    border:none;
+    border-bottom:0.5dvh solid #2c2c2d;
+    font-size:8dvh;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight:800;
     transition: border 0.3s;
     border-radius:0.02em;
+    box-sizing:border-box;     
+    -webkit-appearance:none; 
+    -moz-appearance:none;   
+    appearance:none;
+    -webkit-text-size-adjust:100%;
+    line-height:1;
+    transform:translateZ(0);
+    text-align:center;
 }
 
 .num:focus {
-    border-bottom:15px solid #FFF;
-
-}
-
-input {
+    border-bottom:0.75dvh solid #FFF;
     outline:none;
-}
 
-.num1 {
-    position:absolute;
-    left:0;
-    top:0;
-}
-
-.num2 {
-    position:absolute;
-    left:6dvh;
-    top:0;
-}
-
-.num3 {
-    position:absolute;
-    left:12dvh;
-    top:0;
-}
-.num4 {
-    position:absolute;
-    left:18dvh;
-    top:0;
 }
 
 .button {
@@ -129,4 +113,19 @@ input {
     font-family:Arial, Helvetica, sans-serif;
     font-weight:500;
     color:#FFF;
+}
+
+
+
+input {
+    -webkit-appearance: none; 
+    -moz-appearance: none;   
+    appearance: none;
+    -webkit-text-size-adjust: 100%;
+    zoom:1
+  }
+
+.initialPage {
+    zoom:1;
+    transform:none
 }

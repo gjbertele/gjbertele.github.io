@@ -41,9 +41,11 @@ for(let i = 0; i<4; i++){
         if(e.key == 'Backspace') {
             numInputs[i].value = '';
             if(i != 0) numInputs[i-1].focus();
-        } else {
+        } else if(!isNaN(parseInt(e.key))){
             numInputs[i].value = e.key;
             if(i != 3) numInputs[i+1].focus();
+        } else {
+           numInputs[i].value = '';
         }
         checkToDisplayJoinButton();
     });
@@ -150,7 +152,7 @@ submitTestButton.addEventListener('click', async () => {
     serverConnection.updateQuestionsList(questionList);
 
     testPage.style.display = 'none';
-    initialPage.style.display = 'inline-block';
+    initialPage.style.display = 'flex';
 });
 
 const initializeEventListeners = () => {
