@@ -126,6 +126,7 @@ input:focus{
     transform:translateX(-50%);
     transition:left 0.5s;
 }
+
 .friendHolder {
     position:absolute;
     left:50%;
