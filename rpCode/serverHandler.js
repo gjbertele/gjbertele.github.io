@@ -16,7 +16,7 @@ class ServerConnection {
     }
 
     async #initializeSocket(){
-        this.#apiURL = `https://unpedagogic-tyrone-exuberant.ngrok-free.dev`;
+        this.#apiURL = `https://gjb.one/api`;
         this.#openListeners = [];
         await this.submitToServer(this.currentPlayer);
         await this.#reopenSocket();
@@ -27,7 +27,6 @@ class ServerConnection {
         try {
             const fetchedData = await fetch(`${this.#apiURL}/roulette/waitForEvent`, {
                 'headers':{
-                    'ngrok-skip-browser-warning':'true',
                     'playerID':this.currentPlayer.playerID
                 }
             });
@@ -58,7 +57,6 @@ class ServerConnection {
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/joinGame`, {
             'headers':{
-                'ngrok-skip-browser-warning':'true',
                 'playerID':this.currentPlayer.playerID,
                 'gameCode':gameCode
             }
@@ -77,7 +75,6 @@ class ServerConnection {
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/updateQuestions`, {
             'headers':{
-                'ngrok-skip-browser-warning':'true',
                 'questions': newList.map(i => i = i.toLowerCase().replaceAll('?','')).join('<BREAK>')
             }
         });
@@ -86,11 +83,7 @@ class ServerConnection {
     async createGame() {
         if(this.#apiURL == null) return;
 
-        const fetchedData = await fetch(`${this.#apiURL}/roulette/createGame`, {
-            'headers':{
-                'ngrok-skip-browser-warning':'true'
-            }
-        });
+        const fetchedData = await fetch(`${this.#apiURL}/roulette/createGame`);
 
         const fetchedText = await fetchedData.text();
         const responseData = JSON.parse(fetchedText);
@@ -104,7 +97,6 @@ class ServerConnection {
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/startGame`, {
             'headers':{
-                'ngrok-skip-browser-warning':'true',
                 'gameCode':gameCode
             }
         });
@@ -119,7 +111,6 @@ class ServerConnection {
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/submitTest`, {
             'headers':{
-                'ngrok-skip-browser-warning':'true',
                 'playerID':playerData.playerID,
                 'username':playerData.username,
                 'responses':playerData.responses,
@@ -137,7 +128,6 @@ class ServerConnection {
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/submitResponses`, {
             'headers':{
-                'ngrok-skip-browser-warning':'true',
                 'playerID':this.currentPlayer.playerID,
                 'responses':responses.join('<BREAK>')
             }

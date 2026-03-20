@@ -20,7 +20,7 @@ if(isIOS){
 }
 
 const heightScaleOffset = isIOS ? 0.13 : 0.185;
-const apiURL = 'https://unpedagogic-tyrone-exuberant.ngrok-free.dev';
+const apiURL = 'https://gjb.one/api';
 let username;
 const swipePage = () => {
     username = formatName(document.querySelector('.nameInput').value);
@@ -216,11 +216,7 @@ const submitFriendsToServer = () => {
     let encodeRoot = encodeURIComponent(formatName(document.querySelector('.nameInput').value));
     let encodedFriendNames = encodeURIComponent(filteredFriends);
 
-    fetch(`${apiURL}/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`, {
-        'headers':{
-            'ngrok-skip-browser-warning':'true'
-        }
-    }).then(() => {
+    fetch(`${apiURL}/addConnections?root=${encodeRoot}&adjacency=${encodedFriendNames}`).then(() => {
         startGraphing();
     }).catch(() => {
         document.querySelector('.overlayText').textContent = 'Something went wrong, try again later.'
