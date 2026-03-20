@@ -282,8 +282,13 @@ const addPlayerSelectionBox = (playerName) => {
     newElement.style.top = (6*playerSelection.childNodes.length - 5)+'dvh';
 
     newElement.addEventListener('click', () => {
-        if(newElement.getAttribute('selected') == 'true') newElement.setAttribute('selected','false');
-        else newElement.setAttribute('selected','true');
+        if(newElement.getAttribute('selected') == 'true'){
+            newElement.setAttribute('selected','false');
+            currentRoundSelections.push(playerName);
+        } else {
+            newElement.setAttribute('selected','true');
+            currentRoundSelections = currentRoundSelections.filter(i => i != playerName);
+        }
     });
 
     return;
