@@ -50,8 +50,5 @@ const questionList = ["Held hands romantically?",
 "Broken a piece of senior center furniture?",
 "Been on the receiving end of one-sided beef?",
 "(Recently) sent a text with the pleading eye emoji?",
-"Thrown up at a party?",
-"Had your fake rejected/taken?",
 "Quit a sport/been in lifetime?",
-"Been on the wall of shame?"
-]
+"Been on the wall of shame?"]
