@@ -52,4 +52,6 @@ const questionList = ["Held hands romantically?",
 "Been on the receiving end of one-sided beef?",
 "Been gaslit by someone about something important?",
 "Added 20+ people from quick add in one day?",
-"Faked an injury to get out of practice/a game/etc?"]
+"Faked an injury to get out of practice/a game/etc?",
+"Used AI to get advice?",
+"Tried to delete TikTok/Reels/etc and redownloaded it within a day?"]
