@@ -58,8 +58,7 @@ joinButton.addEventListener('click', async () => {
     const successfulJoin = await joinGameServer(gameCode);
     if(successfulJoin == false) return;
 
-    initialPage.style.display = 'none';
-    lobbyPage.style.display = 'inline-block';
+    displayPage('lobbyPage');
 
     return;
 });
@@ -70,9 +69,9 @@ createButton.addEventListener('click', async () => {
     await joinGameServer(serverData.gameCode);
 
     document.querySelector('.waitingText').style.display = 'none';
-    initialPage.style.display = 'none';
+
     startButton.style.display = 'inline-block';
-    lobbyPage.style.display = 'inline-block';
+    displayPage('lobbyPage');
 
     return;
 });
@@ -126,8 +125,7 @@ submitTestButton.addEventListener('click', async () => {
     initializeEventListeners();
     serverConnection.updateQuestionsList(questionList);
 
-    testPage.style.display = 'none';
-    initialPage.style.display = 'flex';
+    displayPage('initialPage');
 });
 
 const initializeEventListeners = () => {
@@ -195,7 +193,7 @@ const submitTestToServer = async (answerString, username, confession) => {
 const newRound = async (roundData) => {
     console.log('new round',roundData);
     currentRoundSelections = [];
-    displayScores(roundData.scores, roundData.players);
+    displayScores(roundData.scores, roundData.players.map(i => i = i.username));
     setTimeout(() => {
        displayQuestion(roundData.question, roundData.players);
        submitResponsesButton.style.opacity = 1;
@@ -246,9 +244,7 @@ const displayScores = (scoreData, players) => {
     }
 
 
-    lobbyPage.style.display = 'none';
-    guessPage.style.display = 'none';
-    scoresPage.style.display = 'inline-block';
+    displayPage('scoresPage');
 
     return;
 }
@@ -274,14 +270,14 @@ const displayQuestion = (question, players) => {
         }
     }, 50);
 
-    lobbyPage.style.display = 'none';
-    guessPage.style.display = 'inline-block';
-    scoresPage.style.display = 'none';
+    displayPage('guessPage');
 
     return;
 }
 
-const addPlayerSelectionBox = (playerName) => {
+const addPlayerSelectionBox = (player) => {
+    const playerName = player.username;
+
     const newElement = document.createElement('div');
     newElement.className = 'selectionBox';
     newElement.textContent = playerName;
@@ -294,10 +290,10 @@ const addPlayerSelectionBox = (playerName) => {
     newElement.addEventListener('click', () => {
         if(newElement.getAttribute('selected') == 'true'){
             newElement.setAttribute('selected','false');
-            currentRoundSelections = currentRoundSelections.filter(i => i != playerName);
+            currentRoundSelections = currentRoundSelections.filter(i => i != player.id);
         } else {
             newElement.setAttribute('selected','true');
-            currentRoundSelections.push(playerName);
+            currentRoundSelections.push(player.id);
         }
     });
 
@@ -309,6 +305,24 @@ submitResponsesButton.addEventListener('click', async () => {
     submitResponsesButton.style.opacity = '0.6';
     return;
 });
+
+const displayPage = (pageName) => {
+    const pageOrder = ['testPage', 'initialPage', 'lobbyPage', 'scoresPage', 'guessPage'];
+    const pgIdx = pageOrder.indexOf(pageName);
+
+
+    document.body.style.overflowY = (pageName == 'testPage') ? 'scroll' : 'hidden';
+
+    for(let i = 0; i<5; i++){
+        const pageElement = document.querySelector(`.${pageOrder[i]}`);
+        pageElement.style.left = ((i - pgIdx)*100) + '%';
+
+    }
+
+    return;
+
+}
+
 
 for(let cookie of document.cookie.split('; ')){
     if(cookie.startsWith('answers=')){
