@@ -19,12 +19,13 @@ body, html {
 }
 
 .initialPage {
-    position:absolute;
-    left:0;
+    position:fixed;
+    left:100%;
     top:0;
     width:100%;
     height:100%;
-    display:none;
+    display:flex;
+    transition:left 0.3s;
 }
 
 .inputCode {
