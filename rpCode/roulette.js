@@ -254,13 +254,17 @@ const displayScores = (scoreData, players) => {
 }
 
 const displayQuestion = (question, players) => {
-    if(question.startsWith('think')){
-        document.querySelector('.questionPrefix').textContent = 'Someone';
-    } else {
-        document.querySelector('.questionPrefix').textContent = 'Someone has';
+    let replacePairs = [['think','thinks'],['pick ','picks '],['would','would']]
+    let replaced = false;
+    
+    for(let pair of replacePairs){
+        replaced |= question.startsWith(pair[0]);
+        question = question.replaceAll(pair[0], pair[1]);
     }
 
-    questionText.textContent = question.replaceAll('think','thinks');
+    document.querySelector('.questionPrefix').textContent = 'Someone '+(!replaced ? 'has ' : '');
+
+    questionText.textContent = question;
 
     playerSelection.innerHTML = '';
 
@@ -290,10 +294,10 @@ const addPlayerSelectionBox = (playerName) => {
     newElement.addEventListener('click', () => {
         if(newElement.getAttribute('selected') == 'true'){
             newElement.setAttribute('selected','false');
-            currentRoundSelections.push(playerName);
+            currentRoundSelections = currentRoundSelections.filter(i => i != playerName);
         } else {
             newElement.setAttribute('selected','true');
-            currentRoundSelections = currentRoundSelections.filter(i => i != playerName);
+            currentRoundSelections.push(playerName);
         }
     });
 
@@ -310,7 +314,7 @@ for(let cookie of document.cookie.split('; ')){
     if(cookie.startsWith('answers=')){
         let responses = cookie.substring(8).split('');
         for(let i = 0; i<responses.length; i++){
-            document.querySelector(`.questionHolder > div:nth-child(${i+1})`).setAttribute('checked',responses[i] == '1' ? 'true' : 'false');
+            document.querySelector(`.questionHolder > div:nth-child(${i+1})`)?.setAttribute('checked',responses[i] == '1' ? 'true' : 'false');
         }   
     }
 }
