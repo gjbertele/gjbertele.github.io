@@ -108,16 +108,17 @@ for(let i in questionList) addQuestion(questionList[i], i);
 
 submitTestButton.addEventListener('click', async () => {
     let answerString = '';
+    let username = nameHolder.value;
+    let confession = confessHolder.value;
 
     for(let elem of questionHolder.querySelectorAll('.question')){
         let checked = elem.getAttribute('checked') == 'true';
         answerString += checked ? '1' : '0';
     }
     
-    document.cookie = 'answers='+answerString;
+    document.cookie = `answers=${answerString}`
+    document.cookie = `rouletteUsername=${username}`
 
-    let username = nameHolder.value;
-    let confession = confessHolder.value;
 
     if(username.length == 0) return;
 
@@ -330,5 +331,9 @@ for(let cookie of document.cookie.split('; ')){
         for(let i = 0; i<responses.length; i++){
             document.querySelector(`.questionHolder > div:nth-child(${i+1})`)?.setAttribute('checked',responses[i] == '1' ? 'true' : 'false');
         }   
+    }
+    if(cookie.startsWith('rouletteUsername=')){
+        let username = cookie.substring('rouletteUsername='.length);
+        nameHolder.value = username;
     }
 }
