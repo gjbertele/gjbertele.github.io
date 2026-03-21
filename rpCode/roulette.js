@@ -254,7 +254,13 @@ const displayScores = (scoreData, players) => {
 }
 
 const displayQuestion = (question, players) => {
-    questionText.textContent = question;
+    if(question.startsWith('think')){
+        document.querySelector('.questionPrefix').textContent = 'Someone';
+    } else {
+        document.querySelector('.questionPrefix').textContent = 'Someone has';
+    }
+
+    questionText.textContent = question.replaceAll('think','thinks');
 
     playerSelection.innerHTML = '';
 
