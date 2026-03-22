@@ -56,6 +56,7 @@ class ServerConnection {
         if(this.#apiURL == null) return;
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/joinGame`, {
+            'method': 'POST',
             'headers':{
                 'playerID':this.currentPlayer.playerID,
                 'gameCode':gameCode
@@ -74,6 +75,7 @@ class ServerConnection {
         if(this.#apiURL == null) return;
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/updateQuestions`, {
+            'method': 'POST',
             'headers':{
                 'questions': newList.map(i => i = i.toLowerCase().replaceAll('?','')).join('<BREAK>')
             }
@@ -83,7 +85,9 @@ class ServerConnection {
     async createGame() {
         if(this.#apiURL == null) return;
 
-        const fetchedData = await fetch(`${this.#apiURL}/roulette/createGame`);
+        const fetchedData = await fetch(`${this.#apiURL}/roulette/createGame`,{
+            'method': 'POST'
+        });
 
         const fetchedText = await fetchedData.text();
         const responseData = JSON.parse(fetchedText);
@@ -96,6 +100,7 @@ class ServerConnection {
         if(this.#apiURL == null) return;
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/startGame`, {
+            'method': 'POST',
             'headers':{
                 'gameCode':gameCode
             }
@@ -110,6 +115,7 @@ class ServerConnection {
         if(this.#apiURL == null) return;
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/submitTest`, {
+            'method': 'POST',
             'headers':{
                 'playerID':playerData.playerID,
                 'username':playerData.username,
@@ -127,6 +133,7 @@ class ServerConnection {
         if(this.#apiURL == null) return;
 
         const fetchedData = await fetch(`${this.#apiURL}/roulette/submitResponses`, {
+            'method': 'POST',
             'headers':{
                 'playerID':this.currentPlayer.playerID,
                 'responses':responses.join('<BREAK>')
