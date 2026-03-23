@@ -1,7 +1,5 @@
 
 :root {
-    --gradient: linear-gradient(90deg,rgba(5, 165, 225, 1) 0%, rgba(137, 155, 249, 1) 50%, rgba(191, 121, 252, 1) 100%);
-    --gradientAlternate: linear-gradient(90deg,rgba(212, 85, 90, 1) 0%, rgba(216, 121, 208, 1) 50%, rgba(195, 123, 255, 1) 100%);
     --titleFont: 'Bebas Neue', sans-serif;
     --numFont: Arial, Helvetica, sans-serif;
     --textFont: 'DM Mono', monospace;
