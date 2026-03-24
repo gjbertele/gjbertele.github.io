@@ -37,6 +37,11 @@ const swipePage = () => {
         return;
     }
 
+    if(window.location.href.includes('#skipToGraph')){
+        startGraphing();
+        return;
+    }
+
     document.querySelector('.enterName').style.left = '150%';
     document.querySelector('.enterFriends').style.left = '50%';
     document.cookie = "name="+username;
