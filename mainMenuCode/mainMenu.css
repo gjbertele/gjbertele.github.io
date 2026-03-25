@@ -26,6 +26,16 @@ html {
     background: #000;
 }
 
+body::-webkit-scrollbar {
+    background: transparent;
+    width: 0.2dvw;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius: 1em;
+}
+
 .cardHolder {
     display: flex;
     position: absolute;
