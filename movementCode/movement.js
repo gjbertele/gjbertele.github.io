@@ -6,7 +6,6 @@ const log = document.querySelector('.log');
 
 document.querySelector('button').onclick = () => {
     DeviceMotionEvent.requestPermission().then((state) => {
-        document.write(state);
         if (state != 'granted') return;
 
         window.addEventListener('devicemotion', (e) => {
@@ -14,6 +13,7 @@ document.querySelector('button').onclick = () => {
                 timeSent: Date.now(),
                 acceleration: e.acceleration
             }));
+            log.textContent = e.acceleration.x + ", " + e.acceleration.y + ", " + e.acceleration.z;
         });
     });
 }
