@@ -18,7 +18,7 @@ document.body.onclick = () => {
 
 
 const connectToWebSocket = () => {
-    user.socket = new WebSocket("ws://gjb.one");
+    user.socket = new WebSocket("wss://gjb.one");
 
     user.socket.addEventListener("open", () => {
         console.log("Connected to server");
