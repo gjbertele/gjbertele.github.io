@@ -9,13 +9,23 @@ document.querySelector('button').onclick = () => {
         if (state != 'granted') return;
 
         window.addEventListener('devicemotion', (e) => {
+            let accel = {
+                x: round(e.acceleration.x),
+                y: round(e.acceleration.y),
+                z: round(e.acceleration.z)
+            }
+
             user.socket.send(JSON.stringify({
                 timeSent: Date.now(),
-                acceleration: e.acceleration
+                acceleration: accel
             }));
-            log.textContent = e.acceleration.x + ", " + e.acceleration.y + ", " + e.acceleration.z;
+            log.textContent = accel.x + ", " + accel.y + ", " + accel.z;
         });
     });
+}
+
+const round = (x) => {
+    return Math.floor(x * 100) / 100;
 }
 
 
