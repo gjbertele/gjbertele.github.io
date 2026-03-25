@@ -2,7 +2,9 @@ let user = {
     socket: null
 }
 
-document.body.onclick = () => {
+const log = document.querySelector('.log');
+
+document.querySelector('button').onclick = () => {
     DeviceMotionEvent.requestPermission().then((state) => {
         document.write(state);
         if (state != 'granted') return;
@@ -22,7 +24,7 @@ const connectToWebSocket = () => {
 
     user.socket.addEventListener("open", () => {
         console.log("Connected to server");
-        document.write('connected');
+        log.innerHTML += 'Connected<br>';
     });
 
     user.socket.addEventListener("message", (event) => {
@@ -31,12 +33,12 @@ const connectToWebSocket = () => {
 
     user.socket.addEventListener("close", () => {
         console.log("Disconnected");
-        document.write('disconnected');
+        log.innerHTML += 'Disconnected<br>';
     });
 
     user.socket.addEventListener("error", (err) => {
         console.error("WebSocket error:", err);
-        document.write(err);
+        log.innerHTML += err + '<br>';
     });
 }
 
