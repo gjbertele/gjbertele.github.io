@@ -1,0 +1,26 @@
+.duelPage {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    margin:0;
+}
+
+.duelPage > .title {
+    position:absolute;
+    left:50%;
+    bottom:20%;
+    transform:translateX(-50%);
+    text-align:center;
+    width:100%;
+}
+
+.duelPage > .instructions {
+    position:absolute;
+    left: 50%;
+    top:50%;
+    width:70%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+}

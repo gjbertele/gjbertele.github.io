@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="quickdrawCode/startPage.css">
+    <link rel="stylesheet" href="quickdrawCode/lobbyPage.css">
+    <link rel="stylesheet" href="quickdrawCode/duelPage.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="startPage">
+        <div class="enterName contentHolder">
+            <span class="text">What's your name?</span>
+            <input class="nameInput input editableLabel" type="text" placeholder="Type here">
+            <div class="button startButton">Start</div>
+        </div>
+    </div>
+    <div class="lobbyPage">
+        <div class="duelOpponent contentHolder">
+            <span class="text">Who are you dueling?</span>
+            <input class="duelInput input editableLabel" type="text" placeholder="Type here">
+            <div class="button duelButton">Duel</div>
+            <span class="text alert"></span>
+        </div>
+        <div class="incomingDuel">
+            <span class="text">? is challenging you</span>
+            <div class="buttons">
+                <div class="button acceptDuel">Accept</div>
+                <div class="button declineDuel">Decline</div>
+            </div>
+        </div>
+    </div>
+    <div class="duelPage">
+        <span class="text title">Dueling</span>
+        <span class="text instructions">On the third tap, raise your phone to fire. Both players must lower their phone to their hip to start.</span>
+    </div>
+    <div class="hapticHandler">
+        <input type="checkbox" id="haptic-checkbox" switch style="display: none;">
+        <label for="haptic-checkbox" id="haptic-label" style="display: none;"></label>
+    </div>
+    <script src="quickdrawCode/quickdraw.js"></script>
+</body>
+
+</html>
