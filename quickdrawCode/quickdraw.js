@@ -75,7 +75,7 @@ const startListeningForMovement = () => {
     });
 
     window.addEventListener('deviceorientation', (e) => {
-        document.write(JSON.stringify(e));
+        alertText.textContent = (JSON.stringify(e));
     });
 
     return;
