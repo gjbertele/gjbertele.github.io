@@ -75,8 +75,22 @@ const startListeningForMovement = () => {
     });
 
     window.addEventListener('deviceorientation', (e) => {
-        alertText.textContent = `${e.alpha}, ${e.beta}, ${e.gamma}`;
+        checkOrientation(e.alpha, e.beta, e.gamma);
     });
+
+    return;
+}
+
+const checkOrientation = (alpha, beta, gamma) => {
+    const sa = Math.sin(alpha);
+    const sb = Math.sin(beta);
+    const sg = Math.sin(gamma);
+    const ca = Math.cos(alpha);
+    const cb = Math.cos(beta);
+    const cg = Math.cos(gamma);
+
+    const vec = [cb*cg, cb*sg, -sb];
+    alertText.textContent = `${vec[0]}, ${vec[1]}, ${vec[2]}`;
 
     return;
 }
