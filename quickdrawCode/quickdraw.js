@@ -12,7 +12,9 @@ const alertText = document.querySelector('.alert');
 const duelPage = document.querySelector('.duelPage');
 const duelingTitle = duelPage.querySelector('.title');
 
-const apiURL = `ws://localhost:3000`
+let apiURL = `ws://localhost:3000`
+if(window.location.href.includes('gjb.one')) apiURL = `wss://gjb.one`;
+
 let user = {
     socket: null,
     username: null,
@@ -136,6 +138,7 @@ const declineDuel = () => {
         initiator: currentDuelRequest.initiator,
         response: false
     }));
+    incomingDuel.style.display = 'none';
 
     return;
 }
