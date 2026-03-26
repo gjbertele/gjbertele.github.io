@@ -85,13 +85,13 @@ const startListeningForMovement = () => {
 
 const checkOrientation = (e) => {
     const down = Math.sin(e.beta * Math.PI / 180);
-    if(!user.holstered && down > Math.sqrt(3)/2) {
+    if(!user.holstered && down > 1/2) {
         user.holstered = true;
         alertText.textContent = 'holstered';
         user.socket.send(JSON.stringify({
             type:'holsterPhone'
         }))
-    } else if(user.holstered && down < 0.3){
+    } else if(user.holstered && down < 1/2){
         user.holstered = false;
         alertText.textContent = 'Fired';
         user.socket.send(JSON.stringify({
