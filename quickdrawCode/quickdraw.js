@@ -7,12 +7,15 @@ const acceptButton = document.querySelector('.acceptDuel');
 const declineButton = document.querySelector('.declineDuel');
 const incomingDuel = document.querySelector('.incomingDuel');
 const duelInput = document.querySelector('.duelInput');
-const challengeText = incomingDuel.querySelector('.text');
+const challengeText = document.querySelector('.challengeText')
 const alertText = document.querySelector('.alert');
 const duelPage = document.querySelector('.duelPage');
-const duelingTitle = duelPage.querySelector('.title');
-const duelingInstructions = duelPage.querySelector('.instructions');
+const duelingTitle = document.querySelector('.duelPage > .title');
+const duelingInstructions = document.querySelector('.instructions');
 const audioElement = document.querySelector('audio');
+const resultsPage = document.querySelector('.resultsPage');
+const resultsText = document.querySelector('.results');
+const restartButton = document.querySelector('.restartButton');
 
 let apiURL = `ws://localhost:3000`
 if(window.location.href.includes('gjb.one')) apiURL = `wss://gjb.one`;
@@ -33,6 +36,7 @@ const initializeVisibility = () => {
     startPage.style.left = '0%';
     lobbyPage.style.left = '100%';
     duelPage.style.left = '200%';
+    resultsPage.style.left = '300%';
 
     return;
 }
@@ -53,6 +57,7 @@ startButton.addEventListener('click', () => {
     startPage.style.left = '-100%';
     lobbyPage.style.left = '0%';
     duelPage.style.left = '100%';
+    resultsPage.style.left = '200%';
 });
 
 duelButton.addEventListener('click', () => {
@@ -74,12 +79,6 @@ const triggerTap = () => {
 }
 
 const startListeningForMovement = () => {
-    window.addEventListener('devicemotion', (e) => {
-        const a = e.acceleration;
-        const mag = a.x * a.x + a.y * a.y + a.z * a.z;
-
-    });
-
     window.addEventListener('deviceorientation', (e) => {
         checkOrientation(e);
     });
@@ -108,7 +107,6 @@ const holsterPhone = () => {
 
 const drawPhone = () => {
     user.holstered = false;
-    alertText.textContent = 'Fired';
     user.socket.send(JSON.stringify({
         type:'drawPhone',
         timeSent: Date.now()
@@ -129,6 +127,7 @@ const acceptDuel = () => {
         initiator: currentDuelRequest.initiator,
         response: true
     }));
+    currentDuelRequest = null;
 
     return;
 }
@@ -140,7 +139,7 @@ const declineDuel = () => {
         response: false
     }));
     incomingDuel.style.display = 'none';
-
+    currentDuelRequest = null;
     return;
 }
 
@@ -172,8 +171,10 @@ const joinDuel = (data) => {
     startPage.style.left = '-200%';
     lobbyPage.style.left = '-100%';
     duelPage.style.left = '0%';
+    resultsPage.style.left = '100%';
+
     duelingTitle.textContent = `Dueling ${data.opponent}.`;
-    duelingInstructions.textContent = `Turn your volume up. On the third tap, raise your phone to fire. Both players must lower their phone to their hip to start`;
+    duelingInstructions.textContent = `Turn your volume up. On the third tap, raise your phone to fire. Both players must lower their phone to start`;
     duelInput.style.display = 'none';
     user.dueling = true;
 
@@ -206,11 +207,30 @@ const beginDuel = (data) => {
 }
 
 const duelResults = (data) => {
-    duelingInstructions.textContent = data.won ? 'You won!' : 'You lost';
-    console.log(data);
+    startPage.style.left = '-300%';
+    lobbyPage.style.left = '-200%';
+    duelPage.style.left = '-100%';
+    resultsPage.style.left = '0%';
+
+    resultsText.textContent = data.won ? 'You won!' : 'You lost';
     return;
 }
 
+const playAgain = () => {
+    user.holstered = false;
+    user.dueling = false;
+    currentDuelRequest = null;
+    startPage.style.left = '-100%';
+    lobbyPage.style.left = '0%';
+    duelPage.style.left = '100%';
+    resultsPage.style.left = '200%';
+    incomingDuel.style.display = 'none';
+    alertText.textContent = '';
+    
+    return;
+}
+
+restartButton.addEventListener('click', playAgain);
 
 const connectToWebSocket = () => {
     user.socket = new WebSocket(apiURL);
