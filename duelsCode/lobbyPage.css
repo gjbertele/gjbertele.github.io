@@ -14,6 +14,17 @@
     font-size:2dvh !important;
 }
 
+.lobbyPage > .title {
+    position:absolute;
+    left:50%;
+    top:20%;
+    transform:translate(-50%,-50%);
+    font-size:7dvh;
+    color:#EC4E20;
+    font-family:Bevan;
+    text-align:center;
+}
+
 
 .incomingDuel {
     display:none;
