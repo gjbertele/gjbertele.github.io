@@ -169,6 +169,7 @@ const joinDuel = (data) => {
     lobbyPage.style.left = '-100%';
     duelPage.style.left = '0%';
     duelingTitle.textContent = `Dueling ${data.opponent}.`;
+    user.dueling = true;
 
     return;
 }
@@ -181,7 +182,6 @@ const duelDeclined = (data) => {
 
 const beginDuel = (data) => {
     const timeStart = data.timeStart;
-    user.dueling = true;
 
     setTimeout(() => {
         triggerHaptic();
