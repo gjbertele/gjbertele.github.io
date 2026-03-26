@@ -212,7 +212,12 @@ const duelResults = (data) => {
     duelPage.style.left = '-100%';
     resultsPage.style.left = '0%';
 
-    resultsText.textContent = data.won ? 'You won!' : 'You lost';
+    const result = data.won ? 'won' : 'lost';
+    const exclaim = data.won ? '!' : '';
+
+    if(data.timeDiff > 0) resultsText.textContent = `You ${result} by ${data.timeDiff}ms${exclaim}`;
+    else resultsText.textContent = `You ${result}${exclaim}`;
+    
     return;
 }
 
@@ -226,7 +231,7 @@ const playAgain = () => {
     resultsPage.style.left = '200%';
     incomingDuel.style.display = 'none';
     alertText.textContent = '';
-    
+
     return;
 }
 
