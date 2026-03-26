@@ -11,6 +11,8 @@ const challengeText = incomingDuel.querySelector('.text');
 const alertText = document.querySelector('.alert');
 const duelPage = document.querySelector('.duelPage');
 const duelingTitle = duelPage.querySelector('.title');
+const duelingInstructions = duelPage.querySelector('.instructions');
+const audioElement = document.querySelector('audio');
 
 let apiURL = `ws://localhost:3000`
 if(window.location.href.includes('gjb.one')) apiURL = `wss://gjb.one`;
@@ -65,15 +67,12 @@ duelButton.addEventListener('click', () => {
 });
 
 
-const triggerHaptic = () => {
-    const hapticLabel = document.getElementById('haptic-label');
-    if (hapticLabel) {
-        hapticLabel.click();
-    }
-    console.log('haptic');
+const triggerTap = () => {
+    if(audioElement.currentTime != 0) audioElement.currentTime = 0;
+    audioElement.play();
+    console.log('triggered');
 }
 
-duelingTitle.addEventListener('click', triggerHaptic);
 
 const startListeningForMovement = () => {
     window.addEventListener('devicemotion', (e) => {
@@ -102,7 +101,7 @@ const checkOrientation = (e) => {
 
 const holsterPhone = () => {
     user.holstered = true;
-    alertText.textContent = 'holstered';
+    duelingInstructions.textContent = 'Holstered';
     user.socket.send(JSON.stringify({
         type:'holsterPhone'
     }));
@@ -175,6 +174,7 @@ const joinDuel = (data) => {
     lobbyPage.style.left = '-100%';
     duelPage.style.left = '0%';
     duelingTitle.textContent = `Dueling ${data.opponent}.`;
+    duelingInstructions.textContent = `Turn your volume up. On the third tap, raise your phone to fire. Both players must lower their phone to their hip to start`;
     duelInput.style.display = 'none';
     user.dueling = true;
 
@@ -191,23 +191,25 @@ const beginDuel = (data) => {
     const timing = data.timing;
 
     setTimeout(() => {
-        triggerHaptic();
+        triggerTap();
     },timing[0] - Date.now());
     
     setTimeout(() => {
-        triggerHaptic();
+        triggerTap();
     },timing[1] - Date.now());
 
 
     setTimeout(() => {
-        triggerHaptic();
+        triggerTap();
     },timing[2] - Date.now());
 
     return;
 }
 
 const duelResults = (data) => {
-
+    duelingInstructions.textContent = data.won ? 'You won!' : 'You lost';
+    console.log(data);
+    return;
 }
 
 
