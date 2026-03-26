@@ -75,7 +75,7 @@ const startListeningForMovement = () => {
     });
 
     window.addEventListener('deviceorientation', (e) => {
-        alertText.textContent = (JSON.stringify(e));
+        alertText.textContent = `${e.alpha}, ${e.beta}, ${e.gamma}`;
     });
 
     return;
