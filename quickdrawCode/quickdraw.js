@@ -15,8 +15,10 @@ const duelingTitle = duelPage.querySelector('.title');
 const apiURL = `ws://localhost:3000`
 let user = {
     socket: null,
-    username: null
+    username: null,
+    holstered: false
 }
+
 let currentDuelRequest = {
     initiator: null
 }
@@ -75,28 +77,28 @@ const startListeningForMovement = () => {
     });
 
     window.addEventListener('deviceorientation', (e) => {
-        checkOrientation(e.alpha, e.beta, e.gamma);
+        checkOrientation(e);
     });
 
     return;
 }
 
-const checkOrientation = (a, b, g) => {
-    const alpha = a*Math.PI/180;
-    const beta = b*Math.PI/180;
-    const gamma = g*Math.PI/180;
-
-    const sa = Math.sin(alpha);
-    const sb = Math.sin(beta);
-    const sg = Math.sin(gamma);
-    const ca = Math.cos(alpha);
-    const cb = Math.cos(beta);
-    const cg = Math.cos(gamma);
-
-    const vec = [cb*cg, cb*sg, -sb];
-    alertText.textContent = `${vec[0]}, ${vec[1]}, ${vec[2]}`;
-
-    return;
+const checkOrientation = (e) => {
+    const down = Math.sin(e.beta * Math.PI / 180);
+    if(!user.holstered && down > Math.sqrt(3)/2) {
+        user.holstered = true;
+        alertText.textContent = 'holstered';
+        user.socket.send(JSON.stringify({
+            type:'holsterPhone'
+        }))
+    } else if(user.holstered && down < 0.3){
+        user.holstered = false;
+        alertText.textContent = 'Fired';
+        user.socket.send(JSON.stringify({
+            type:'drawPhone',
+            timeSent: Date.now()
+        }));
+    }
 }
 
 const setUsername = (username) => {
