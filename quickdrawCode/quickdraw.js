@@ -81,7 +81,11 @@ const startListeningForMovement = () => {
     return;
 }
 
-const checkOrientation = (alpha, beta, gamma) => {
+const checkOrientation = (a, b, g) => {
+    const alpha = a*Math.PI/180;
+    const beta = b*Math.PI/180;
+    const gamma = g*Math.PI/180;
+
     const sa = Math.sin(alpha);
     const sb = Math.sin(beta);
     const sg = Math.sin(gamma);
