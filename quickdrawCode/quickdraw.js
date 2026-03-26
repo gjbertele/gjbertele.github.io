@@ -73,7 +73,6 @@ const triggerTap = () => {
     console.log('triggered');
 }
 
-
 const startListeningForMovement = () => {
     window.addEventListener('devicemotion', (e) => {
         const a = e.acceleration;
