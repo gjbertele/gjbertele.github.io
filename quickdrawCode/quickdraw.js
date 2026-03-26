@@ -39,6 +39,7 @@ const initializeVisibility = () => {
 startButton.addEventListener('click', () => {
     const username = nameInput.value;
     setUsername(username);
+    nameInput.style.display = 'none';
 
     if(DeviceMotionEvent.requestPermission != null){
         DeviceMotionEvent.requestPermission().then((state) => {
@@ -64,13 +65,15 @@ duelButton.addEventListener('click', () => {
 });
 
 
-
 const triggerHaptic = () => {
     const hapticLabel = document.getElementById('haptic-label');
     if (hapticLabel) {
         hapticLabel.click();
     }
+    console.log('haptic');
 }
+
+duelingTitle.addEventListener('click', triggerHaptic);
 
 const startListeningForMovement = () => {
     window.addEventListener('devicemotion', (e) => {
@@ -172,6 +175,7 @@ const joinDuel = (data) => {
     lobbyPage.style.left = '-100%';
     duelPage.style.left = '0%';
     duelingTitle.textContent = `Dueling ${data.opponent}.`;
+    duelInput.style.display = 'none';
     user.dueling = true;
 
     return;
@@ -184,20 +188,20 @@ const duelDeclined = (data) => {
 }
 
 const beginDuel = (data) => {
-    const timeStart = data.timeStart;
+    const timing = data.timing;
 
     setTimeout(() => {
         triggerHaptic();
-    },timeStart - Date.now());
+    },timing[0] - Date.now());
     
     setTimeout(() => {
         triggerHaptic();
-    },timeStart + 1000 - Date.now());
+    },timing[1] - Date.now());
 
 
     setTimeout(() => {
         triggerHaptic();
-    },timeStart + 3000 - Date.now());
+    },timing[2] - Date.now());
 
     return;
 }
