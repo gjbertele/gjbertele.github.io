@@ -1,13 +1,3 @@
-.lobbyPage {
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    margin:0;
-}
-
-
 .duelButton {
     margin-top:5dvh;
     width:80% !important;
@@ -29,9 +19,10 @@
 .incomingDuel {
     display:none;
     position:absolute;
-    left:10dvw;
+    left:50%;
     bottom:10dvw;
     width:80%;
+    transform:translateX(-50%);
     height:18dvh;
     background:#1a1a1b;
     border-radius:2dvw;

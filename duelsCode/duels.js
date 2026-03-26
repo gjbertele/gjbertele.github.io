@@ -16,6 +16,8 @@ const audioElement = document.querySelector('audio');
 const resultsPage = document.querySelector('.resultsPage');
 const resultsText = document.querySelector('.results');
 const restartButton = document.querySelector('.restartButton');
+const warningText = document.querySelector('.warning');
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 let apiURL = `ws://localhost:3000`
 if(window.location.href.includes('gjb.one')) apiURL = `wss://gjb.one`;
@@ -37,7 +39,7 @@ const initializeVisibility = () => {
     lobbyPage.style.left = '100%';
     duelPage.style.left = '200%';
     resultsPage.style.left = '300%';
-
+    warningText.style.display = isIOS ? 'none' : 'inline-block';
     return;
 }
 
