@@ -44,7 +44,10 @@ const initializeVisibility = () => {
 
 startButton.addEventListener('click', () => {
     const username = nameInput.value;
+    if(username == '') return;
+
     setUsername(username);
+
     nameInput.style.display = 'none';
 
     if(DeviceMotionEvent.requestPermission != null){
@@ -214,6 +217,9 @@ const duelResults = (data) => {
 
     const result = data.won ? 'won' : 'lost';
     const exclaim = data.won ? '!' : '';
+
+  
+    resultsPage.style.background = data.won ? '#EC4E20' : 'transparent';
 
     if(data.timeDiff > 0) resultsText.textContent = `You ${result} by ${data.timeDiff}ms${exclaim}`;
     else resultsText.textContent = `You ${result}${exclaim}`;
