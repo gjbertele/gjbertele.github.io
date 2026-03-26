@@ -16,7 +16,8 @@ const apiURL = `ws://localhost:3000`
 let user = {
     socket: null,
     username: null,
-    holstered: false
+    holstered: false,
+    dueling:false
 }
 
 let currentDuelRequest = {
@@ -84,21 +85,31 @@ const startListeningForMovement = () => {
 }
 
 const checkOrientation = (e) => {
-    const down = Math.sin(e.beta * Math.PI / 180);
+    if(!user.dueling) return;
+
+    const down = -Math.sin(e.beta * Math.PI / 180);
     if(!user.holstered && down > 0.7) {
-        user.holstered = true;
-        alertText.textContent = 'holstered';
-        user.socket.send(JSON.stringify({
-            type:'holsterPhone'
-        }))
+        holsterPhone();
     } else if(user.holstered && down < 0.5){
-        user.holstered = false;
-        alertText.textContent = 'Fired';
-        user.socket.send(JSON.stringify({
-            type:'drawPhone',
-            timeSent: Date.now()
-        }));
+        drawPhone();
     }
+}
+
+const holsterPhone = () => {
+    user.holstered = true;
+    alertText.textContent = 'holstered';
+    user.socket.send(JSON.stringify({
+        type:'holsterPhone'
+    }));
+}
+
+const drawPhone = () => {
+    user.holstered = false;
+    alertText.textContent = 'Fired';
+    user.socket.send(JSON.stringify({
+        type:'drawPhone',
+        timeSent: Date.now()
+    }));
 }
 
 const setUsername = (username) => {
@@ -169,7 +180,27 @@ const duelDeclined = (data) => {
 }
 
 const beginDuel = (data) => {
+    const timeStart = data.timeStart;
+    user.dueling = true;
+
+    setTimeout(() => {
+        triggerHaptic();
+    },timeStart - Date.now());
     
+    setTimeout(() => {
+        triggerHaptic();
+    },timeStart + 1000 - Date.now());
+
+
+    setTimeout(() => {
+        triggerHaptic();
+    },timeStart + 3000 - Date.now());
+
+    return;
+}
+
+const duelResults = (data) => {
+
 }
 
 
@@ -187,7 +218,7 @@ const connectToWebSocket = () => {
             return;
         }
         const data = JSON.parse(event.data);
-        const functions = [receiveDuelInvite, joinDuel, beginDuel, opponentNotFound, duelInviteSent, duelDeclined];
+        const functions = [receiveDuelInvite, joinDuel, beginDuel, opponentNotFound, duelInviteSent, duelDeclined, duelResults];
         functions[functions.map(i => i = i.name).indexOf(data.type)](data);
     });
 
