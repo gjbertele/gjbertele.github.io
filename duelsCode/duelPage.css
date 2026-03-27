@@ -15,3 +15,7 @@
     transform:translate(-50%,-50%);
     text-align:center;
 }
+
+.duelPage {
+    transition: background-color 0.15s;
+}

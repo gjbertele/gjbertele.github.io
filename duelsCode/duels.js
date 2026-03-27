@@ -12,12 +12,18 @@ const alertText = document.querySelector('.alert');
 const duelPage = document.querySelector('.duelPage');
 const duelingTitle = document.querySelector('.duelPage > .title');
 const duelingInstructions = document.querySelector('.instructions');
-const audioElement = document.querySelector('audio');
 const resultsPage = document.querySelector('.resultsPage');
 const resultsText = document.querySelector('.results');
 const restartButton = document.querySelector('.restartButton');
 const warningText = document.querySelector('.warning');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+let tapSoundContext = new AudioContext();
+let tapSoundBuffer;
+fetch('/duelsCode/tap.mp3')
+  .then(res => res.arrayBuffer())
+  .then(data => tapSoundContext.decodeAudioData(data))
+  .then(decoded => tapSoundBuffer = decoded);
+
 
 let apiURL = `ws://localhost:3000`
 if(window.location.href.includes('gjb.one')) apiURL = `wss://gjb.one`;
@@ -44,7 +50,7 @@ const initializeVisibility = () => {
 }
 
 
-startButton.addEventListener('click', () => {
+startButton.addEventListener('click', async () => {
     const username = nameInput.value;
     if(username == '') return;
 
@@ -63,6 +69,9 @@ startButton.addEventListener('click', () => {
     lobbyPage.style.left = '0%';
     duelPage.style.left = '100%';
     resultsPage.style.left = '200%';
+
+    await tapSoundContext.resume();
+
 });
 
 duelButton.addEventListener('click', () => {
@@ -73,13 +82,29 @@ duelButton.addEventListener('click', () => {
     }
 
     user.socket.send(JSON.stringify(duelStartData));
+
     return;
 });
 
 
-const triggerTap = () => {
-    audioElement.play();
-    console.log('triggered');
+const triggerTap = (timeDelay) => {
+    const source = tapSoundContext.createBufferSource();
+    source.buffer = tapSoundBuffer;
+
+    const now = tapSoundContext.currentTime;
+    source.connect(tapSoundContext.destination);
+
+    source.start(now + timeDelay / 1000);
+
+    setTimeout(() => {
+        duelPage.style.backgroundColor = '#EC4E20';
+        setTimeout(() => {
+            duelPage.style.backgroundColor = '#000';
+        },100);
+        console.log('triggered');
+    },timeDelay);
+
+    return;
 }
 
 const startListeningForMovement = () => {
@@ -103,7 +128,6 @@ const checkOrientation = (e) => {
 
 const holsterPhone = () => {
     user.holstered = true;
-    duelingInstructions.textContent = 'Holstered';
     user.socket.send(JSON.stringify({
         type:'holsterPhone'
     }));
@@ -131,7 +155,8 @@ const acceptDuel = () => {
         initiator: currentDuelRequest.initiator,
         response: true
     }));
-    currentDuelRequest = null;
+    currentDuelRequest.initiator = null;
+    
 
     return;
 }
@@ -143,7 +168,7 @@ const declineDuel = () => {
         response: false
     }));
     incomingDuel.style.display = 'none';
-    currentDuelRequest = null;
+    currentDuelRequest.initiator = null;
     return;
 }
 
@@ -178,7 +203,7 @@ const joinDuel = (data) => {
     resultsPage.style.left = '100%';
 
     duelingTitle.textContent = `Dueling ${data.opponent}.`;
-    duelingInstructions.textContent = `Turn your volume up. On the third tap, raise your phone to fire. Both players must lower their phone to start`;
+    duelingInstructions.textContent = `Turn your volume up. When you hear the sound, raise your phone to fire. Both players must lower their phone to start`;
     duelInput.style.display = 'none';
     user.dueling = true;
 
@@ -194,18 +219,7 @@ const duelDeclined = (data) => {
 const beginDuel = (data) => {
     const timing = data.timing;
 
-    setTimeout(() => {
-        triggerTap();
-    },timing[0] - Date.now());
-    
-    setTimeout(() => {
-        triggerTap();
-    },timing[1] - Date.now());
-
-
-    setTimeout(() => {
-        triggerTap();
-    },timing[2] - Date.now());
+    triggerTap(timing[2] - Date.now());
 
     return;
 }
@@ -231,7 +245,7 @@ const duelResults = (data) => {
 const playAgain = () => {
     user.holstered = false;
     user.dueling = false;
-    currentDuelRequest = null;
+    currentDuelRequest.initiator = null;
     startPage.style.left = '-100%';
     lobbyPage.style.left = '0%';
     duelPage.style.left = '100%';
@@ -240,6 +254,10 @@ const playAgain = () => {
     alertText.textContent = '';
     nameInput.style.display = 'inline-block';
     duelInput.style.display = 'inline-block';
+
+    tapSound = new Audio('./duelsCode/tap.mp3');
+    tapSound.play().then(() => tapSound.pause());
+
     
     return;
 }
