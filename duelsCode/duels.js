@@ -78,7 +78,6 @@ duelButton.addEventListener('click', () => {
 
 
 const triggerTap = () => {
-    if(audioElement.currentTime != 0) audioElement.currentTime = 0;
     audioElement.play();
     console.log('triggered');
 }
@@ -223,7 +222,7 @@ const duelResults = (data) => {
   
     resultsPage.style.background = data.won ? '#EC4E20' : 'transparent';
 
-    if(data.timeDiff > 0) resultsText.textContent = `You ${result} by ${data.timeDiff}ms${exclaim}`;
+    if(data.timeDiff > 0) resultsText.textContent = `You ${result} by ${data.timeDiff/1000} seconds${exclaim}`;
     else resultsText.textContent = `You ${result}${exclaim}`;
     
     return;
@@ -239,7 +238,9 @@ const playAgain = () => {
     resultsPage.style.left = '200%';
     incomingDuel.style.display = 'none';
     alertText.textContent = '';
-
+    nameInput.style.display = 'inline-block';
+    duelInput.style.display = 'inline-block';
+    
     return;
 }
 
