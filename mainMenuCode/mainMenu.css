@@ -170,7 +170,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .impostor>.icon {
-    height: 12dvh;
+    font-size:17dvh;
 }
 
 .friendWeb>.textContent>.title {
