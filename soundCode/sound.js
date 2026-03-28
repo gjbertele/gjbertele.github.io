@@ -101,7 +101,7 @@ const takeAudioStream = async (stream) => {
 }
 
 const updateDisplays = (chirp) => {
-    if(chirp.dt * 343.14 > 15) return;
+    //if(chirp.dt * 343.14 > 15) return;
     timeDisplay.innerHTML = `${chirp.dt.toFixed(4)}<span class="small">sec</span>`
     distDisplay.innerHTML = `${(chirp.dt * 343.14).toFixed(2)}<span class="small">m</span>`
 }
