@@ -1,0 +1,72 @@
+@font-face {
+    font-family: Suisseintl;
+    src: url(../fonts/Suisseintl.otf) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    margin:0;
+    background:#26A7De;
+    color:#FFF;
+    font-family:Suisseintl;
+}
+
+.timeDisplay {
+    position:absolute;
+    left:50%;
+    top:30%;
+    transform:translate(-50%,-50%);
+    font-size:7dvh;
+}
+
+
+.distDisplay {
+    position:absolute;
+    left:50%;
+    top:40%;
+    transform:translate(-50%,-50%);
+    font-size:7dvh;
+}
+
+.small {
+    font-size:2dvh;
+}
+
+.buttons {
+    display:flex;
+    flex-direction:column;
+    gap:10dvw;
+    position:absolute;
+    width:50dvw;
+    left:50%;
+    top:80%;
+    transform:translate(-50%,-50%);
+    justify-content:center;
+}
+
+
+
+
+.button {
+    width: 50dvw;
+    height: 2.75dvh;
+    padding:0.25em;
+    color: #1a1a1b;
+    font-size: 3dvh;
+    font-family: Suisseintl;
+    font-weight: 500;
+    background: #FFF;
+    border-radius: 1dvh;
+    text-align: center;
+    line-height: 2.75dvh;
+    vertical-align: middle;
+    cursor: pointer;
+    text-decoration: none;
+}
