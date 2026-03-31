@@ -19,6 +19,9 @@ const warningText = document.querySelector('.warning');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let tapSoundContext = new AudioContext();
 let tapSoundBuffer;
+let tapSoundElem;
+
+
 fetch('/duelsCode/tap.mp3')
   .then(res => res.arrayBuffer())
   .then(data => tapSoundContext.decodeAudioData(data))
@@ -70,7 +73,7 @@ startButton.addEventListener('click', async () => {
     duelPage.style.left = '100%';
     resultsPage.style.left = '200%';
 
-    await tapSoundContext.resume();
+    
 
 });
 
@@ -81,6 +84,12 @@ duelButton.addEventListener('click', () => {
         opponentName: opponent
     }
 
+    tapSoundElem = new Audio('./duelsCode/tap.mp3');
+    tapSoundElem.play().then(() => {
+        tapSoundElem.pause();
+        tapSoundElem.currentTime = 0;
+    })
+
     user.socket.send(JSON.stringify(duelStartData));
 
     return;
@@ -88,15 +97,17 @@ duelButton.addEventListener('click', () => {
 
 
 const triggerTap = (timeDelay) => {
-    const source = tapSoundContext.createBufferSource();
+    /*const source = tapSoundContext.createBufferSource();
     source.buffer = tapSoundBuffer;
 
     const now = tapSoundContext.currentTime;
     source.connect(tapSoundContext.destination);
 
-    source.start(now + timeDelay / 1000);
+    source.start(now + timeDelay / 1000);*/
+
 
     setTimeout(() => {
+        tapSoundElem.play();
         duelPage.style.backgroundColor = '#EC4E20';
         setTimeout(() => {
             duelPage.style.backgroundColor = '#000';
