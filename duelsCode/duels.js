@@ -97,15 +97,6 @@ duelButton.addEventListener('click', () => {
 
 
 const triggerTap = (timeDelay) => {
-    /*const source = tapSoundContext.createBufferSource();
-    source.buffer = tapSoundBuffer;
-
-    const now = tapSoundContext.currentTime;
-    source.connect(tapSoundContext.destination);
-
-    source.start(now + timeDelay / 1000);*/
-
-
     setTimeout(() => {
         tapSoundElem.play();
         duelPage.style.backgroundColor = '#EC4E20';
