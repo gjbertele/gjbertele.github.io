@@ -22,6 +22,17 @@
     height:60%;
     display:flex;
     flex-direction:column;
+    overflow-y:scroll;
+}
+
+.lobbyPage > .playerHolder::-webkit-scrollbar {
+    background:transparent;
+    width:0.2dvw;
+}
+
+.lobbyPage > .playerHolder:-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
 }
 
 .gameCode {
