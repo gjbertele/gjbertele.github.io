@@ -61,6 +61,10 @@ const emitSound = () => {
 
     const timeToSecond = (1000 - (performance.now() % 1000)) % 1000;
     source.start(now + timeToSecond / 1000);
+
+    setTimeout(() => {
+        console.log('emit sound',Date.now());
+    }, timeToSecond);
 }
 
 let isListener = false;
@@ -91,17 +95,24 @@ const takeAudioStream = async (stream) => {
         timeReceived: 0
     }
 
+    let time = 0;
+    setInterval(() => {
+        time += 48000;
+        processorNode.port.postMessage({
+            targetSample: time
+        })
+    }, 1000)
+
     processorNode.port.onmessage = (e) => {
-        if(Date.now() - lastChirp.timeReceived < 0.8 && e.data.dt > lastChirp.dt) return;
+        if(e.data.dt < 0) return;
         lastChirp.timeReceived = Date.now();
         lastChirp.dt = e.data.dt;
-
+        console.log(e.data.peakCorrelation);
         updateDisplays(lastChirp)
     };
 }
 
 const updateDisplays = (chirp) => {
-    //if(chirp.dt * 343.14 > 15) return;
     timeDisplay.innerHTML = `${chirp.dt.toFixed(4)}<span class="small">sec</span>`
     distDisplay.innerHTML = `${(chirp.dt * 343.14).toFixed(2)}<span class="small">m</span>`
 }

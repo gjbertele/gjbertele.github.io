@@ -6,14 +6,6 @@ const minFrequency = 2000;
 const maxFrequency = 3000;
 const chirpsPerSecond = 1;
 
-const chirpFrequencies = [19000, 20000, 21000];
-const chirpAmplitudes = [1, 2, 3];
-
-const modDist = (x, y) => {
-    const mod = sampleRate / chirpsPerSecond;
-    let diff = ((x - y) % mod + mod) % mod;
-    return Math.min(diff, mod - diff);
-}
 const generateRisingChirp = () => {
     for(let i in chirpBuffer){
         const t = i / sampleRate;
@@ -35,8 +27,16 @@ class WorkletProcessor extends AudioWorkletProcessor {
         this.overallPointer = 0;
         this.firstPeak = 0;
         this.totalSamples = 0;
+        this.correlationThreshold = 5;
+        this.targetSample = 0;
 
-        
+        this.port.onmessage = (m) => {
+            if(m.data.correlationThreshold){
+                this.correlationThreshold = m.data.correlationThreshold;
+            } else if(m.data.targetSample){
+                this.targetSample = m.data.targetSample;
+            }
+        }
     }
 
     process(inputs){
@@ -50,37 +50,42 @@ class WorkletProcessor extends AudioWorkletProcessor {
             this.recordingPointer++;
         }
 
-        
+
 
         if(this.recordingPointer > sampleRate * chirpDuration * 3) {
-            const chirpCandidates = this.recordingBuffer.slice(0, this.recordingPointer);
-            const correlation = new Array(sampleRate * chirpDuration * 2);
+            const nearestExpectedEmit = this.targetSample + Math.round((this.overallPointer - this.targetSample) / 48000) * 48000;
+            const expectedOffset = nearestExpectedEmit - this.overallPointer;
+            const offsetStart = Math.max(0, expectedOffset - chirpBuffer.length);
+            const offsetEnd = Math.min(this.recordingBuffer.length - chirpBuffer.length, expectedOffset + chirpBuffer.length);
+            let peakCorrelation = -Infinity;
+            let peak = -1;
 
-            let peak = 0;
-            for(let offset = 0; offset < correlation.length; offset++){
-                let sum = 0;
-                for (let i = 0; i < chirpBuffer.length; i++) {
-                    sum += chirpCandidates[i + offset] * chirpBuffer[i];
+            for(let offset = offsetStart; offset < offsetEnd; offset++){
+                let correlation = 0;
+                for(let i = 0; i < chirpBuffer.length; i++){
+                    correlation += chirpBuffer[i] * this.recordingBuffer[offset + i];
                 }
-                correlation[offset] = sum;
-                if(correlation[offset] >= correlation[peak]) peak = offset;
+                if(correlation > peakCorrelation){
+                    peakCorrelation = correlation;
+                    peak = offset;
+                }
             }
 
 
-            const dt = modDist(this.overallPointer + peak, this.firstPeak) / (sampleRate / chirpsPerSecond);
+            if(peakCorrelation > this.correlationThreshold) {
+                const absoluteArrival = this.overallPointer + peak;
+                const nearestEmit = this.targetSample + Math.round((absoluteArrival - this.targetSample) / sampleRate) * sampleRate;
+                const dt = (absoluteArrival - nearestEmit) / sampleRate;
 
-
-            if(correlation[peak] > 2) {
-                if(this.firstPeak == 0) this.firstPeak = this.overallPointer + peak;
-                this.port.postMessage({
-                    dt
-                })
+                this.port.postMessage({ dt, peakCorrelation });
             }
 
-
-            this.overallPointer += this.recordingPointer;
-            this.recordingPointer = 0;
+            const tail = this.recordingBuffer.slice(peak + chirpBuffer.length);
             this.recordingBuffer = new Float32Array(sampleRate * chirpDuration * 6);
+            this.recordingBuffer.set(tail, 0);
+            this.recordingPointer = tail.length;
+            this.overallPointer += peak + chirpBuffer.length;
+
         }
 
         return true;
