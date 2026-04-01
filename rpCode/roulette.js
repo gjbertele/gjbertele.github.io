@@ -18,6 +18,7 @@ const scoresHolder = document.querySelector('.scoresPage > .playerHolder');
 const questionText = document.querySelector('.guessPage > .question > .questionText');
 const playerSelection = document.querySelector('.guessPage > .playerHolder');
 const submitResponsesButton = document.querySelector('.guessPage > .submitSelectionButton');
+const enableReveal = document.querySelector('.enableReveal');
 
 let serverConnection;
 let gameData;
@@ -63,6 +64,15 @@ joinButton.addEventListener('click', async () => {
     return;
 });
 
+enableReveal.addEventListener('click', () => {
+    const attr = enableReveal.getAttribute('checked');
+    if(attr == 'true'){
+        enableReveal.setAttribute('checked', 'false');
+    } else {
+        enableReveal.setAttribute('checked', 'true');
+    }
+});
+
 createButton.addEventListener('click', async () => {
     const serverData = await serverConnection.createGame();
 
@@ -71,13 +81,16 @@ createButton.addEventListener('click', async () => {
     document.querySelector('.waitingText').style.display = 'none';
 
     startButton.style.display = 'inline-block';
+    enableReveal.style.display = 'flex';
     displayPage('lobbyPage');
 
     return;
 });
 
 startButton.addEventListener('click', async () => {
-    await serverConnection.startGame(gameData.gameCode);
+    await serverConnection.startGame(gameData.gameCode, {
+        revealAnswers: enableReveal.getAttribute('checked')
+    });
     return;
 });
 
@@ -194,11 +207,32 @@ const submitTestToServer = async (answerString, username, confession) => {
 const newRound = async (roundData) => {
     console.log('new round',roundData);
     currentRoundSelections = [];
-    displayScores(roundData.scores, roundData.players.map(i => i = i.username));
+    if(roundData.revealAnswers == true){
+        displayCorrectAnswers(roundData.correctAnswers, roundData.players.map(i => i = i.username));
+    } else {
+        displayNumericalScores(roundData.scores, roundData.players.map(i => i = i.username));
+    }
+    
     setTimeout(() => {
        displayQuestion(roundData.question, roundData.players);
        submitResponsesButton.style.opacity = 1;
     },5000);
+}
+
+const displayCorrectAnswers = (allAnswers, players) => {
+    let correctAnswers = allAnswers[nameHolder.value];
+    let elements = [...document.querySelectorAll('.playerHolder > div')];
+    
+    for(let elem of elements){
+        if(elem.getAttribute('selected') == 'false') continue;
+        if(correctAnswers.includes(elem.textContent)){
+            elem.textContent += ' +1';
+        } else {
+            elem.textContent += ' -1';
+        }
+    }
+
+    return;
 }
 
 const addScoreBox = (playerName, scoreData, maxScore, index) => {
@@ -229,7 +263,7 @@ const addScoreBox = (playerName, scoreData, maxScore, index) => {
     return;
 }
 
-const displayScores = (scoreData, players) => {
+const displayNumericalScores = (scoreData, players) => {
     players.sort((a,b) => {
         return scoreData[b].netScore - scoreData[a].netScore
     });

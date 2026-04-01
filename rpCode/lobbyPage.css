@@ -92,3 +92,23 @@
     left:50%;
     transform:translateX(-50%);
 }
+
+.lobbyPage > .enableReveal {
+    position:absolute;
+    display:none;
+    flex-direction:row-reverse;
+    gap:2dvh;
+    left:50%;
+    top:90%;
+    transform:translate(-50%,-50%);
+    color:#FFF;
+    align-items: center;
+    font-family:var(--textFont) !important;;
+    font-weight:600 !important;
+    font-size:1.75dvh;
+}
+
+
+.enableReveal[checked="true"] .interior {
+    opacity: 1;
+}

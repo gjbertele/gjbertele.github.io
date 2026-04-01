@@ -58,4 +58,10 @@ const questionList = ["Held hands romantically?",
 "Fake laughed at someone's joke within the last hour?",
 "Think you could land a plane in an emergency?",
 "Cried after eating something spicy?",
-"Would take a job at Palantir for $1,500,000/yr?"]
+"Would take a job at Palantir for $1,500,000/yr?",
+"Gatekept an extracurricular?",
+"(Recently) heard a rumor about someone playing right now?",
+"Hoped a happy couple would break up?",
+"Gotten with someone taken?",
+"Gotten with someone you disliked as a person?",
+"Gotten with someone you thought was ugly?"]
