@@ -61,7 +61,4 @@ const questionList = ["Held hands romantically?",
 "Would take a job at Palantir for $1,500,000/yr?",
 "Gatekept an extracurricular?",
 "(Recently) heard a rumor about someone playing right now?",
-"Hoped a happy couple would break up?",
-"Gotten with someone taken?",
-"Gotten with someone you disliked as a person?",
-"Gotten with someone you thought was ugly?"]
+"Hoped a happy couple would break up?"]
