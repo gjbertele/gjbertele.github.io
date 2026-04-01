@@ -224,7 +224,7 @@ const displayCorrectAnswers = (allAnswers, players) => {
     let elements = [...document.querySelectorAll('.playerHolder > div')];
     
     for(let elem of elements){
-        if(elem.getAttribute('selected') == 'false') continue;
+        if(elem.getAttribute('selected') == 'false' || !correctAnswers) continue;
         if(correctAnswers.includes(elem.textContent)){
             elem.textContent += ' +1';
         } else {

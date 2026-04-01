@@ -41,8 +41,10 @@ class ServerConnection {
                     }
                 }
             }
-
-            this.#reopenSocket();
+            
+            setTimeout(() => {
+                this.#reopenSocket();
+            }, 500);
         } catch(err) {
             console.error(err);
             setTimeout(() => {
