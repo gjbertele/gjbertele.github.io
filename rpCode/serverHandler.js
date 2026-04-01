@@ -16,7 +16,7 @@ class ServerConnection {
     }
 
     async #initializeSocket(){
-        this.#apiURL = 'http://localhost:3000/api';//`https://gjb.one/api`;
+        this.#apiURL = `https://gjb.one/api`;
         this.#openListeners = [];
         await this.submitToServer(this.currentPlayer);
         await this.#reopenSocket();
