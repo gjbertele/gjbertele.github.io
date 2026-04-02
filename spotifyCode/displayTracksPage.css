@@ -1,0 +1,156 @@
+@font-face {
+    font-family: Suisseintl;
+    src: url(../fonts/Suisseintl.otf) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Grotesk;
+    src: url(../fonts/SharpGroteskSmBold25.woff) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --colorBG: #121212;
+    --colorSecondary: #212121;
+    --colorBright: #1db954;
+    --pageWidth: min(80dvh, 100dvw);
+}
+
+body, html {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    margin:0;
+    background:var(--colorBG);
+    overflow:hidden;
+}
+
+.displayTracksPage {
+    left:0%;
+}
+
+.page {
+    position:absolute;
+    top:0;
+    width:100%;
+    height:100%;
+    width:var(--pageWidth);
+    transform:translateX(calc(50dvw - var(--pageWidth) / 2));
+}
+
+
+.trackWindow {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    height:70%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
+.trackHolder {
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:fit-content;
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+}
+
+.song {
+    overflow:hidden;
+    width:100%;
+    height:10dvh;
+    margin-bottom:1.5dvh;
+    display:flex;
+    flex-direction:row;
+    justify-content: center;
+}
+
+.songText {
+    width:20dvh;
+    color:#FFF;
+    font-family:Suisseintl;
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+}
+
+.songText > .songTitle {
+    font-size:2dvh;
+}
+
+.songText > .songArtist {
+    font-size:1.5dvh;
+}
+
+.songTime {
+    width:10dvh;
+    color:#FFF;
+    font-family:Suisseintl;
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+}
+
+.songTime > .timeOfDay {
+    font-size:1.3dvh;
+}
+
+.songTime > .songDay {
+    font-size:2dvh;
+}
+
+.albumCover {
+    width:8dvh;
+    height:8dvh;
+    margin:1dvh;
+    margin-right:2dvh;
+    border-radius:1dvh;
+}
+
+.displayTracksPage > .title {
+    position:absolute;
+    left:50%;
+    top:7.5%;
+    transform:translate(-50%,-50%);
+    font-family:Grotesk;
+    color:#FFF;
+    font-size:3dvh;
+    width:100%;
+    text-align:center;
+}
+
+.button {
+    font-family:Grotesk;
+    color:var(--colorBG);
+    background:#FFF;
+    font-size:3dvh;
+    text-align:center;
+    height:5dvh;
+    line-height:5dvh;
+    border-radius:5dvh;
+}
+
+.goButton {
+    position:absolute;
+    left:50%;
+    bottom:3%;
+    transform:translate(-50%,-50%);
+    width:80%;
+    display:none;
+    background:var(--colorBright) !important;
+    color:#FFF !important;
+}

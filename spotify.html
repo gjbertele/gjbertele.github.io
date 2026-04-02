@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="spotifyCode/displayTracksPage.css">
+    <link rel="stylesheet" href="spotifyCode/lobbyPage.css">
+    <link rel="stylesheet" href="spotifyCode/waitingRoomPage.css">
+    <link rel="stylesheet" href="spotifyCode/roundPage.css">
+    
+    
+</head>
+<body>
+    <div class="page displayTracksPage">
+        <span class="title">Recently Played</span>
+        <div class="trackWindow scrollable">
+            <div class="trackHolder"></div>
+        </div>
+        <div class="button goButton">Go</div>
+    </div>
+    <div class="page lobbyPage">
+        <div class="button joinButton">Join Game</div>
+        <div class="button createButton">Create Game</div>
+        <div class="gameCode">
+            <input class="num num0" type="number">
+            <input class="num num1" type="number">
+            <input class="num num2" type="number">
+            <input class="num num3" type="number">
+        </div>
+    </div>
+    <div class="page waitingRoomPage">
+        <span class="gameCode"></span>
+        <div class="playerWindow scrollable">
+            <div class="playerHolder"></div>
+        </div>
+        <div class="button startButton">Start Game</div>
+    </div>
+    <div class="page roundPage">
+        <span class="title">Who listened to</span>
+        <div class="playbackEmbed"></div>
+        <div class="playerWindow scrollable">
+            <div class="playerHolder"></div>
+        </div>
+        <div class="countdown">15</div>
+        <div class="progressBar"></div>
+    </div>
+    <script src="spotifyCode/spotifyAPIHandler.js"></script>
+    <script src="spotifyCode/serverHandler.js"></script>
+    <script src="spotifyCode/spotify.js"></script>
+    <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+    <script src="https://unpkg.com/colorthief@3/dist/umd/color-thief.global.js"></script>
+</body>
+</html>

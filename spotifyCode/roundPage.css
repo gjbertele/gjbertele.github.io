@@ -1,0 +1,79 @@
+:root {
+    --colorSongBG: #000;
+    --colorSongText: #FFF; 
+}
+
+.roundPage {
+    left:300%;
+    background:var(--colorSongBG);
+}
+
+.roundPage > .playerWindow {
+    position:absolute;
+    left:50%;
+    top:55%;
+    width:80%;
+    height:50%;
+    transform:translate(-50%,-50%);
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.roundPage > .playerWindow > .playerHolder {
+    position:absolute;
+    left:0;
+    top:0;
+    width: 100%;
+    height:fit-content;
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    gap:1dvh;
+}
+
+.roundPage > .playerWindow > .playerHolder > .player {
+    color:var(--colorSongText);
+    text-align:center;
+    width:95%;
+    height:3dvh;
+    font-size:2dvh;
+    line-height:3dvh;
+    vertical-align: middle;
+    font-family:Grotesk;
+    border-radius:1.5dvh;
+    padding:0.5dvh;
+    border: 0.25dvh solid var(--colorSongText);
+}
+
+.roundPage > .playerWindow > .playerHolder > .player[selected="true"] {
+    color:var(--colorSongBG);
+    background:var(--colorSongText);
+}
+
+.roundPage > iframe {
+    position:absolute;
+    left:37.5%;
+    top:calc(15dvh + var(--pageWidth) * 0.1);
+    transform:scale(3.5);
+}
+
+.countdown {
+    position:absolute;
+    left:0%;
+    bottom:10dvh;
+    width:100%;
+    color:var(--colorSongText);
+    font-family: Grotesk;
+    font-size:6dvh;
+    text-align:center;
+}
+
+.progressBar {
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:2dvh;
+    background:var(--colorSongText);
+}
