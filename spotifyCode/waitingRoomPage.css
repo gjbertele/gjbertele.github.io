@@ -1,0 +1,68 @@
+.waitingRoomPage {
+    left:200%;
+}
+
+.waitingRoomPage > .gameCode {
+    position:absolute;
+    color:#FFF;
+    left:50%;
+    top:10%;
+    transform:translate(-50%,-50%);
+    font-family:Grotesk;
+    font-size:7dvh;
+    text-align:center;
+    width:80%;
+    border-bottom: 0.5dvh solid var(--colorBright);
+}
+
+.startButton {
+    position:absolute;
+    left:50%;
+    bottom:10%;
+    transform:translate(-50%,-50%);
+    width:80%;
+    display:none;
+}
+
+.waitingRoomPage > .playerWindow {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:80%;
+    height:60%;
+    transform:translate(-50%,-50%);
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.waitingRoomPage > .playerWindow > .playerHolder {
+    position:absolute;
+    left:0;
+    top:0;
+    width: 100%;
+    height:fit-content;
+    display:flex;
+    flex-direction:column;
+}
+
+.waitingRoomPage > .playerWindow > .playerHolder > .player {
+    position:absolute;
+    display:flex;
+    flex-direction:row;
+    width:100%;
+    height:8dvh;
+    align-items: center;
+    gap:2dvh;
+}
+
+.player > .profilePicture {
+    width:6dvh;
+    height:6dvh;
+    border-radius:6dvh;
+}
+
+.player > .username {
+    color:#FFF;
+    font-family:Suisseintl;
+    font-size:3dvh;
+}
