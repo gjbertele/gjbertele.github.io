@@ -1,5 +1,5 @@
 const clientId = '1075eb768432412fa4ae12020b26c749';
-const redirectUri = 'https://gjb.one/spotify';
+const redirectUri = window.location.href.includes('gjb.one') ? 'https://gjb.one/spotify' : 'https://localhost:5500/spotify.html';
 
 const generateRandomString = (length) => {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
