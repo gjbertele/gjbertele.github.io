@@ -1,13 +1,18 @@
 class ServerConnection {
     socket;
-    apiURL = `ws://localhost:3000/`;
+    wsAPIURL = `ws://localhost:3000/`;
+    apiURL = `http://localhost:3000/api/spotify`
     openListeners = [];
 
     constructor(){
+        if(window.location.href.includes('gjb.one')){
+            this.wsAPIURL = 'wss://gjb.one/';
+            this.apiURL = 'https://gjb.one/api/spotify';
+        }
     }
 
     async initialize(){
-        this.socket = new WebSocket(this.apiURL);
+        this.socket = new WebSocket(this.wsAPIURL);
 
         this.socket.addEventListener('message', (message) => {
             if(message.data == 'Success') return console.log('Success');
@@ -94,6 +99,11 @@ class ServerConnection {
         }));
 
         return;
+    }
+
+    async getImageColors(url){
+        const data = await fetch(`${this.apiURL}/getImageColor?url=${encodeURIComponent(url)}`);
+        return await data.json();
     }
 
 

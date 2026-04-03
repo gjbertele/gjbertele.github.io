@@ -1,0 +1,60 @@
+
+.scoresPage {
+    left:400%;
+}
+
+.scoresPage > .title {
+    position:absolute;
+    left: 50%;
+    top: 10%;
+    transform:translate(-50%,-50%);
+    color:#FFF;
+    font-family:Grotesk;
+    width:80%;
+    text-align:center;
+    font-size: 4dvh;
+    padding-bottom:1dvh;
+    border-bottom:0.5dvh solid var(--colorBright);
+}
+
+.scoresPage > .playerWindow {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:80%;
+    height:60%;
+    transform:translate(-50%,-50%);
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.scoresPage > .playerWindow > .playerHolder {
+    position:absolute;
+    left:0;
+    top:0;
+    width: 100%;
+    height: fit-content;
+    display:flex;
+    flex-direction:column;
+}
+
+.scoresPage > .playerWindow > .playerHolder > .player {
+    display:flex;
+    flex-direction:row;
+    width:100%;
+    height:8dvh;
+    align-items: center;
+    gap:2dvh;
+}
+
+.scoresPage > .playerWindow > .playerHolder > .player > .username {
+    width:calc(100% - 6dvh - 10dvh - 4dvh);
+}
+
+.player > .score {
+    color:#FFF;
+    font-family:Grotesk;
+    font-size:3dvh;
+    width:10dvh;
+    text-align:center;
+}

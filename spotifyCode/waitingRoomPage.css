@@ -40,13 +40,12 @@
     left:0;
     top:0;
     width: 100%;
-    height:fit-content;
+    height: fit-content;
     display:flex;
     flex-direction:column;
 }
 
 .waitingRoomPage > .playerWindow > .playerHolder > .player {
-    position:absolute;
     display:flex;
     flex-direction:row;
     width:100%;
@@ -59,10 +58,11 @@
     width:6dvh;
     height:6dvh;
     border-radius:6dvh;
+    border: 0.2dvh solid #FFF;
 }
 
 .player > .username {
     color:#FFF;
-    font-family:Suisseintl;
-    font-size:3dvh;
+    font-family:Grotesk;
+    font-size:2.5dvh;
 }

@@ -21,6 +21,16 @@
     --pageWidth: min(80dvh, 100dvw);
 }
 
+.scrollable::-webkit-scrollbar {
+    background:transparent;
+    width:0.2dvw;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: #FFF;
+    border-radius:1em;
+}
+
 body, html {
     position:absolute;
     left:0;
@@ -142,6 +152,7 @@ body, html {
     height:5dvh;
     line-height:5dvh;
     border-radius:5dvh;
+    cursor:pointer;
 }
 
 .goButton {
@@ -153,4 +164,15 @@ body, html {
     display:none;
     background:var(--colorBright) !important;
     color:#FFF !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield; 
 }

@@ -7,9 +7,11 @@ const waitingRoomPlayerHolder = document.querySelector('.waitingRoomPage > .play
 const startButton = document.querySelector('.startButton');
 const playbackEmbed = document.querySelector('.playbackEmbed');
 const roundPlayerHolder = document.querySelector('.roundPage > .playerWindow > .playerHolder');
+const scoresPlayerHolder = document.querySelector('.scoresPage > .playerWindow > .playerHolder');
 const width = document.querySelector('.displayTracksPage').clientWidth;
 const height = document.body.clientHeight;
 
+let currentPlayers = {};
 let user = {
     username:'',
     profilePicture:'',
@@ -64,8 +66,6 @@ document.body.addEventListener('tokenGranted', async (data) => {
     
     goButton.style.display = 'inline-block';
 
-    console.log(token);
-
     displayTracksPage(token);
 });
 
@@ -115,7 +115,6 @@ const getUserInfo = async (token) => {
 }
 
 const processRecentTracks = (tracks) => {
-    console.log(tracks);
     let output = [];
 
     for(let track of tracks){
@@ -189,6 +188,7 @@ const displayTracksPage = () => {
                 <span class="timeOfDay">${timeOfDay}</span>
             </span>
         `
+        
 
         trackHolder.appendChild(songHolder);
     }
@@ -199,6 +199,7 @@ const displayLobbyPage = () => {
     document.querySelector('.lobbyPage').style.left = '0%';
     document.querySelector('.waitingRoomPage').style.left = '100%';
     document.querySelector('.roundPage').style.left = '200%';
+    document.querySelector('.scoresPage').style.left = '300%';
 
     return;
 }
@@ -210,6 +211,7 @@ const displayWaitingRoom = (gameCode) => {
     document.querySelector('.lobbyPage').style.left = '-100%';
     document.querySelector('.waitingRoomPage').style.left = '0%';
     document.querySelector('.roundPage').style.left = '100%';
+    document.querySelector('.scoresPage').style.left = '200%';
     document.querySelector('.waitingRoomPage > .gameCode').textContent = gameCode;
     return;
 }
@@ -233,18 +235,17 @@ const newTrack = (round) => {
     document.querySelector('.lobbyPage').style.left = '-200%';
     document.querySelector('.waitingRoomPage').style.left = '-100%';
     document.querySelector('.roundPage').style.left = '0%';
+    document.querySelector('.scoresPage').style.left = '100%';
 
     user.currentSelection = '';
     user.serverConnection.updateSelection(user.currentGameCode, '');
-
-    updateColorScheme(round.track);
 
     document.querySelector('.roundPage > .title').innerHTML = `Who has listened to <span class="highlightedGreen">${round.track.songName}</span>`
     
 
     user.playbackController.loadUri(round.track.uri);
 
-    round.players = [{
+    round.players.push(...[{
         username:'a',
         id:0
     },{
@@ -253,95 +254,78 @@ const newTrack = (round) => {
     },{
         username:'c',
         id:2
-    }];
-
-    fillRoundPlayers(round);
-}
-
-const updateColorScheme = async (track) => {
-    const colorScheme = await computeColorScheme(track);
-    document.documentElement.style.setProperty('--colorSongBG',colorScheme.backgroundColor);
-    document.documentElement.style.setProperty('--colorSongText',colorScheme.textColor);
-    console.log(colorScheme);
-}
-
-const convertToHSL = (r, g, b) => {
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const lightness = (max + min) / (2 * 255);
-
-    let hPrime = 0;
-    if(r == max) hPrime = ((g - b) / (max - min));
-    else if(g == max) hPrime = 2 + (b - r) / (max - min);
-    else hPrime = 4 + (r - g) / (max - min);
-
-    hPrime %= 6;
-
-    let hue = 60 * hPrime;
-
-    let saturation = 0;
-    if(lightness != 0 && lightness != 1) saturation = (max - min) / (255 * (1 - Math.abs(2 * lightness - 1)));
-
-    if(hue < 0) hue += 360;
-
-    return [hue, saturation, lightness];
-}
-
-const scoreColor = (color) => {
-    const [r, g, b] = [color._r, color._g, color._b];
-    const luminance = convertToHSL(r, g, b)[2];
-
-    const rgness = (r - g) / 255;
-    const ybness = ((r + g) / 2 - b) / 255;
-
-    const chroma = Math.sqrt(rgness ** 2 + ybness ** 2)
-
-    const darkness = 1 - luminance;
-
-    const score = chroma * 5 + 0.7 * darkness + 0.9 * color.proportion;
-
-    return score;
-}
-
-let p;
-
-const computeColorScheme = async (track) => {
-    const newImg = document.createElement('img');
-    newImg.src = track.albumCover;
-    newImg.crossOrigin = 'anonymous';
+    }]);
     
-    const promise = new Promise(async (resolve) => {
-        newImg.addEventListener('load', async () => {
-            const colorPalette = await ColorThief.getPalette(newImg, {
-                ignoreWhite: true,
-                whiteThreshold: 230,
-                colorCount: 5
-            });
-            console.log(colorPalette);
-            p = colorPalette;
 
-            const color = colorPalette.sort((a,b) => scoreColor(b) - scoreColor(a))[0];
-            const [r, g, b] = [color._r, color._g, color._b];
-        
-            console.log(color.textColor);
+    currentPlayers = round.players;
+    fillRoundPlayers(round);
+    beginRoundProgessBar();
+}
 
-            resolve({
-                backgroundColor: `rgb(${r},${g},${b})`,
-                textColor: '#FFF'
-            });
+const beginRoundProgessBar = () => {
+    const progessBar = document.querySelector('.progressBar');
+    progessBar.style.transition = 'width 1s linear';
 
-        });
-    });
+    let timeLeft = 14;
 
-    return promise;
+    setInterval(() => {
+        if(timeLeft < 0) return;
+        document.querySelector('.countdown').textContent = timeLeft;
+        timeLeft--;
+        progessBar.style.width = `${100 * timeLeft / 15}%`;
+    }, 1000);
+}
+
+const roundScores = (scoreData) => {
+    const players = scoreData.players.sort((a,b) => scoreData.scores[b.id] - scoreData.scores[a.id]);
+    
+    scoresPlayerHolder.innerHTML = '';
+    for(let player of players){
+        const playerElement = document.createElement('div');
+        playerElement.className = 'player';
+
+        const emoji = scoreData.correctPlayers[player.id] ? '✅' : '❌';
+
+        playerElement.innerHTML = `
+        <img src=${player.profilePicture} class="profilePicture">
+        <span class="username">${player.username}</span>
+        <span class="score">${scoreData.scores[player.id]} ${emoji}</span>`;
+
+        scoresPlayerHolder.appendChild(playerElement);
+    }
+
+    for(let id of scoreData.correctAnswers){
+        const elem = document.getElementById(id);
+    
+        elem.style.background = 'var(--colorBright)';
+        elem.style.color = '#FFF';
+    }
+
+    setTimeout(() => {
+        displayScoresPage();
+    },5*1000);
+
+    return;
+}
+
+const displayScoresPage = () => {
+    document.querySelector('.displayTracksPage').style.left = '-400%';
+    document.querySelector('.lobbyPage').style.left = '-300%';
+    document.querySelector('.waitingRoomPage').style.left = '-200%';
+    document.querySelector('.roundPage').style.left = '-100%';
+    document.querySelector('.scoresPage').style.left = '0%';
+    document.querySelector('.progressBar').style.width = '100%';
+
 }
 
 const fillRoundPlayers = (round) => {
+    roundPlayerHolder.innerHTML = '';
     for(let player of round.players){
         const playerElement = document.createElement('span');
         playerElement.className = 'player';
         playerElement.setAttribute('selected','false');
         playerElement.textContent = player.username;
+        playerElement.id = player.id;
 
         playerElement.addEventListener('click', () => {
             const selected = playerElement.getAttribute('selected') == 'true';
@@ -370,8 +354,8 @@ const deselectAllRoundPlayers = () => {
 window.onSpotifyIframeApiReady = (IFrameAPI) => {
     user.IFrameAPI = IFrameAPI;
     user.IFrameAPI.createController(playbackEmbed, {
-        width: width * 0.25,
-        height: width * 0.1
+        width: width * 0.8,
+        height: width * 0.8 / 2.5
     }, (controller) => {
         user.playbackController = controller;
     });
@@ -380,7 +364,7 @@ window.onSpotifyIframeApiReady = (IFrameAPI) => {
 const initializeServerListeners = () => {
     user.serverConnection.addEventListener('playerJoin', playerJoin);
     user.serverConnection.addEventListener('newTrack', newTrack);
-
+    user.serverConnection.addEventListener('roundScores', roundScores);
 
 
     return;

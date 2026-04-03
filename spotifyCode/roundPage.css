@@ -1,5 +1,5 @@
 :root {
-    --colorSongBG: #000;
+    --colorSongBG: #121212;
     --colorSongText: #FFF; 
 }
 
@@ -53,9 +53,9 @@
 
 .roundPage > iframe {
     position:absolute;
-    left:37.5%;
-    top:calc(15dvh + var(--pageWidth) * 0.1);
-    transform:scale(3.5);
+    left:50%;
+    top:15%;
+    transform:translate(-50%, -50%);
 }
 
 .countdown {
@@ -76,4 +76,5 @@
     width:100%;
     height:2dvh;
     background:var(--colorSongText);
+    transition: width 1s linear;
 }
