@@ -8,14 +8,15 @@ const startButton = document.querySelector('.startButton');
 const playbackEmbed = document.querySelector('.playbackEmbed');
 const roundPlayerHolder = document.querySelector('.roundPage > .playerWindow > .playerHolder');
 const scoresPlayerHolder = document.querySelector('.scoresPage > .playerWindow > .playerHolder');
+const searchButton = document.querySelector('.searchButton');
 const width = document.querySelector('.displayTracksPage').clientWidth;
 const height = document.body.clientHeight;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 let currentPlayers = {};
 let user = {
     username:'',
-    profilePicture:'',
-    recentTracks: [],
+    tracks: [],
     serverConnection: null,
     currentGameCode: '',
     currentSelection: ''
@@ -25,8 +26,8 @@ let user = {
 const initializeServerConnection = async () => {
     user.serverConnection = new ServerConnection();
     await user.serverConnection.initialize();
-    user.serverConnection.addPlayer(user.recentTracks, user.username, user.profilePicture);
 
+    goButton.style.display = 'inline-block';
     initializeServerListeners();
     return;
 }
@@ -54,24 +55,15 @@ for(let i = 0; i<4; i++){
     });
 }
 
-document.body.addEventListener('tokenGranted', async (data) => {
-    const token = data.detail.token;
-    const userInfo = await getUserInfo(token);
-
-    user.username = userInfo.username;
-    user.profilePicture = userInfo.profilePicture;
-
-    const recentTracks = await getRecentTracks(token);
-    user.recentTracks = processRecentTracks(recentTracks);
-    
-    goButton.style.display = 'inline-block';
-
-    displayTracksPage(token);
-});
 
 goButton.addEventListener('click', async () => {
+    const username = document.querySelector('.nameInput').value;
+
+    if(user.tracks == [] || username == '') return;
+    
     displayLobbyPage();
-    await initializeServerConnection();
+
+    user.serverConnection.addPlayer(user.tracks, username);
 
     return;
 });
@@ -99,6 +91,16 @@ startButton.addEventListener('click', () => {
     return;
 });
 
+searchButton.addEventListener('click', async () => {
+    const query = document.querySelector('.searchInput').value;
+    const results = await user.serverConnection.search(query);
+    const topResult = processTrack(results[0]);
+    user.tracks.push(topResult);
+    addTrackToTrackPage(topResult);
+
+    return;
+});
+
 const getUserInfo = async (token) => {
     const request = await fetch('https://api.spotify.com/v1/me/', {
         headers: {
@@ -109,89 +111,53 @@ const getUserInfo = async (token) => {
     const data = await request.json();
 
     const username = data.display_name;
-    const profilePicture = data.images[0].url;
 
-    return { username, profilePicture };
+    return { username };
 }
 
-const processRecentTracks = (tracks) => {
-    let output = [];
+const processTrack = (track) => {
+    const songName = track.name;
+    const albumCover = track.album.images[0].url;
+    const artists = track.artists.map(i => i = i.name).join(', ');
+    const uri = track.uri;
 
-    for(let track of tracks){
-        const songName = track.track.name;
-        const albumCover = track.track.album.images[0].url;
-        const timePlayed = new Date(track.played_at);
-        const artists = track.track.artists.map(i => i = i.name).join(', ');
-        const uri = track.track.uri;
-
-        const timeOfDay = getTimeOfDay(timePlayed);
-        const songDay = getSongDay(timePlayed);
-
-        output.push({
-            songName,
-            albumCover,
-            timePlayed,
-            artists,
-            timeOfDay,
-            songDay,
-            uri
-        });
-    }
-
-    return output;
+    return {
+        songName,
+        albumCover,
+        artists,
+        uri
+    };
 }
 
-const getRecentTracks = async (token) => {
-    const request = await fetch('https://api.spotify.com/v1/me/player/recently-played', {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
 
-    const data = await request.json();
-    
-    return data.items;
-}
+const addTrackToTrackPage = (track) => {
+    const {songName, albumCover, artists} = track;
 
-const getTimeOfDay = (date) => {
-    const timeString = date.toLocaleTimeString();
-    const PMAM = timeString.split(' ')[1];
-    const str = timeString.split(' ')[0].split(':').slice(0,2).join(':');
+    const songHolder = document.createElement('div');
+    songHolder.className = 'song';
 
-    return str + ' ' + PMAM;
-}
+    songHolder.innerHTML = `
+        <img src="${albumCover}" class="albumCover">
+        <div class="songText">
+            <span class="songTitle">${songName}</span>
+            <span class="songArtist">${artists}</span>
+        </div>
+    `
+    const removeButton = document.createElement('div');
+    removeButton.className = 'removeButton';
+    removeButton.textContent = 'Remove';
 
-const getSongDay = (date) => {
-    const dayString = date.toLocaleDateString();
-    const today = (new Date()).toLocaleDateString();
+    trackHolder.appendChild(songHolder);
+    songHolder.appendChild(removeButton);
 
-    if(today == dayString) return 'Today';
-    if((new Date()) - date < 86400*1000) return 'Yesterday';
-    return dayString.split('/').slice(0,2).join('/');
-}
+    removeButton.addEventListener('click', () => {
+        user.tracks = user.tracks.filter(i => i.uri != track.uri);
+        songHolder.remove();
+    }); 
 
-const displayTracksPage = () => {
-    for(let track of user.recentTracks){
-        const {songName, albumCover, timePlayed, artists, timeOfDay, songDay} = track;
+    if(isIOS) removeButton.style.opacity = 1;
 
-        const songHolder = document.createElement('div');
-        songHolder.className = 'song';
-
-        songHolder.innerHTML = `
-            <img src="${albumCover}" class="albumCover">
-            <div class="songText">
-                <span class="songTitle">${songName}</span>
-                <span class="songArtist">${artists}</span>
-            </div>
-            <div class="songTime">
-            <span class="songDay">${songDay}</span>
-                <span class="timeOfDay">${timeOfDay}</span>
-            </span>
-        `
-        
-
-        trackHolder.appendChild(songHolder);
-    }
+    return;
 }
 
 const displayLobbyPage = () => {
@@ -221,7 +187,6 @@ const playerJoin = (player) => {
     playerElement.className = 'player';
 
     playerElement.innerHTML = `
-    <img src=${player.profilePicture} class="profilePicture">
     <span class="username">${player.username}</span>
     `
 
@@ -241,21 +206,8 @@ const newTrack = (round) => {
     user.serverConnection.updateSelection(user.currentGameCode, '');
 
     document.querySelector('.roundPage > .title').innerHTML = `Who has listened to <span class="highlightedGreen">${round.track.songName}</span>`
-    
 
     user.playbackController.loadUri(round.track.uri);
-
-    round.players.push(...[{
-        username:'a',
-        id:0
-    },{
-        username:'b',
-        id:1
-    },{
-        username:'c',
-        id:2
-    }]);
-    
 
     currentPlayers = round.players;
     fillRoundPlayers(round);
@@ -287,7 +239,6 @@ const roundScores = (scoreData) => {
         const emoji = scoreData.correctPlayers[player.id] ? '✅' : '❌';
 
         playerElement.innerHTML = `
-        <img src=${player.profilePicture} class="profilePicture">
         <span class="username">${player.username}</span>
         <span class="score">${scoreData.scores[player.id]} ${emoji}</span>`;
 
@@ -345,6 +296,8 @@ const fillRoundPlayers = (round) => {
     return;
 }
 
+
+
 const deselectAllRoundPlayers = () => {
     const elements = Array.from(document.querySelectorAll('.roundPage > .playerWindow > .playerHolder > .player'));
     for(let elem of elements) elem.setAttribute('selected', 'false');
@@ -354,8 +307,8 @@ const deselectAllRoundPlayers = () => {
 window.onSpotifyIframeApiReady = (IFrameAPI) => {
     user.IFrameAPI = IFrameAPI;
     user.IFrameAPI.createController(playbackEmbed, {
-        width: width * 0.8,
-        height: width * 0.8 / 2.5
+        width: width * 0.2,
+        height: width * 0.2 / 2.5
     }, (controller) => {
         user.playbackController = controller;
     });
@@ -369,3 +322,5 @@ const initializeServerListeners = () => {
 
     return;
 }
+
+initializeServerConnection();
