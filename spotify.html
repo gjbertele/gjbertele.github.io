@@ -15,12 +15,22 @@
 </head>
 <body>
     <div class="page displayTracksPage">
-        <span class="title">Recently Played</span>
+        <span class="title">Added Songs</span>
         <div class="trackWindow scrollable">
             <div class="trackHolder"></div>
         </div>
+        <div class="searchHolder">
+            <input class="searchInput textInput" placeholder="Enter a song name">
+            <div class="searchButton button">Add Song</div>
+        </div>
+        <div class="nameHolder">
+            <span class="nameLabel">Name</span>
+            <input class="nameInput textInput" placeholder="Enter name">
+        </div>
         <div class="button goButton">Go</div>
     </div>
+
+
     <div class="page lobbyPage">
         <div class="button joinButton">Join Game</div>
         <div class="button createButton">Create Game</div>
@@ -53,10 +63,8 @@
             <div class="playerHolder"></div>
         </div>
     </div>
-    <script src="spotifyCode/spotifyAPIHandler.js"></script>
     <script src="spotifyCode/serverHandler.js"></script>
     <script src="spotifyCode/spotify.js"></script>
     <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
-    <script src="https://unpkg.com/colorthief@3/dist/umd/color-thief.global.js"></script>
 </body>
 </html>

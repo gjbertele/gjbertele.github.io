@@ -14,6 +14,7 @@
     font-display: swap;
 }
 
+
 :root {
     --colorBG: #121212;
     --colorSecondary: #212121;
@@ -59,10 +60,10 @@ body, html {
 .trackWindow {
     position:absolute;
     left:50%;
-    top:50%;
+    top:35%;
     transform:translate(-50%,-50%);
     width:90%;
-    height:70%;
+    height:50%;
     overflow-y:scroll;
     overflow-x:hidden;
 }
@@ -89,12 +90,28 @@ body, html {
 }
 
 .songText {
-    width:20dvh;
+    width:40dvh;
     color:#FFF;
     font-family:Suisseintl;
     display:flex;
     flex-direction:column;
     justify-content: center;
+}
+
+.removeButton {
+    width:15dvh;
+    color:#FFF;
+    font-family:Grotesk;
+    font-size:2dvh;
+    text-align:center;
+    line-height:10dvh;
+    vertical-align: middle;
+    opacity:0;
+    height:10dvh;
+}
+
+.song:hover > .removeButton {
+    opacity:1;
 }
 
 .songText > .songTitle {
@@ -103,24 +120,6 @@ body, html {
 
 .songText > .songArtist {
     font-size:1.5dvh;
-}
-
-.songTime {
-    width:10dvh;
-    color:#FFF;
-    font-family:Suisseintl;
-    display:flex;
-    flex-direction:column;
-    justify-content: center;
-    align-items: center;
-}
-
-.songTime > .timeOfDay {
-    font-size:1.3dvh;
-}
-
-.songTime > .songDay {
-    font-size:2dvh;
 }
 
 .albumCover {
@@ -164,6 +163,73 @@ body, html {
     display:none;
     background:var(--colorBright) !important;
     color:#FFF !important;
+}
+
+.searchHolder {
+    position:absolute;
+    width:80%;
+    height:fit-content;
+    top:72.5%;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.searchButton {
+    position:absolute;
+    font-size:2dvh !important;
+    height:5dvh !important;
+    padding:none !important;
+    right:0;
+    padding-left:2dvh;
+    padding-right:2dvh;
+}
+
+.searchInput {
+    position:absolute;
+    right:19dvh;
+    width:calc(var(--pageWidth) * 0.8 - 19dvh)
+}
+
+.textInput {
+    background:#2a2a2a;
+    font-size:2.5dvh;
+    font-family:sans-serif;
+    color:#FFF;
+    height:5dvh;
+    line-height:3dvh;
+    border-radius:3dvh;
+    border:none;
+    text-indent:1.5dvh;
+}
+
+.textInput:focus {
+    outline:none;
+}
+
+.nameHolder {
+    position:absolute;
+    left:50%;
+    width:80%;
+    height:fit-content;
+    transform:translateX(-50%);
+    top:80%;
+}
+
+.nameInput {
+    position:absolute;
+    right:0;
+    height:5dvh;
+    width:calc(var(--pageWidth) * 0.8 - 15dvh);
+}
+
+.nameLabel {
+    position:absolute;
+    left:0;
+    font-family:Grotesk;
+    height:5dvh;
+    line-height:5dvh;
+    color:#FFF;
+    font-size:3dvh;
 }
 
 input::-webkit-outer-spin-button,

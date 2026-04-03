@@ -43,13 +43,12 @@ class ServerConnection {
         return;
     }
 
-    addPlayer(recentTracks, username, profilePicture){
+    addPlayer(tracks, username){
         this.socket.send(JSON.stringify({
             type:'addPlayer',
             data:{
-                recentTracks,
-                username,
-                profilePicture
+                tracks,
+                username
             }
         }));
 
@@ -101,9 +100,11 @@ class ServerConnection {
         return;
     }
 
-    async getImageColors(url){
-        const data = await fetch(`${this.apiURL}/getImageColor?url=${encodeURIComponent(url)}`);
-        return await data.json();
+    async search(query) {
+        const data = await fetch(`${this.apiURL}/search?q=${encodeURIComponent(query)}`);
+        const json = await data.json();
+
+        return json;
     }
 
 
