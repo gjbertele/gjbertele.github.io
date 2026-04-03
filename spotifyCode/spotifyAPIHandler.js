@@ -1,5 +1,5 @@
 const clientId = '1075eb768432412fa4ae12020b26c749';
-const redirectUri = window.location.href.includes('gjb.one') ? 'https://gjb.one/spotify' : 'https://localhost:5500/spotify.html';
+const redirectUri = window.location.href.includes('gjb.one') ? 'https://gjb.one/spotify' : 'https://127.0.0.1:5500/spotify.html';
 
 const generateRandomString = (length) => {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -50,7 +50,8 @@ const requestSpotifyOAuth = async () => {
 
 const checkForCode = () => {
     const urlParams = new URLSearchParams(window.location.href.split('?')[1]);
-    
+    console.log('checking for code',Date.now(),urlParams.has('code'));
+
     if(!urlParams.has('code')){
         requestSpotifyOAuth();
     } else {
