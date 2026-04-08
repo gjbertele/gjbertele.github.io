@@ -1,0 +1,36 @@
+.userCard {
+    position:relative;
+    height:100%;
+    aspect-ratio: 16 / 9;
+    overflow:hidden;
+}
+
+.userCard > video {
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    aspect-ratio: 16 / 9;
+}
+
+.userCard > .username {
+    position:absolute;
+    left:1dvh;
+    bottom:1dvh;
+    color:#FFF;
+    background:var(--colorSecondary);
+    width:fit-content;
+    padding:0.5dvh;
+    font-family:Suisseintl;
+    border-radius:0.5dvh;
+}
+
+
+.crowdMediaHolder {
+    position:absolute;
+    left:50%;
+    top:0;
+    width:90%;
+    height:35%;
+    transform:translateX(-50%);
+}
