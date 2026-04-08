@@ -4,17 +4,14 @@
 	top: 0;
 	width: 100%;
 	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 2rem;
 	font-family: var(--font-sans);
 }
 
 .initialPage>.contentHolder {
-	width: 100%;
-	max-width: 50dvh;
+	position:absolute;
+	left:calc(50dvw - min(25dvh, 50dvw));
+	top: 25%;
+	width:min(50dvh, 100dvw);
 	display: flex;
 	flex-direction: column;
 	align-items: center;

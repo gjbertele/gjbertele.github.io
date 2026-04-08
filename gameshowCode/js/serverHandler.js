@@ -15,7 +15,7 @@ class ServerConnection {
         this.socket.addEventListener('message', (message) => {
             if(message.data == 'Success') return console.log('Success');
             const data = JSON.parse(message.data);
-            console.log(data);
+            if(data.type != 'videoData') console.log(data);
 
             for(let listener of this.openListeners){
                 if(data.type == listener[0]) listener[1](data.data);            
@@ -51,9 +51,17 @@ class ServerConnection {
     }
 
     sendVideoChunkToServer(chunk){
-        //TODO
         this.socket.send(chunk);
         return;
+    }
+
+    async refreshPreferences(user){
+        await this.socket.send(JSON.stringify({
+            type: 'updateUserPreferences',
+            data: user
+        }));
+
+        return true;
     }
 
 
