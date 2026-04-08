@@ -1,0 +1,140 @@
+.initialPage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	font-family: var(--font-sans);
+}
+
+.initialPage>.contentHolder {
+	width: 100%;
+	max-width: 50dvh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+}
+
+.contentHolder>.titleHolder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.4rem;
+	justify-content: center;
+}
+
+.contentHolder>.inputHolder {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+.inputHolder>.nameHolder {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.nameHolder>.nameLabel {
+	font-size: 12px;
+	color: var(--colorTextSubdued);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.nameHolder>.nameInput {
+	background: transparent;
+	border: 0.5px solid var(--colorSecondary);
+	border-radius: 8px;
+	padding: 0.75rem 1rem;
+	font-size: 15px;
+	color: var(--colorText);
+	outline: none;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: var(--font-sans);
+}
+
+.heart {
+	font-size: 3dvh;
+	color: var(--colorDark);
+}
+
+.titleHolder>.title {
+	font-size: 2.1rem;
+	font-weight: 900;
+	color: var(--colorText);
+	margin: 0;
+	letter-spacing: 0.04em;
+	line-height: 1.2;
+}
+
+.contentHolder>.lineSeparator {
+	width: 100%;
+	height: 0.2dvh;
+	background: var(--colorDark);
+}
+
+.nameInput:focus {
+	border-color: var(--colorSecondary) !important;
+	box-shadow: 0 0 0 3px rgba(192, 56, 90, 0.12);
+}
+
+.nameInput::placeholder {
+	color: #604050;
+}
+
+.joinContestantButton {
+	width: 100%;
+	padding: 0.8rem 1.5rem;
+	background: var(--colorDark);
+	border: none;
+	border-radius: 8px;
+	font-size: 15px;
+	font-weight: 500;
+	color: #fce4ec;
+	cursor: pointer;
+	letter-spacing: 0.03em;
+	font-family: var(--font-sans);
+
+}
+
+.joinSpectatorButton {
+	width: 100%;
+	padding: 0.8rem 1.5rem;
+	background: transparent;
+	border: 0.5px solid var(--colorSecondary);
+	border-radius: 8px;
+	font-size: 15px;
+	font-weight: 500;
+	color: #d08090;
+	cursor: pointer;
+	letter-spacing: 0.03em;
+	font-family: var(--font-sans);
+
+}
+
+.joinContestantButton:hover {
+	background: var(--colorDark) !important;
+}
+
+.joinContestantButton:active {
+	transform: scale(0.98);
+}
+
+.joinSpectatorButton:hover {
+	background: rgba(192, 56, 90, 0.1) !important;
+	border-color: var(--colorSecondary) !important;
+	color: var(--colorLight) !important;
+}
+
+.joinSpectatorButton:active {
+	transform: scale(0.98);
+}
