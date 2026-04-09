@@ -3,10 +3,15 @@ let user = {
         mediaRecorder: null,
         mediaStream: null,
         mediaOptions: {
-            audio: true,
-            video: true,
-            width: 640,
-            height: 360,
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            },
+            video: {
+                width: 640,
+                height:360
+            },
             frameRate: {
                 ideal: 25,
                 max: 30
@@ -19,7 +24,9 @@ let user = {
     server: null,
     id: Math.floor(Math.random()*1000000),
     name: "",
-    permissions: 0
+    permissions: 0,
+    location: 'crowd',
+    mediaElement: null
 }
 
 
@@ -77,10 +84,10 @@ const userJoin = (user) => {
     const userJoinEvent = new CustomEvent('userJoin', {
         detail: newUser
     });
+    connectedUsers.push(newUser);
 
     document.body.dispatchEvent(userJoinEvent);
 
-    connectedUsers.push(newUser);
 
 
 
@@ -127,10 +134,15 @@ const appendToBuffer = (mediaSource, sourceBuffer, chunk) => {
 const listenForData = () => {
     user.server.addEventListener('userJoin', userJoin);
     user.server.addEventListener('userLeave', (data) => {
-        const idx = getUserIdxById(data);
+        const idx = getUserIdxById(data.id);
         const user = connectedUsers[idx];
+        const customEvent = new CustomEvent('userLeave', {
+            detail: {
+                id: data.id
+            }
+        });
+        document.body.dispatchEvent(customEvent);
 
-        user.streaming.videoElement.remove();
         connectedUsers = connectedUsers.filter(i => i.id != data.id);
     });
     user.server.addEventListener('videoData', (data) => {
@@ -149,9 +161,9 @@ const listenForData = () => {
     
 }
 
-
+/*
 document.body.onclick = () => {
     for(let elem of (new Array(...document.querySelectorAll('video')))){
         if(elem) elem.play();
     }
-}
+}*/

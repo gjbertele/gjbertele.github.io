@@ -1,17 +1,77 @@
-.userCard {
-    position:relative;
+.mainVideoPage {
+    position:absolute;
+    left:100%;
+    top:0;
+    width:100%;
     height:100%;
-    aspect-ratio: 16 / 9;
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    gap:1dvh;
+}
+
+.priorityMediaHolder > .userCard {
+    position:relative;
+    width:min(40dvw, 45dvh);
+    aspect-ratio:16/9;
     overflow:hidden;
+    border-radius:1dvh;
+}
+
+.crowdMediaHolder > .userCard {
+    position:relative;
+    width:min(40dvw, 35dvh);
+    aspect-ratio:16/9;
+    border-radius:1dvh;
+}
+
+.userCard > .userOperations {
+    position:relative;
+    left:calc(100% - 5dvh);
+    top:1dvh;
+    width:fit-content;
+    height:fit-content;
+    display:flex;
+    flex-direction:column;
+    gap:0.5dvh;
+}
+
+.userOperations > .button {
+    background:#000;
+    border-radius:100%;
+    font-size:2dvh;
+    padding:1dvh;
+    cursor:pointer;
+}
+
+.titleBar {
+    width:100%;
+    height:10%;
+}
+
+.titleBar > .title {
+    position:relative;
+    left:50%;
+    top:10%;
+    transform:translate(-50%,-50%);
+    color:#FFF;
+    font-size:6dvh;
+    font-family: var(--font-title);
+    width:80%;
+    text-align: center;
+    border-bottom:0.5dvh solid var(--colorDark); 
 }
 
 .userCard > video {
     position:absolute;
-    left:0;
+    left:50%;
     top:0;
-    height:100%;
+    width:100%;
     aspect-ratio: 16 / 9;
+    transform:translateX(-50%);
+    border-radius: inherit;
 }
+
 
 .userCard > .username {
     position:absolute;
@@ -25,12 +85,32 @@
     border-radius:0.5dvh;
 }
 
+.priorityMediaHolder > .userCard > .userOperations > .isolateButton {
+    display:none;
+}
+
 
 .crowdMediaHolder {
-    position:absolute;
-    left:50%;
-    top:0;
     width:90%;
-    height:35%;
-    transform:translateX(-50%);
+    height:fit-content;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.delimeter {
+    width:100%;
+    height:5%;
+    background:transparent;
+}
+
+.priorityMediaHolder {
+    width:90%;
+    height:fit-content;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    gap:2dvh;
+    flex-wrap:wrap;
 }
