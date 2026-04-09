@@ -58,11 +58,30 @@ class ServerConnection {
     async refreshPreferences(user){
         await this.socket.send(JSON.stringify({
             type: 'updateUserPreferences',
-            data: user
+            data: {
+                user
+            }
         }));
 
         return true;
     }
 
+    forceUserRefresh(user){
+        this.socket.send(JSON.stringify({
+            type:'forceUserRefresh',
+            data: {
+                id: user.id
+            }
+        }));
+    }
+
+    promoteUser(user){
+        this.socket.send(JSON.stringify({
+            type:'promoteUser',
+            data: {
+                user
+            }
+        }));
+    }
 
 }
