@@ -1,0 +1,111 @@
+.chatPage {
+    position:absolute;
+    left:200%;
+    top:0;
+    width:100%;
+	min-height: 100vh;
+	padding: 1.5rem;
+	font-family: var(--font-sans);
+	box-sizing: border-box;
+}
+
+.chatPage > .inputHolder {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:3dvh;
+    width:90%;
+    height:5dvh;
+    display:flex;
+    flex-direction:row;
+    gap:3dvh;
+    align-items: center;
+}
+
+.chatPage > .inputHolder > .messageInput {
+	background: transparent;
+	border: 0.5px solid var(--colorSecondary);
+	border-radius: 8px;
+	padding: 0.75rem 1rem;
+	font-size: 15px;
+	color: var(--colorText);
+	outline: none;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: var(--font-sans);
+    order:0;
+}
+
+.chatPage > .inputHolder > .controls {
+    order:1;
+    height:100%;
+    display:flex;
+    flex-direction: row;
+}
+
+.chatPage > .inputHolder > .controls > .sendButton {
+    padding-left:3dvw;
+    padding-right:3dvw;
+    text-align:center;
+    vertical-align: middle;
+    line-height:5dvh;
+	background: var(--colorDark);
+	border: none;
+	border-radius: 8px;
+	font-size: 15px;
+	font-weight: 500;
+	color: #fce4ec;
+	cursor: pointer;
+	letter-spacing: 0.03em;
+	font-family: var(--font-sans);
+}
+
+.chatPage > .messageHolder {
+    position:absolute;
+    left:0;
+    top:10dvh;
+    width:100%;
+    height:80dvh;
+    align-items: bottom;
+    font-family: var(--font-sans);
+    color: var(--colorText);
+    font-size:2.5dvh;
+    display:flex;
+    flex-direction:column-reverse;
+    gap:1dvh;
+    overflow-y:scroll;
+}
+
+.messageHolder > .message {
+    position:relative;
+    left:50%;
+    width:90%;
+    transform:translateX(-50%);
+    display:flex;
+    align-items:center;
+    gap:3dvw;
+}
+
+.message > .username {
+    height:3dvh;
+    margin-top:1dvh;
+    margin-bottom:1dvh;
+    width:25dvw;
+    line-height:3dvh;
+    text-align: center;
+    vertical-align: middle;
+    overflow:hidden;
+    border-right: 1dvw solid var(--colorSecondary);
+}
+
+.message > .messageContent {
+    color: #FFF;
+    overflow:wrap;
+    width: 62dvw;
+}
+
+.chatPage > .topBar {
+    display: flex;
+    flex-direction:row;
+    gap:2dvh;
+}
