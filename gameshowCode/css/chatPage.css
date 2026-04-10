@@ -109,3 +109,11 @@
     flex-direction:row;
     gap:2dvh;
 }
+
+.topBar > .backButton {
+    font-size: 3dvh;
+}
+
+.topBar > .page-title {
+    font-size:3dvh;
+}
