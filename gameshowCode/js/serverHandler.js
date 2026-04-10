@@ -124,6 +124,16 @@ class ServerConnection {
         }));
     }
 
+    sendChatMessage(content){
+        this.socket.send(JSON.stringify({
+            type: 'chatMessage',
+            data: {
+                content,
+                name: user.name
+            }
+        }));
+    }
+
     send(){
        return this.socket.send(...arguments);
     }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="gameshowCode/css/main.css">
     <link rel="stylesheet" href="gameshowCode/css/initialPage.css">
     <link rel="stylesheet" href="gameshowCode/css/mainVideoPage.css">
+    <link rel="stylesheet" href="gameshowCode/css/chatPage.css">
 </head>
 <body>
     <div class="initialPage">
@@ -29,7 +30,6 @@
         </div>
     </div>
     <div class="mainVideoPage">
-
         <div class="self-bar">
           <p class="page-title">Title</p>
           <div class="self-controls">
@@ -46,6 +46,9 @@
             </button>
             <button class="ctrl-btn phoneAFriendButton">
                 📞 Phone a Friend
+            </button>
+            <button class="ctrl-btn chatButton">
+                💬 Chat
             </button>
           </div>
         </div>
@@ -68,7 +71,23 @@
         <div class="video-grid crowdMediaHolder">
         </div>
       
-      </div>
+    </div>
+
+    <div class="chatPage">
+        <div class="topBar">
+            <div class="backButton">⬅️</div>
+            <p class="page-title">Title</p>
+        </div>
+        <div class="messageHolder scrollable">
+        </div>
+        <div class="inputHolder">
+            <div class="controls">
+                <div class="sendButton">Send</div>
+            </div>
+            <input type="text" placeholder="Send a message" class="messageInput">
+        </div>
+    </div>
+
     <div class="videoElementStorage"></div>
     <script src="gameshowCode/js/uiHandler.js"></script>
     <script src="gameshowCode/js/serverHandler.js"></script>

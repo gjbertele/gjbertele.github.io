@@ -45,3 +45,13 @@ html {
     top:100%;
 	display:none;
 }
+
+.scrollable::-webkit-scrollbar {
+    background:transparent;
+    width:0.2dvw;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: var(--colorSecondary);
+    border-radius:1em;
+}

@@ -1,6 +1,6 @@
 const joinContestantButton = document.querySelector('.joinContestantButton');
 const joinSpectatorButton = document.querySelector('.joinSpectatorButton');
-const pageNames = ['initialPage', 'mainVideoPage'];
+const pageNames = ['initialPage', 'mainVideoPage', 'chatPage'];
 const pages = pageNames.map(i => i = document.querySelector('.'+i));
 const priorityMediaHolder = document.querySelector('.priorityMediaHolder');
 const contestantMediaHolder = document.querySelector('.contestantMediaHolder');
@@ -8,7 +8,11 @@ const crowdMediaHolder = document.querySelector('.crowdMediaHolder');
 const heartToggle = document.querySelector('.heartToggle');
 const cameraToggle = document.querySelector('.cameraToggle');
 const audioToggle = document.querySelector('.audioToggle');
-const phoneAFriendButton = document.querySelector('.phoneAFriendButton')
+const phoneAFriendButton = document.querySelector('.phoneAFriendButton');
+const chatButton = document.querySelector('.chatButton');
+const backButton = document.querySelector('.backButton');
+const sendButton = document.querySelector('.sendButton');
+const messageHolder = document.querySelector('.messageHolder');
 let heartsEnabled = false;
 
 const displayPage = (pageName) => {
@@ -171,6 +175,7 @@ const attachStreamingListeners = () => {
     user.server.addEventListener('forceRefresh', () => {
         window.location.reload();
     });
+    user.server.addEventListener('chatMessage', onChatMessage)
 
 }
 
@@ -319,12 +324,41 @@ phoneAFriendButton.addEventListener('click', () => {
     user.server.phoneAFriend();
 });
 
+chatButton.addEventListener('click', () => {
+    displayPage('chatPage');
+});
 
+backButton.addEventListener('click', () => {
+    displayPage('mainVideoPage');
+});
 
+sendButton.addEventListener('click', () => {
+    const messageContent = document.querySelector('.messageInput').value;
+    if(messageContent == '') return;
+
+    document.querySelector('.messageInput').value = '';
+
+    user.server.sendChatMessage(messageContent);
+
+    return;
+});
+
+const onChatMessage = (message) => {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message';
+
+    messageElement.innerHTML = `
+    <span class="username">${message.name}</span>
+    <span class="messageContent">${message.content}</span>
+    `
+
+    messageHolder.prepend(messageElement);
+
+    return;
+}
 
 /*
 TODO:
-Add a chat?
 Bubble pop sound effect
 Soundboard
 
