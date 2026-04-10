@@ -5,7 +5,10 @@ const pages = pageNames.map(i => i = document.querySelector('.'+i));
 const priorityMediaHolder = document.querySelector('.priorityMediaHolder');
 const contestantMediaHolder = document.querySelector('.contestantMediaHolder');
 const crowdMediaHolder = document.querySelector('.crowdMediaHolder');
-const balloonToggle = document.querySelector('.balloonToggle');
+const heartToggle = document.querySelector('.heartToggle');
+const cameraToggle = document.querySelector('.cameraToggle');
+const audioToggle = document.querySelector('.audioToggle');
+let heartsEnabled = false;
 
 const displayPage = (pageName) => {
     const idx = pageNames.indexOf(pageName);
@@ -26,8 +29,8 @@ joinContestantButton.addEventListener('click', async () => {
 
     user.name = document.querySelector('.nameInput').value;
     if(user.name == '') return;
+    await recordVideo();
     await initializeStreaming();
-    recordVideo();
     displayPage('mainVideoPage');
 });
 
@@ -36,11 +39,14 @@ joinSpectatorButton.addEventListener('click', async () => {
     user.location = 'crowd';
     user.name = document.querySelector('.nameInput').value;
     if(user.name == '') return;
+    await recordVideo();
     await initializeStreaming();
     displayPage('mainVideoPage');
 });
 
 const attachStreamingListeners = () => {
+    if(user.permissions < 2) heartToggle.style.display = 'none';
+
     user.server.addEventListener('userUpdate', (data) => {
         const idx = getUserIdxById(data.id);
         if(idx == -1) return;
@@ -68,6 +74,12 @@ const attachStreamingListeners = () => {
             connectedUsers[idx].streaming.videoElement.style.display = 'inline-block';
         }
 
+        if(data.user.heartState == true){
+            connectedUsers[idx].mediaElement.querySelector('.heartIcon').textContent = '❤️';
+        } else {
+            connectedUsers[idx].mediaElement.querySelector('.heartIcon').textContent = '💔';
+        }
+
 
         for(let key in data.user){
             connectedUsers[idx][key] = data.user[key];
@@ -83,6 +95,18 @@ const attachStreamingListeners = () => {
 
     user.server.addEventListener('forceRefresh', () => {
         window.location.reload();
+    });
+
+    user.server.addEventListener('setHeartToggle', (data) => {
+        heartsEnabled = data.heartsEnabled;
+        if(heartsEnabled){
+            heartToggle.textContent = '💔 Disable Hearts';
+        } else {
+            heartToggle.textContent = '❤️ Enable Hearts';
+        }
+
+        for(let elem of (new Array(...document.querySelectorAll('.heartIcon')))) elem.style.display = heartsEnabled ? 'inline-block' : 'none';
+
     });
 }
 
@@ -103,12 +127,14 @@ const createUserMediaElement = (targetUser) => {
             <button class="act-btn demoteButton">Move Down</button>
             <button class="act-btn danger removeButton">Remove</button>
         </div>
+        <div class="heartIcon">❤️</div>
       </div>
     `
 
     const removeButton = card.querySelector('.removeButton');
     const promoteButton = card.querySelector('.promoteButton');
     const demoteButton = card.querySelector('.demoteButton');
+    const heartIcon = card.querySelector('.heartIcon');
 
     removeButton.addEventListener('click', () => {
         user.server.forceUserRefresh(targetUser);
@@ -125,6 +151,21 @@ const createUserMediaElement = (targetUser) => {
         if(idx == -1) return;
         user.server.demoteUser(connectedUsers[idx]);
     });
+
+    const heartImmutable = user.permissions < 2 && targetUser.id != user.id;
+    heartIcon.style.cursor = heartImmutable ? 'auto' : 'pointer';
+    let heartState = true;
+
+
+    heartIcon.addEventListener('click', () => {
+        if(heartImmutable) return;
+        const idx = getUserIdxById(targetUser.id);
+        if(idx == -1) return;
+
+        heartState = !heartState;
+        user.server.setUserHeartState(connectedUsers[idx], heartState);
+    });
+
 
     if(user.permissions < 2){
         removeButton.style.display = 'none';
@@ -143,7 +184,17 @@ const createUserMediaElement = (targetUser) => {
     
 }
 
-document.querySelector('.audioToggle').addEventListener('click', () => {
+heartToggle.addEventListener('click', () => {
+    heartsEnabled = !heartsEnabled;
+
+    user.server.setHeartState(heartsEnabled);
+    return;
+});
+
+
+
+
+audioToggle.addEventListener('click', () => {
     const currentAudioState = user.recording.mediaOptions.audio != false;
 
     if(currentAudioState == true){
@@ -157,10 +208,9 @@ document.querySelector('.audioToggle').addEventListener('click', () => {
     }
 
     user.server.refreshPreferences(user);
-
 });
 
-document.querySelector('.cameraToggle').addEventListener('click', () => {
+cameraToggle.addEventListener('click', () => {
     const currentCameraState = user.recording.mediaOptions.video != false;
 
     if(currentCameraState == true){
@@ -180,24 +230,24 @@ document.body.addEventListener('userJoin', (event) => {
     const user = event.detail;
     if(user.permissions == 0) return;
     
-    const videoElement = createUserMediaElement(user);
+    const mediaElement = createUserMediaElement(user);
 
 
     const idx = getUserIdxById(user.id);
-    console.log(connectedUsers);
-    connectedUsers[idx].mediaElement = videoElement;
+    connectedUsers[idx].mediaElement = mediaElement;
 
     if(user.location == 'crowd'){
-        crowdMediaHolder.appendChild(videoElement);
+        crowdMediaHolder.appendChild(mediaElement);
+    } else if(user.location == 'contestant'){
+        contestantMediaHolder.appendChild(mediaElement);
     } else {
-        priorityMediaHolder.appendChild(videoElement);
+        priorityMediaHolder.appendChild(mediaElement);
     }
 
 
     document.body.addEventListener('userLeave', (event) => {
         if(event.detail.id == user.id){
-            console.log(videoElement);
-            videoElement.remove();
+            mediaElement.remove();
         }
     });
 
@@ -210,8 +260,8 @@ document.body.addEventListener('userJoin', (event) => {
 TODO:
 Add a chat?
 Phone a friend
-Bubble pop icon
-
+Bubble pop sound effect
+Soundboard
 
 
 */

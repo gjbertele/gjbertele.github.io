@@ -152,3 +152,11 @@
 	margin: 0;
 	letter-spacing: 0.02em;
 }
+
+.heartIcon {
+	position:absolute;
+	transform:translate(15dvh, -5dvh);
+	text-align:center;
+	font-size: 5dvh;
+	display:none;
+}
