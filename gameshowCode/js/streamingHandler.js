@@ -18,7 +18,7 @@ let user = {
             }
         },
         dataOptions: {
-            fragmentTime: 250
+            fragmentTime: 100
         }
     },
     server: null,
@@ -70,6 +70,14 @@ const userJoin = (user) => {
     videoElement.autoplay = true;
     videoElement.playsInline = true;
 
+    mediaSource.addEventListener('sourceclose', () => {
+        console.log('MediaSource CLOSED');
+      });
+      
+      videoElement.addEventListener('error', e => {
+        console.log('Video error:', videoElement.error);
+      });
+
 
     const newUser = {
         ...user,
@@ -84,6 +92,8 @@ const userJoin = (user) => {
     const userJoinEvent = new CustomEvent('userJoin', {
         detail: newUser
     });
+
+
     connectedUsers.push(newUser);
 
     document.body.dispatchEvent(userJoinEvent);
@@ -101,7 +111,8 @@ const userJoin = (user) => {
         if(idx == -1) return;
     
         connectedUsers[idx].streaming.sourceBuffer = sourceBuffer;
-    
+
+
         const queue = connectedUsers[idx].streaming.queue;
         if(queue.length > 0){
             appendToBuffer(mediaSource, sourceBuffer, queue.shift());
@@ -120,14 +131,16 @@ const userJoin = (user) => {
 
 const appendToBuffer = (mediaSource, sourceBuffer, chunk) => {
 
-    /*console.log('mediaSource state:', mediaSource.readyState);
+    console.log('mediaSource state:', mediaSource.readyState);
     console.log('sourceBuffer mode:', sourceBuffer.mode);
     console.log('sourceBuffer updating:', sourceBuffer.updating);
     console.log('timestampOffset:', sourceBuffer.timestampOffset);
     console.log('chunk size:', chunk.byteLength);
-    console.log('chunk first 4 bytes:', Array.from(chunk.slice(0,4)).map(b => b.toString(16)));*/
+    console.log('chunk first 4 bytes:', Array.from(chunk.slice(0,4)).map(b => b.toString(16)));
+    
     sourceBuffer.appendBuffer(chunk);
 }
+
 
 
 

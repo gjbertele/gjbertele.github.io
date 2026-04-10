@@ -1,116 +1,154 @@
+
+
 .mainVideoPage {
     position:absolute;
     left:100%;
     top:0;
     width:100%;
+	min-height: 100vh;
+	padding: 1.5rem;
+	font-family: var(--font-sans);
+	box-sizing: border-box;
+}
+
+.section-label {
+	font-size: 2dvh;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--colorDark); /*5a3040*/
+	margin: 0 0 0.75rem;
+}
+
+.divider {
+	height: 0.4dvh;
+	background: #3a1520;
+	margin: 1.5rem 0;
+}
+
+.video-grid {
+    display:flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+	gap: 2dvh;
+}
+
+.video-card {
+	background: #0e060a;
+	border: 0.3dvh solid #3a1520;
+	border-radius: 1.2dvh;
+	overflow: hidden;
+    height:30dvh;
+    width: 40dvh;
+}
+
+.video-feed {
+	width: 100%;
+    aspect-ratio: 16/9;
+	background: #120810;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.video-feed > video {
+    width:100%;
     height:100%;
-    display:flex;
-    flex-direction:column;
-    align-items: center;
-    gap:1dvh;
 }
 
-.priorityMediaHolder > .userCard {
-    position:relative;
-    width:min(40dvw, 45dvh);
-    aspect-ratio:16/9;
-    overflow:hidden;
-    border-radius:1dvh;
+.card-footer {
+	padding: 2dvh 2.5dvh;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-top: 0.3dvh solid #3a1520;
 }
 
-.crowdMediaHolder > .userCard {
-    position:relative;
-    width:min(40dvw, 35dvh);
-    aspect-ratio:16/9;
-    border-radius:1dvh;
+.card-name {
+	font-size: 2dvh;
+	color: #7a4050;
+	letter-spacing: 0.03em;
 }
 
-.userCard > .userOperations {
-    position:relative;
-    left:calc(100% - 5dvh);
-    top:1dvh;
-    width:fit-content;
-    height:fit-content;
-    display:flex;
-    flex-direction:column;
-    gap:0.5dvh;
+.card-actions {
+	display: flex;
+	gap: 1.2dvh;
 }
 
-.userOperations > .button {
-    background:#000;
-    border-radius:100%;
-    font-size:2dvh;
-    padding:1dvh;
-    cursor:pointer;
+.act-btn {
+	background: transparent;
+	border: 0.2dvh solid #3a1520;
+	border-radius: 1dvh;
+	padding: 0.5dvh 1dvh;
+	font-size: 1.2dvh;
+	color: var(--colorDark);
+	cursor: pointer;
+	font-family: var(--font-sans);
+	letter-spacing: 0.03em;
+	white-space: nowrap;
 }
 
-.titleBar {
-    width:100%;
-    height:10%;
+.act-btn:hover {
+	border-color: var(--colorSecondary);
 }
 
-.titleBar > .title {
-    position:relative;
-    left:50%;
-    top:10%;
-    transform:translate(-50%,-50%);
-    color:#FFF;
-    font-size:6dvh;
-    font-family: var(--font-title);
-    width:80%;
-    text-align: center;
-    border-bottom:0.5dvh solid var(--colorDark); 
+.act-btn.danger:hover {
+	border-color: var(--colorSecondary);
 }
 
-.userCard > video {
-    position:absolute;
-    left:50%;
-    top:0;
-    width:100%;
-    aspect-ratio: 16 / 9;
-    transform:translateX(-50%);
-    border-radius: inherit;
+.crowdMediaHolder > .video-card > .card-footer > .card-actions > .demoteButton {
+    display:none;
 }
 
-
-.userCard > .username {
-    position:absolute;
-    left:1dvh;
-    bottom:1dvh;
-    color:#FFF;
-    background:var(--colorSecondary);
-    width:fit-content;
-    padding:0.5dvh;
-    font-family:Suisseintl;
-    border-radius:0.5dvh;
-}
-
-.priorityMediaHolder > .userCard > .userOperations > .isolateButton {
+.priorityMediaHolder > .video-card > .card-footer > .card-actions > .promoteButton {
     display:none;
 }
 
 
-.crowdMediaHolder {
-    width:90%;
-    height:fit-content;
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    flex-wrap:wrap;
+.self-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1.5rem;
 }
 
-.delimeter {
-    width:100%;
-    height:5%;
-    background:transparent;
+.self-controls {
+	display: flex;
+	gap: 3dvh;
 }
 
-.priorityMediaHolder {
-    width:90%;
-    height:fit-content;
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    gap:2dvh;
-    flex-wrap:wrap;
+.ctrl-btn {
+	background: #0e060a;
+	border: 0.2dvh solid #3a1520;
+	border-radius: 1.2dvh;
+	padding: 1dvh 1dvh;
+	font-size: 2dvh;
+	color: var(--colorSecondary);
+	cursor: pointer;
+	font-family: var(--font-sans);
+	letter-spacing: 0.04em;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.ctrl-btn:hover {
+	border-color: #7a2535;
+	color: #b06070;
+}
+
+.ctrl-icon {
+	width: 2dvh;
+	height: 2dvh;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+}
+
+.page-title {
+	font-size: 1rem;
+	font-weight: 500;
+    font-family:Grotesk;
+	color: var(--colorText);
+	margin: 0;
+	letter-spacing: 0.02em;
 }
