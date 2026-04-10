@@ -2,6 +2,7 @@ class ServerConnection {
     socket;
     wsAPIURL = `ws://localhost:3000/`;
     openListeners = [];
+    openConnections = {};
 
     constructor(){
         if(window.location.href.includes('gjb.one')){
@@ -15,7 +16,7 @@ class ServerConnection {
         this.socket.addEventListener('message', (message) => {
             if(message.data == 'Success') return console.log('Success');
             const data = JSON.parse(message.data);
-            if(data.type != 'videoData') console.log(data);
+            console.log(data.type);
 
             for(let listener of this.openListeners){
                 if(data.type == listener[0]) listener[1](data.data);            
@@ -96,5 +97,67 @@ class ServerConnection {
             }
         }));
     }
+
+    setUserHeartState(user, heartState){
+        this.socket.send(JSON.stringify({
+            type:'setUserHeartState',
+            data: {
+                user,
+                heartState
+            }
+        }));
+    }
+
+    setHeartState(heartsEnabled){
+        this.socket.send(JSON.stringify({
+            type:'setHeartState',
+            data: {
+                heartsEnabled
+            }
+        }));
+    }
+
+    send(){
+       return this.socket.send(...arguments);
+    }
+
+    createPeerConnection = (targetID) => {
+        const connection = new RTCPeerConnection({
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        });
+
+        connection.onicecandidate = (e) => {
+            if(e.candidate){
+                this.socket.send(JSON.stringify({
+                    type: 'ice',
+                    data: {
+                        from: user.id,
+                        to: targetID,
+                        candidate: e.candidate
+                    }
+                }));
+            }
+        }
+
+        connection.ontrack = (e) => {
+            const idx = getUserIdxById(targetID);
+            if(idx == -1) return;
+            connectedUsers[idx].streaming.videoElement.srcObject = e.streams[0];
+            connectedUsers[idx].streaming.videoElement.play();
+        }
+
+        user.recording.mediaStream.getTracks().forEach(track => {
+            connection.addTrack(track, user.recording.mediaStream);
+        });
+    
+       this.openConnections[targetID] = connection;
+        
+        return connection;
+    }
+
+
 
 }

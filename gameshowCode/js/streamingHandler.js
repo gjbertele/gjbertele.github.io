@@ -26,7 +26,8 @@ let user = {
     name: "",
     permissions: 0,
     location: 'crowd',
-    mediaElement: null
+    mediaElement: null,
+    heartState: true
 }
 
 
@@ -40,10 +41,29 @@ const getUserIdxById = (id) => {
 const initializeStreaming = async () => {
     user.server = new ServerConnection();
     await user.server.initialize();
-    listenForData();
     await user.server?.updateUserData(user);
+    attachStreamingMediaListeners();
     attachStreamingListeners();
     return true;
+}
+
+const attachStreamingMediaListeners = () => {
+    user.server.addEventListener('userJoin', userJoin);
+
+    user.server.addEventListener('userLeave', (data) => {
+        const customEvent = new CustomEvent('userLeave', {
+            detail: {
+                id: data.id
+            }
+        });
+        document.body.dispatchEvent(customEvent);
+
+        connectedUsers = connectedUsers.filter(i => i.id != data.id);
+    });
+
+    user.server.addEventListener('offer', onOffer);
+    user.server.addEventListener('ice', onIce);
+    user.server.addEventListener('answer', onAnswer);
 }
 
 const videoElementStorage = document.querySelector('.videoElementStorage');
@@ -62,30 +82,64 @@ const createVideoElement = () => {
     return videoElements.shift();
 }
 
+const establishPeerConnection = async (targetUser) => {
+    if(user.server.openConnections[targetUser.id] != null) return;
+    if(targetUser.id <= user.id) return;
 
-const userJoin = (user) => {
+    const newConnection = user.server.createPeerConnection(targetUser.id);
+    console.log(newConnection);
+    const offer = await newConnection.createOffer();
+    await newConnection.setLocalDescription(offer);
+
+    user.server.send(JSON.stringify({
+        type:'offer',
+        data: {
+            to: targetUser.id,
+            from: user.id,
+            offer
+        }
+    }));
+
+    return;
+}
+
+const onOffer = async (data) => {
+    const newConnection = user.server.createPeerConnection(data.from);
+
+    await newConnection.setRemoteDescription(data.offer);
+
+    const answer = await newConnection.createAnswer();
+    await newConnection.setLocalDescription(answer);
+
+    user.server.send(JSON.stringify({
+        type:'answer',
+        data: {
+            from:user.id,
+            to:data.from,
+            answer
+        }
+    }));
+}
+
+const onAnswer = async (data) => {
+    const newConnection = user.server.openConnections[data.from];
+    if(!newConnection) return;
+    await newConnection.setRemoteDescription(data.answer);
+}
+
+const onIce = async (data) => {
+    const newConnection = user.server.openConnections[data.from];
+    if(!newConnection) return;
+    await newConnection.addIceCandidate(data.candidate);
+}
+
+const userJoin = (joinedUser) => {
     const videoElement = createVideoElement();
-    const mediaSource = new MediaSource();
-    videoElement.src = window.URL.createObjectURL(mediaSource);
-    videoElement.autoplay = true;
-    videoElement.playsInline = true;
-
-    mediaSource.addEventListener('sourceclose', () => {
-        console.log('MediaSource CLOSED');
-      });
-      
-      videoElement.addEventListener('error', e => {
-        console.log('Video error:', videoElement.error);
-      });
-
 
     const newUser = {
-        ...user,
+        ...joinedUser,
         streaming: {
-            videoElement,
-            mediaSource,
-            sourceBuffer: null,
-            queue: []
+            videoElement
         }
     };
 
@@ -93,90 +147,19 @@ const userJoin = (user) => {
         detail: newUser
     });
 
+    if(user.id == joinedUser.id){
+        videoElement.srcObject = user.recording.mediaStream;
+        videoElement.play();
+        videoElement.volume = 0;
+    } else {
+        establishPeerConnection(joinedUser);
+    }
+    
+
 
     connectedUsers.push(newUser);
 
     document.body.dispatchEvent(userJoinEvent);
 
 
-
-
-    mediaSource.addEventListener('sourceopen', () => {
-        const codec = "video/webm; codecs=vp8,opus";
-        const sourceBuffer = mediaSource.addSourceBuffer(codec);
-        sourceBuffer.mode = 'sequence';
-        sourceBuffer.timestampOffset = 0;
-
-        const idx = getUserIdxById(user.id);
-        if(idx == -1) return;
-    
-        connectedUsers[idx].streaming.sourceBuffer = sourceBuffer;
-
-
-        const queue = connectedUsers[idx].streaming.queue;
-        if(queue.length > 0){
-            appendToBuffer(mediaSource, sourceBuffer, queue.shift());
-        }
-    
-        sourceBuffer.addEventListener('updateend', () => {
-            const idx = getUserIdxById(user.id);
-            if(idx == -1) return;
-            const nextChunk = connectedUsers[idx].streaming.queue.shift();
-            if(!nextChunk) return;
-            appendToBuffer(connectedUsers[idx].streaming.mediaSource, connectedUsers[idx].streaming.sourceBuffer, nextChunk);
-        });
-    });
-    
 }
-
-const appendToBuffer = (mediaSource, sourceBuffer, chunk) => {
-
-    console.log('mediaSource state:', mediaSource.readyState);
-    console.log('sourceBuffer mode:', sourceBuffer.mode);
-    console.log('sourceBuffer updating:', sourceBuffer.updating);
-    console.log('timestampOffset:', sourceBuffer.timestampOffset);
-    console.log('chunk size:', chunk.byteLength);
-    console.log('chunk first 4 bytes:', Array.from(chunk.slice(0,4)).map(b => b.toString(16)));
-    
-    sourceBuffer.appendBuffer(chunk);
-}
-
-
-
-
-const listenForData = () => {
-    user.server.addEventListener('userJoin', userJoin);
-    user.server.addEventListener('userLeave', (data) => {
-        const idx = getUserIdxById(data.id);
-        const user = connectedUsers[idx];
-        const customEvent = new CustomEvent('userLeave', {
-            detail: {
-                id: data.id
-            }
-        });
-        document.body.dispatchEvent(customEvent);
-
-        connectedUsers = connectedUsers.filter(i => i.id != data.id);
-    });
-    user.server.addEventListener('videoData', (data) => {
-        const idx = getUserIdxById(data.id);
-        if(idx == -1) return;
-        const chunk = new Uint8Array(data.buffer.data);
-        const streaming = connectedUsers[idx].streaming;
-    
-        if(!streaming.sourceBuffer || streaming.sourceBuffer.updating){
-            streaming.queue.push(chunk);
-        } else {
-            appendToBuffer(streaming.mediaSource, streaming.sourceBuffer, chunk);
-        }
-    });
-
-    
-}
-
-/*
-document.body.onclick = () => {
-    for(let elem of (new Array(...document.querySelectorAll('video')))){
-        if(elem) elem.play();
-    }
-}*/
