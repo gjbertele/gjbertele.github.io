@@ -58,9 +58,7 @@ class ServerConnection {
     async refreshPreferences(user){
         await this.socket.send(JSON.stringify({
             type: 'updateUserPreferences',
-            data: {
-                user
-            }
+            data: user
         }));
 
         return true;
@@ -76,10 +74,25 @@ class ServerConnection {
     }
 
     promoteUser(user){
+        const nextLocation = user.location == 'crowd' ? 'contestant' : 'priority';
+
         this.socket.send(JSON.stringify({
-            type:'promoteUser',
+            type:'setUserLocation',
             data: {
-                user
+                user,
+                location: nextLocation
+            }
+        }));
+    }
+    
+    demoteUser(user){
+        const nextLocation = user.location == 'priority' ? 'contestant' : 'crowd';
+
+        this.socket.send(JSON.stringify({
+            type:'setUserLocation',
+            data: {
+                user,
+                location: nextLocation
             }
         }));
     }

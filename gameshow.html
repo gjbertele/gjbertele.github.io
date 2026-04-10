@@ -29,15 +29,43 @@
         </div>
     </div>
     <div class="mainVideoPage">
-        <div class="titleBar">
-            <h1 class="title">Title</h1>
+
+        <div class="self-bar">
+          <p class="page-title">Title</p>
+          <div class="self-controls">
+            <button class="ctrl-btn cameraToggle">
+              <svg class="ctrl-icon" viewBox="0 0 16 16"><rect x="2" y="4" width="9" height="8" rx="1"></rect><path d="M11 6l3-2v6l-3-2"></path></svg>
+              Camera
+            </button>
+            <button class="ctrl-btn audioToggle">
+              <svg class="ctrl-icon" viewBox="0 0 16 16"><rect x="5" y="1" width="6" height="9" rx="3"></rect><path d="M3 8a5 5 0 0010 0"></path><line x1="8" y1="13" x2="8" y2="15"></line></svg>
+              Mic
+            </button>
+            <button class="ctrl-btn balloonToggle">
+                🎈 Enable Balloons
+            </button>
+          </div>
         </div>
-        <div class="priorityMediaHolder">
+      
+        <div class="divider" style="margin-top: 0;"></div>
+      
+        <p class="section-label">Host</p>
+        <div class="video-grid priorityMediaHolder">
         </div>
-        <div class="delimeter">
+      
+        <div class="divider"></div>
+      
+        <p class="section-label">Contestants</p>
+        <div class="video-grid contestantMediaHolder">
         </div>
-        <div class="crowdMediaHolder"></div>
-    </div>
+      
+        <div class="divider"></div>
+      
+        <p class="section-label">Audience</p>
+        <div class="video-grid crowdMediaHolder">
+        </div>
+      
+      </div>
     <div class="videoElementStorage"></div>
     <script src="gameshowCode/js/uiHandler.js"></script>
     <script src="gameshowCode/js/serverHandler.js"></script>
