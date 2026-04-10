@@ -117,6 +117,13 @@ class ServerConnection {
         }));
     }
 
+    phoneAFriend(){
+        this.socket.send(JSON.stringify({
+            type: 'phoneAFriend',
+            data: {}
+        }));
+    }
+
     send(){
        return this.socket.send(...arguments);
     }

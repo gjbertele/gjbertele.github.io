@@ -8,6 +8,7 @@ const crowdMediaHolder = document.querySelector('.crowdMediaHolder');
 const heartToggle = document.querySelector('.heartToggle');
 const cameraToggle = document.querySelector('.cameraToggle');
 const audioToggle = document.querySelector('.audioToggle');
+const phoneAFriendButton = document.querySelector('.phoneAFriendButton')
 let heartsEnabled = false;
 
 const displayPage = (pageName) => {
@@ -21,7 +22,7 @@ const displayPage = (pageName) => {
 
 joinContestantButton.addEventListener('click', async () => {
     user.permissions = 1;
-    user.location = 'crowd';
+    user.location = 'contestant';
     if(window.location.href.includes('#host')){
         user.permissions = 2;
         user.location = 'priority';
@@ -44,70 +45,133 @@ joinSpectatorButton.addEventListener('click', async () => {
     displayPage('mainVideoPage');
 });
 
-const attachStreamingListeners = () => {
-    if(user.permissions < 2) heartToggle.style.display = 'none';
+const userUpdate = (data) => {
+    const idx = getUserIdxById(data.id);
+    if(idx == -1) return;
 
-    user.server.addEventListener('userUpdate', (data) => {
-        const idx = getUserIdxById(data.id);
-        if(idx == -1) return;
+    if(data.user.location != connectedUsers[idx].location){
+        if(data.user.location == 'priority'){
+            priorityMediaHolder.appendChild(connectedUsers[idx].mediaElement);
+        } else if(data.user.location == 'contestant'){
+            contestantMediaHolder.appendChild(connectedUsers[idx].mediaElement);
+        } else if(data.user.location == 'crowd'){
+            crowdMediaHolder.appendChild(connectedUsers[idx].mediaElement);
+        }
+    }
 
-        if(data.user.location != connectedUsers[idx].location){
-            if(data.user.location == 'priority'){
-                priorityMediaHolder.appendChild(connectedUsers[idx].mediaElement);
-            } else if(data.user.location == 'contestant'){
-                contestantMediaHolder.appendChild(connectedUsers[idx].mediaElement);
-            } else if(data.user.location == 'crowd'){
-                crowdMediaHolder.appendChild(connectedUsers[idx].mediaElement);
+
+    if(data.user.audio == false){
+        connectedUsers[idx].streaming.videoElement.muted = true;
+    } else {
+        connectedUsers[idx].streaming.videoElement.muted = false;
+    }
+
+    if(data.user.video == false){
+        connectedUsers[idx].streaming.videoElement.style.display = 'none';
+    } else {
+        connectedUsers[idx].streaming.videoElement.style.display = 'inline-block';
+    }
+
+    if(data.user.heartState == true){
+        connectedUsers[idx].mediaElement.querySelector('.heartIcon').textContent = '❤️';
+    } else {
+        connectedUsers[idx].mediaElement.querySelector('.heartIcon').textContent = '💔';
+    }
+
+    phoneAFriendButton.style.display = data.user.location != 'priority' ? 'none' : 'inline-block';
+
+
+    for(let key in data.user){
+        connectedUsers[idx][key] = data.user[key];
+    }
+
+    if(data.user.id == user.id){
+        user.recording.mediaOptions.audio = data.user.audio;
+        user.recording.mediaOptions.video = data.user.video;
+        user.location = data.user.location;
+        user.name = data.user.name;
+    }
+}
+
+const setHeartToggle = (data) => {
+    heartsEnabled = data.heartsEnabled;
+    if(heartsEnabled){
+        heartToggle.textContent = '💔 Disable Hearts';
+    } else {
+        heartToggle.textContent = '❤️ Enable Hearts';
+    }
+
+    for(let elem of (new Array(...document.querySelectorAll('.heartIcon')))) elem.style.display = heartsEnabled ? 'inline-block' : 'none';
+
+}
+
+const phoneAFriend = (data) => {
+    const order = data.order;
+    const mediaElement = document.createElement('div');
+    mediaElement.className = 'video-card';
+    
+    const mediaCanvas = document.createElement('canvas');
+    const ctx = mediaCanvas.getContext('2d');
+    mediaElement.appendChild(mediaCanvas);
+
+    const w = document.body.clientHeight * 0.4;
+    const h = document.body.clientHeight * 0.3;
+    mediaCanvas.width = w;
+    mediaCanvas.height = h;
+
+    priorityMediaHolder.appendChild(mediaElement);
+
+
+    let namePositions = []
+    for(let i = 0; i<order.length; i++) namePositions.push((h/2 + i * h / order.length) % h);
+    let velocity = 5;
+    let frame = 0;
+    const fontSize = Math.min(0.5 * h / order.length, h / 5);
+    let initiatedStop = false;
+
+    const drawFrame = () => {
+        for(let i = 0; i<order.length; i++) namePositions[i] = (namePositions[i] + velocity) % h;
+        if(frame > 60) velocity -= 0.01842330762 * h  / (60 * 5);
+
+        ctx.clearRect(0,0,w,h);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0,0,w,h)
+        for(let i = 0; i<order.length; i++){
+            ctx.fillStyle = (velocity < 0 && i == 0) ? '#f0b0c0' : '#fff';
+            ctx.font = (velocity < 0 && i == 0) ? `bold ${1.2*fontSize}px Grotesk` : `bold ${fontSize}px Grotesk`
+            ctx.fillText(order[i], w/2, namePositions[i], w);
+        }
+
+        frame++;
+        if(velocity > 0){
+            requestAnimationFrame(drawFrame);
+        } else {
+            if(!initiatedStop){
+                initiatedStop = true;
+                setTimeout(() => {
+                    mediaElement.remove();
+                },5000);
             }
         }
 
+        
+    }
 
-        if(data.user.audio == false){
-            connectedUsers[idx].streaming.videoElement.muted = true;
-        } else {
-            connectedUsers[idx].streaming.videoElement.muted = false;
-        }
+    drawFrame();
+}
 
-        if(data.user.video == false){
-            connectedUsers[idx].streaming.videoElement.style.display = 'none';
-        } else {
-            connectedUsers[idx].streaming.videoElement.style.display = 'inline-block';
-        }
-
-        if(data.user.heartState == true){
-            connectedUsers[idx].mediaElement.querySelector('.heartIcon').textContent = '❤️';
-        } else {
-            connectedUsers[idx].mediaElement.querySelector('.heartIcon').textContent = '💔';
-        }
+const attachStreamingListeners = () => {
+    if(user.permissions < 2) heartToggle.style.display = 'none';
+    phoneAFriendButton.style.display = user.location != 'priority' ? 'none' : 'inline-block';
 
 
-        for(let key in data.user){
-            connectedUsers[idx][key] = data.user[key];
-        }
-
-        if(data.user.id == user.id){
-            user.recording.mediaOptions.audio = data.user.audio;
-            user.recording.mediaOptions.video = data.user.video;
-            user.location = data.user.location;
-            user.name = data.user.name;
-        }
-    });
-
+    user.server.addEventListener('userUpdate', userUpdate);
+    user.server.addEventListener('setHeartToggle', setHeartToggle);
+    user.server.addEventListener('phoneAFriend', phoneAFriend);
     user.server.addEventListener('forceRefresh', () => {
         window.location.reload();
     });
 
-    user.server.addEventListener('setHeartToggle', (data) => {
-        heartsEnabled = data.heartsEnabled;
-        if(heartsEnabled){
-            heartToggle.textContent = '💔 Disable Hearts';
-        } else {
-            heartToggle.textContent = '❤️ Enable Hearts';
-        }
-
-        for(let elem of (new Array(...document.querySelectorAll('.heartIcon')))) elem.style.display = heartsEnabled ? 'inline-block' : 'none';
-
-    });
 }
 
 const createUserMediaElement = (targetUser) => {
@@ -228,8 +292,6 @@ cameraToggle.addEventListener('click', () => {
 
 document.body.addEventListener('userJoin', (event) => {
     const user = event.detail;
-    if(user.permissions == 0) return;
-    
     const mediaElement = createUserMediaElement(user);
 
 
@@ -250,7 +312,11 @@ document.body.addEventListener('userJoin', (event) => {
             mediaElement.remove();
         }
     });
+});
 
+
+phoneAFriendButton.addEventListener('click', () => {
+    user.server.phoneAFriend();
 });
 
 
@@ -259,7 +325,6 @@ document.body.addEventListener('userJoin', (event) => {
 /*
 TODO:
 Add a chat?
-Phone a friend
 Bubble pop sound effect
 Soundboard
 
