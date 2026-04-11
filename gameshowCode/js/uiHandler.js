@@ -118,10 +118,16 @@ const phoneAFriend = (data) => {
     const ctx = mediaCanvas.getContext('2d');
     mediaElement.appendChild(mediaCanvas);
 
+    const footer = document.createElement('div');
+    footer.className = 'card-footer';
+    footer.textContent = 'Random Person Generator'
+    mediaElement.appendChild(footer);
+
     const w = document.body.clientHeight * 0.4;
-    const h = document.body.clientHeight * 0.3;
+    const h = document.body.clientHeight * 0.4 * 9 / 16;
     mediaCanvas.width = w;
     mediaCanvas.height = h;
+
 
     priorityMediaHolder.appendChild(mediaElement);
 
@@ -139,6 +145,7 @@ const phoneAFriend = (data) => {
 
         ctx.clearRect(0,0,w,h);
         ctx.fillStyle = '#000';
+        ctx.textAlign = 'center';
         ctx.fillRect(0,0,w,h)
         for(let i = 0; i<order.length; i++){
             ctx.fillStyle = (velocity < 0 && i == 0) ? '#f0b0c0' : '#fff';
@@ -157,8 +164,6 @@ const phoneAFriend = (data) => {
                 },5000);
             }
         }
-
-        
     }
 
     drawFrame();
@@ -166,6 +171,7 @@ const phoneAFriend = (data) => {
 
 const attachStreamingListeners = () => {
     if(user.permissions < 2) heartToggle.style.display = 'none';
+    console.log(user.location)
     phoneAFriendButton.style.display = user.location != 'priority' ? 'none' : 'inline-block';
 
 
@@ -356,11 +362,3 @@ const onChatMessage = (message) => {
 
     return;
 }
-
-/*
-TODO:
-Bubble pop sound effect
-Soundboard
-
-
-*/
