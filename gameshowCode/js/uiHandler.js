@@ -13,6 +13,7 @@ const chatButton = document.querySelector('.chatButton');
 const backButton = document.querySelector('.backButton');
 const sendButton = document.querySelector('.sendButton');
 const messageHolder = document.querySelector('.messageHolder');
+const gameTitle = "Love Isn't Blind";
 let heartsEnabled = false;
 
 const displayPage = (pageName) => {
@@ -362,3 +363,16 @@ const onChatMessage = (message) => {
 
     return;
 }
+
+
+
+
+
+
+
+
+document.querySelectorAll('.titleTextContent').forEach(elem => {
+    elem.textContent = gameTitle;
+});
+
+document.title = gameTitle;
