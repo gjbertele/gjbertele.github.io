@@ -13,7 +13,7 @@ const chatButton = document.querySelector('.chatButton');
 const backButton = document.querySelector('.backButton');
 const sendButton = document.querySelector('.sendButton');
 const messageHolder = document.querySelector('.messageHolder');
-const gameTitle = "Love Isn't Blind";
+const gameTitle = "Hot Enough to Handle";
 let heartsEnabled = false;
 
 const displayPage = (pageName) => {
