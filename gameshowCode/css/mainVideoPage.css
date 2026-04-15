@@ -180,4 +180,9 @@
     .page-title {
 		display: none;
 	}
+
+	.self-controls {
+		display:grid;
+		grid-template-columns: repeat(3, 30%);
+	}
 }

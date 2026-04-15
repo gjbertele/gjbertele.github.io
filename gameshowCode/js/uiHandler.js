@@ -376,3 +376,8 @@ document.querySelectorAll('.titleTextContent').forEach(elem => {
 });
 
 document.title = gameTitle;
+
+
+document.querySelector('.proposeButton').addEventListener('click', () => {
+    window.location.reload();
+});
