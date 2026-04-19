@@ -207,26 +207,26 @@ body::-webkit-scrollbar-thumb {
     color: #FFF;
 }
 
-.spotify > .textContent > .title {
+.quih > .textContent > .title {
     font-family:Grotesk;
-    color:#1db954;
+    color:#31E981;
     font-size:3.5dvh;
 }
 
-
-.spotify > .icon {
+.quih > .icon {
     font-size: 15dvh;
 }
 
-.spotify > .icon::before {
-    content:"🔊";
-    filter:blur(10px);
+.quih > .icon::before {
+    content:"🥶";
+    filter:blur(15px);
     left:0;
     top:0;
     position:absolute;
     z-index:-1;
     background-color:#4adff3;
     background-clip: text;
+    font-size:1em;
 }
 
 @media only screen and (max-aspect-ratio: 1/1) {
