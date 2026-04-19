@@ -103,7 +103,7 @@ const answersReceived = (answers) => {
             answerElement.innerHTML = `
                 <span class="username">${answerInfo.name}</span>
                 <span class="question">${answer.text}</span>
-                <span class="count">${answerInfo.count} Vote${answerInfo.count > 1 ? 's' : ''}</span>
+                <span class="count">${answerInfo.count} Vote${answerInfo.count != 1 ? 's' : ''}</span>
             `;
         });
 
