@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiplash</title>
+    <link rel="stylesheet" href="quiplashCode/onboarding.css">
+    <link rel="stylesheet" href="quiplashCode/waitingRoomPage.css">
+    <link rel="stylesheet" href="quiplashCode/questionPage.css">
+    <link rel="stylesheet" href="quiplashCode/answerPage.css">
+</head>
+<body>
+    <div class="initialPage">
+        <div class="contentHolder">
+            <div class="titleHolder">
+                <h1 class="title">Quih</h1>
+            </div>
+            <div class="lineSeparator"></div>
+            <div class="inputHolder">
+                <div class="nameHolder">
+                    <label class="nameLabel">your name</label>
+                    <input type="text" placeholder="Enter your name..." class="nameInput">
+                </div>
+                <button class="button joinButton">Play</button>
+            </div>
+            <div class="lineSeparator"></div>
+        </div>
+    </div>
+    <div class="waitingRoomPage">
+        <div class="contentHolder">
+            <span class="tip">Quih</span>
+            <div class="playerHolder scrollable"></div>
+            <button class="button startButton">Start</button>
+        </div>
+    </div>
+    <div class="questionPage">
+        <div class="contentHolder">
+            <div class="questionHolder">
+                <span class="questionText">lorem ipsum dolor</span>
+                <textarea class="questionAnswer"></textarea>
+            </div>
+            <button class="button submitButton">Submit</button>
+        </div>
+        <span class="waiting">Waiting for round to end...</span>
+    </div>
+    <div class="answerPage">
+        <div class="contentHolder">
+            <div class="questionHolder">
+                <span class="questionText">lorem ipsum dolor</span>...
+            </div>
+            <div class="answerHolder"></div>
+        </div>
+    </div>
+    <script src="quiplashCode/uiHandler.js"></script>
+    <script src="quiplashCode/serverHandler.js"></script>
+</body>
+</html>

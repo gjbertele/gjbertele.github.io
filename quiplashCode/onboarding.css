@@ -1,0 +1,166 @@
+@font-face {
+    font-family: Suisseintl;
+    src: url(../../fonts/Suisseintl.otf) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Grotesk;
+    src: url(../../fonts/SharpGroteskSmBold25.woff) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Newsreader;
+    src: url(../../fonts/Newsreader.ttf) format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+:root {
+	--colorBG: #00120B;
+	--colorSecondary: #31E981;
+	--font-sans: Suisseintl;
+	--colorDark: #6B818C;
+	--colorText: #31E981;
+	--colorTextSubdued: #35605A;
+	--font-title: Grotesk;
+    --font-text: Grotesk;
+}
+
+body,
+html {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background: var(--colorBG);
+	overflow-x:hidden;
+}
+
+.initialPage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height:100%;
+	font-family: var(--font-title);
+}
+
+.contentHolder {
+	position:absolute;
+	left:calc(50dvw - min(25dvh, 45dvw));
+	top: 25%;
+	width:min(50dvh, 90dvw);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+}
+
+.contentHolder>.titleHolder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.4rem;
+	justify-content: center;
+	text-align: center;
+}
+
+.contentHolder>.inputHolder {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+}
+
+.inputHolder>.nameHolder {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.nameHolder>.nameLabel {
+	font-size: 1.5dvh;
+	color: var(--colorText);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	font-family: var(--font-sans);
+}
+
+.nameHolder>.nameInput {
+	background: transparent;
+	border: 0.5px solid var(--colorSecondary);
+	border-radius: 1dvh;
+	padding: 0.75rem 1rem;
+	font-size: 1.8dvh;
+	color: var(--colorText);
+	outline: none;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: var(--font-sans);
+}
+
+.titleHolder>.title {
+	font-size: 2.1rem;
+	font-weight: 900;
+	color: var(--colorText);
+	margin: 0;
+	letter-spacing: 0.04em;
+	line-height: 1.2;
+}
+
+.title::before {
+    content: "Quih";
+    color: var(--colorText);
+    position:absolute;
+    left:50%;
+    top:0;
+    transform:translateX(-50%);
+    filter:blur(1dvh);
+}
+
+.contentHolder>.lineSeparator {
+	width: 100%;
+	height: 0.2dvh;
+	background: var(--colorSecondary);
+}
+
+.nameInput:focus {
+	border-color: var(--colorSecondary) !important;
+	box-shadow: 0 0 0 0.4dvh rgba(192, 56, 90, 0.12);
+}
+
+.nameInput::placeholder {
+	color: #604050;
+}
+
+.button {
+	width: 100%;
+	padding: 0.8rem 1.5rem;
+	background: var(--colorSecondary);
+	border: none;
+	border-radius: 0.8dvh;
+	font-size: 1.8dvh;
+	font-weight: 500;
+	color: var(--colorBG);
+	cursor: pointer;
+	letter-spacing: 0.03em;
+	font-family: var(--font-sans);
+}
+
+.button:hover {
+	background: var(--colorSecondary) !important;
+}
+
+.button:active {
+	transform: scale(0.98);
+}
