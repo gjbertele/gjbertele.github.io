@@ -5,6 +5,7 @@ const nameInput = document.querySelector('.nameInput');
 const playerHolder = document.querySelector('.playerHolder');
 const startButton = document.querySelector('.startButton');
 const submitButton = document.querySelector('.submitButton');
+const answerInput = document.querySelector('.questionAnswer');
 
 let user = {
     name: '',
@@ -12,6 +13,11 @@ let user = {
 }
 
 let server;
+
+
+answerInput.addEventListener('keydown', (e) => {
+    if(e.key == 'Enter') e.preventDefault();
+});
 
 joinButton.addEventListener('click', async () => {
     if(nameInput.value == '') return;
@@ -34,7 +40,8 @@ startButton.addEventListener('click', async () => {
 });
 
 submitButton.addEventListener('click', async () => {
-    const answerText = document.querySelector('.questionAnswer').value;
+    const answerText = answerInput.value;
+    answerInput.value = '';
 
     if(answerText == '') return;
 
