@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Finder</title>
+    <link rel="stylesheet" href="semanticFinderCode/loadInputPage.css">
+    <link rel="stylesheet" href="semanticFinderCode/inputSearchPage.css">
+</head>
+<body>
+    <div class="titleContainer">
+        <span class="title">Advanced Searcher Demo</span>
+        <div class="returnButton button">Load New Text</div>
+    </div>
+    <div class="loadInputPage">
+        <textarea class="sampleInput" placeholder="What do you want to search?"></textarea>
+        <div class="loadButton button">Process Text</div>
+    </div>
+    <div class="inputSearchPage">
+        <canvas class="canvas"></canvas>
+        <textarea class="queryInput" placeholder="Enter query here..."></textarea>
+        <div class="searchButton button">Search</div>
+    </div>
+    <script src="semanticFinderCode/embeddings.js"></script>
+    <script src="semanticFinderCode/frequencies.js"></script>
+    <script src="semanticFinderCode/wordProcessing.js"></script>
+    <script src="semanticFinderCode/semanticFinder.js"></script>
+</body>
+</html>
