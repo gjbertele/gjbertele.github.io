@@ -1,0 +1,27 @@
+
+:root {
+  --bg: #f5f6f8; --ink: #1f2a3d; --muted: #64708a;
+  --tri-fill: #e4eaf4; --tri-stroke: #2b3a55; --point: #c8452d; --point-sel: #1f2a3d;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #14181f; --ink: #e6e9ef; --muted: #8f9ab0;
+    --tri-fill: #1f2733; --tri-stroke: #8da2c9; --point: #ff7a5c; --point-sel: #ffffff; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 system-ui, sans-serif; display: flex; flex-direction: column;
+  align-items: center; gap: 12px; padding: 24px 16px; height:fit-content;}
+h1 { font-size: 1.25rem; margin: 0; }
+p { margin: 0; color: var(--muted); max-width: 60ch; text-align: center; }
+svg { width: min(100%, 640px); height: auto; touch-action: none; user-select: none; }
+.tri { fill: var(--tri-fill); stroke: var(--tri-stroke); stroke-width: 2; stroke-linejoin: round; cursor: copy; }
+.pt { fill: var(--point); stroke: var(--bg); stroke-width: 2; cursor: grab; }
+.pt.sel { fill: var(--point-sel); }
+.path { fill: none; stroke: var(--point); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.lbl { fill: var(--bg); font: 600 13px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.pt:focus-visible { outline: 3px solid var(--tri-stroke); outline-offset: 2px; }
+.dragging .pt, .dragging .tri { cursor: grabbing; }
+#readout { font-variant-numeric: tabular-nums; min-height: 1.5em; }
+button { font: inherit; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--tri-stroke);
+  background: transparent; color: var(--ink); cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--tri-stroke); outline-offset: 2px; }

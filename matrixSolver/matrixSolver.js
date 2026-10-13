@@ -421,6 +421,25 @@ function computeEigenvaluesWithQR(M, iter = 1000){
     return vec;
 }
 
+function computeEigenpairsWithQR(M, iter = 1000){
+    let output = M;
+    let Qs = [];
+    for(let i = 0; i<iter; i++){
+        let {Q,R} = QRFactorize(output);
+        output = R.multiply(Q);
+        Qs.push(Q);
+    }
+    let vec = new Float64Array(M.rows);
+    for(let i = 0; i<M.rows; i++) vec[i] = output.arr[i][i];
+    
+    let S = getIdentity(M.rows);
+    for(let i = 0; i<Qs.length; i++) S = S.multiply(Qs[i])
+    S = S.transpose();
+
+    return [vec, S.arr];
+}
+
+
 function randomMatrix(n, symmetric = true){
     let output = new Matrix(n,n);
     for(let i =0; i<n; i++){
@@ -491,6 +510,8 @@ function computeEigenpairsPower(M, iter = 100){
 
         A = A.multiply(A.minus(getIdentity(n).scalarMultiply(lambda))).scalarMultiply(1/lambda);
     }
+
+    console.log(vectors);
 
     let eigenvalues = [];
     for(let i = 0; i<n; i++){

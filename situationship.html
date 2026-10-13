@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixed Signal Fourier Analyzer</title>
+    <link rel="stylesheet" href="./situationshipCode/main.css">
+    <link rel="stylesheet" href="./situationshipCode/triangle.css">
+</head>
+<body>  
+    <svg id="board" viewBox="0 0 600 600" role="application" aria-label="Triangle region with draggable points">
+            <polygon id="tri" class="tri" points="300,40 40,490 560,490"/>
+            <polyline id="path" class="path"></polyline>
+            <g id="points"></g>
+            <text x="300" y="25" font-family="Arial" font-size="24" fill="black" text-anchor="middle">
+                Emotional
+            </text>
+            <text x="75" y="525" font-family="Arial" font-size="24" fill="black" text-anchor="middle">
+                Physical
+            </text>
+            <text x="525" y="525" font-family="Arial" font-size="24" fill="black" text-anchor="middle">
+                Friendliness
+            </text>
+        </svg>
+
+        <button id="clear" type="button">Clear all points</button>
+        <button id="analyze" type="button">Analyze</button>
+
+    <div class="complexityCard">
+        <span class="title">Your complexity score</span>
+        <span class="complexityNumber">?</span>
+        <span class="subtext"><i>Effective rank of signal strength correlation matrix - 1</i></span>
+    </div>
+    <div class="correlationCard">
+        <span class="title">Correlation of Signals</span>
+        <table class="correlationMatrix"></table>
+        <span class="subtext"><i>Pearson correlation coefficients of respective signals</i></span>
+    </div>
+    <div class="signalsCard">
+        <span class="title">Inconsistent Signals</span>
+        <span class="signals"></span>
+        <span class="subtext"><i>Waves in Fourier Transform of respective signal with statistically significant amplitudes</i></span>
+    </div>
+    <div class="graphsCard">
+        <span class="title">Signals Over Time</span>
+        <svg class="signalGraph" viewBox="0 0 600 600" role="application"></svg>
+    </div>
+    
+    <script src="./matrixSolver/matrixSolver.js"></script>
+    <script src="./situationshipCode/plot.js"></script>
+    <script src="./situationshipCode/analysis.js"></script>
+</body>
+</html>
