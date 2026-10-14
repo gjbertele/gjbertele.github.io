@@ -168,6 +168,12 @@ const generateGraph = (elem, E, color, type) => {
 
 }
 
+const D = (E) => {
+    let L = [];
+    for(let i = 1; i < E.length; i++) L.push(E[i] - E[i-1]);
+    return L;
+}
+
 const analyze = () => {
     const EE = E(points, A);
     const EP = E(points, B);
@@ -183,15 +189,23 @@ const analyze = () => {
 
     const OO = outliers([...OE,...OP,...OF]);
 
-    console.log(OE, OP, OF, OO);
-
     const BL = bary(points);
     const Mtemp = corrM(BL);
     const M = new Matrix(points.length, points.length);
     M.arr = Mtemp.map(i => i = new Float64Array(i));
 
-    const λ = computeEigenvaluesWithQR(M);
-    const σ = λ.map(i => i = i * i);
+    const DEE = D(EE);
+    const DEF = D(EF);
+    const DEP = D(EP);
+
+    const PM = new Matrix(points.length, 3);
+    for(let i = 0; i < points.length - 1; i++){
+        for(let j = 0; j < 3; j++){
+            PM.arr[i][j] = [DEE, DEP, DEF][j][i];
+        }
+    }
+
+    const σ = computeEigenvaluesWithQR(PM.multiply(PM.transpose()));
     const Σσ = σ.reduce((a,b) => a + b, 0);
     const ρ = σ.map(i => i = i / Σσ);
 
