@@ -200,7 +200,7 @@ const analyze = () => {
     const Mtemp = corrM(BL);
     const M = new Matrix(3, 3);
     M.arr = Mtemp.map(i => i = new Float64Array(i));
-    console.group(Mtemp);
+
 
     const DEE = D(EE);
     const DEF = D(EF);
@@ -220,6 +220,14 @@ const analyze = () => {
     const effectiveRank = Math.exp(-ρ[0]*Math.log(ρ[0]) - ρ[1]*Math.log(ρ[1]));
     let complexityScore = effectiveRank - 1;
     if(isNaN(complexityScore)) complexityScore = 0;
+
+
+    const σE = stdDev(EE);
+    const σF = stdDev(EF);
+    const σP = stdDev(EP);
+    
+
+
 
     $('.complexityNumber').textContent = Math.ceil(100 * complexityScore);
 
@@ -273,8 +281,7 @@ const analyze = () => {
 
     $('.signalGraph').appendChild(axes);
 
-
-    //graphs
+    $('.greeks').textContent = `σE: ${σE.toFixed(2)}  σP: ${σP.toFixed(2)}  σF: ${σF.toFixed(2)}`;
 }
 
 

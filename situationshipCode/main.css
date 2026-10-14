@@ -105,3 +105,25 @@ body {
     margin-top:2em;
     font-weight:bold;
 }
+
+.greeksCard {
+    margin-top:4em;
+    width:min(40dvh, 30dvw);
+    height:fit-content;
+    border-radius:5%;
+    border: 0.1em solid var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    text-align: center;
+}
+
+.greeksCard > .title {
+    margin-top:2em;
+    font-weight:bold;
+}
+
+.greeksCard > .greeks {
+    margin-top:0.7em;
+    margin-bottom:2em;
+}
