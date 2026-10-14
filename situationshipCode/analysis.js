@@ -189,10 +189,18 @@ const analyze = () => {
 
     const OO = outliers([...OE,...OP,...OF]);
 
-    const BL = bary(points);
+    const BLT = bary(points);
+    let BL = [];
+    for(let i = 0; i<3; i++){
+        let x = [];
+        for(let j = 0; j<points.length; j++) x.push(BLT[j][i]);
+        BL.push(x);
+    }
+
     const Mtemp = corrM(BL);
-    const M = new Matrix(points.length, points.length);
+    const M = new Matrix(3, 3);
     M.arr = Mtemp.map(i => i = new Float64Array(i));
+    console.group(Mtemp);
 
     const DEE = D(EE);
     const DEF = D(EF);
@@ -210,8 +218,9 @@ const analyze = () => {
     const ρ = σ.map(i => i = i / Σσ);
 
     const effectiveRank = Math.exp(-ρ[0]*Math.log(ρ[0]) - ρ[1]*Math.log(ρ[1]));
-    const complexityScore = effectiveRank - 1;
-    
+    let complexityScore = effectiveRank - 1;
+    if(isNaN(complexityScore)) complexityScore = 0;
+
     $('.complexityNumber').textContent = Math.ceil(100 * complexityScore);
 
     const titledArray = [
