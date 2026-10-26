@@ -174,6 +174,51 @@ const D = (E) => {
     return L;
 }
 
+const oneHotClassify = (A, B, C) => {
+    let out = new Array(A.length);
+    for(let i = 0; i < A.length; i++){
+        out[i] = [A[i], B[i], C[i]].indexOf(Math.min(A[i], B[i], C[i]));
+    }
+    return out;
+}
+
+const insertArrayIntoTable = (elem, arr) => {
+    elem.innerHTML = '';
+    for(let i = 0; i < arr.length; i++){
+        const row = document.createElement('tr');
+        for(let j = 0; j < arr[i].length; j++){
+            const td = document.createElement('td');
+            td.textContent = arr[i][j];
+            row.appendChild(td);
+        }
+        elem.appendChild(row);
+    }
+
+    return;
+}
+
+const generateMarkov = (oneHot) => {
+    let counts = [new Float64Array([0,0,0]), new Float64Array([0,0,0]), new Float64Array([0,0,0])];
+    let totalFrom = [0,0,0];
+
+    for(let i = 1; i<oneHot.length; i++) {
+        totalFrom[oneHot[i-1]]++;
+        counts[oneHot[i-1]][oneHot[i]]++;
+    }
+    
+    for(let i = 0; i < 3; i++){
+        if(totalFrom[i] == 0) continue;
+        for(let j = 0; j < 3; j++){
+            counts[i][j] /= totalFrom[i];
+        }
+    }
+
+    let output = new Matrix(3, 3);
+    output.arr = counts;
+
+    return output;
+}
+
 const analyze = () => {
     const EE = E(points, A);
     const EP = E(points, B);
@@ -222,33 +267,41 @@ const analyze = () => {
     if(isNaN(complexityScore)) complexityScore = 0;
 
 
+    $('.complexityNumber').textContent = Math.ceil(100 * complexityScore);
+
     const σE = stdDev(EE);
     const σF = stdDev(EF);
     const σP = stdDev(EP);
     
+    const classifiedPoints = oneHotClassify(EE, EP, EF);
+    const markovMatrix = generateMarkov(classifiedPoints);
+    const steadyState = findNullVector(markovMatrix.minus(getIdentity(3)));
+
+    if(steadyState) {
+        const steadyStateRatio = [...steadyState.scalarMultiply(100/steadyState.dot(new Float64Array([1,1,1])))].map(i => i = i.toFixed(0));
+        $('.equilibrium').innerHTML = `The equilibrium of your relationship is <b>${steadyStateRatio[0]}%</b> emotional, <b>${steadyStateRatio[1]}%</b> physical, and <b>${steadyStateRatio[2]}%</b> friendly.`
+    } else {
+        $('.equilibrium').textContent = 'Not enough information to determine an equilibrium.'
+    }
+
+    const titeldMarkovMatrix = [
+        ['','To Emotional','To Physical','To Friendly'],
+        ['From Emotional',...[...markovMatrix.arr[0]].map(truncate)],
+        ['From Physical',...[...markovMatrix.arr[1]].map(truncate)],
+        ['From Friendly',...[...markovMatrix.arr[2]].map(truncate)]
+    ];
+    
+    insertArrayIntoTable($('.markovMatrix'), titeldMarkovMatrix);
 
 
-
-    $('.complexityNumber').textContent = Math.ceil(100 * complexityScore);
-
-    const titledArray = [
+    const titledCorrelationArray = [
         ['','Emotional','Physical','Friendly'],
         ['Emotional',...[...M.arr[0]].map(truncate)],
         ['Physical',...[...M.arr[1]].map(truncate)],
         ['Friendly',...[...M.arr[2]].map(truncate)]
     ];
 
-    $('.correlationMatrix').innerHTML = '';
-
-    for(let i = 0; i < 4; i++){
-        const row = document.createElement('tr');
-        for(let j = 0; j < 4; j++){
-            const td = document.createElement('td');
-            td.textContent = titledArray[i][j];
-            row.appendChild(td);
-        }
-        $('.correlationMatrix').appendChild(row);
-    }
+    insertArrayIntoTable($(".correlationMatrix"), titledCorrelationArray);
 
     $('.signalsCard > .signals').innerHTML = '';
 

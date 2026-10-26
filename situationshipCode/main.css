@@ -89,6 +89,44 @@ body {
     font-size:0.8em;
 }
 
+
+
+.markovMatrixCard {
+    margin-top:4em;
+    width:min(50dvh, 30dvw);
+    height:fit-content;
+    border-radius:5%;
+    border: 0.1em solid var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    text-align: center;
+}
+
+.markovMatrixCard > .title {
+    margin-top:2em;
+    font-weight:bold;
+}
+
+.markovMatrixCard > .markovMatrix {
+    margin-top:1em;
+    margin-bottom: 2em;
+}
+
+
+.equilibriumCard {
+    margin-top:4em;
+    width:min(80dvh, 50dvw);
+    height:fit-content;
+    border-radius:5%;
+    border: 0.1em solid var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    text-align: center;
+}
+
+
 .graphsCard {
     margin-top:4em;
     width:min(80dvh, 50dvw);

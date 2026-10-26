@@ -1,3 +1,5 @@
+const epsilon = 1e-5;
+
 class Matrix {
     rows;
     columns;
@@ -458,6 +460,18 @@ function invert(M){
         if(S.arr[i][i] != 0) D.arr[i][i] = 1/S.arr[i][i];
     }
     return V.multiply(D).multiply(U.transpose());
+}
+
+function findNullVector(M){
+    const {U:U, S:S, V:V} = SVD(M);
+    const n = M.rows;
+    console.log(U,S,V);
+    for(let i = 0; i < n; i++){
+        if(Math.abs(S.arr[i][i]) < epsilon || isNaN(S.arr[i][i])) {
+            return V.transpose().arr[i];
+        }
+    }
+    return new Float64Array(n);
 }
 
 function completeOrthogonalBasis(vectors){

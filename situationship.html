@@ -30,7 +30,7 @@
     <div class="complexityCard">
         <span class="title">Your complexity score</span>
         <span class="complexityNumber">?</span>
-        <span class="subtext"><i>Effective rank of signal strength correlation matrix - 1</i></span>
+        <span class="subtext"><i>Effective rank of correlation matrix of Fourier Transform coefficients - 1</i></span>
     </div>
     <div class="correlationCard">
         <span class="title">Correlation of Signals</span>
@@ -45,6 +45,17 @@
     <div class="graphsCard">
         <span class="title">Signals Over Time</span>
         <svg class="signalGraph" viewBox="0 0 600 600" role="application"></svg>
+    </div>
+    <div class="markovMatrixCard">
+        <span class="title">Vibe Shift Probabilities</span>
+        <table class="markovMatrix"></table>
+        <span class="text">Each percentage is the probability of moving from the state the row is labeled with to the state the column is labeled with.</span>
+        <span class="subtext"><i>Markov Matrix generated from odds of transitioning between states</i></span>
+    </div>
+    <div class="equilibriumCard">
+        <span class="title">Equilibrium of Vibes</span>
+        <span class="equilibrium"></span>
+        <span class="subtext"><i>Normalized principal eigenvector in Markov matrix generated from odds of transitioning bewteen states</i></span>
     </div>
     <div class="greeksCard">
         <span class="title">Greeks</span>
