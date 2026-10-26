@@ -197,26 +197,59 @@ const insertArrayIntoTable = (elem, arr) => {
     return;
 }
 
-const generateMarkov = (oneHot) => {
-    let counts = [new Float64Array([0,0,0]), new Float64Array([0,0,0]), new Float64Array([0,0,0])];
-    let totalFrom = [0,0,0];
+const generateMarkov = (oneHot, N) => {
+    let counts = [new Float64Array(N), new Float64Array(N), new Float64Array(N)];
+    let totalFrom = new Float64Array(N);
 
     for(let i = 1; i<oneHot.length; i++) {
         totalFrom[oneHot[i-1]]++;
         counts[oneHot[i-1]][oneHot[i]]++;
     }
     
-    for(let i = 0; i < 3; i++){
+    for(let i = 0; i < N; i++){
         if(totalFrom[i] == 0) continue;
-        for(let j = 0; j < 3; j++){
+        for(let j = 0; j < N; j++){
             counts[i][j] /= totalFrom[i];
         }
     }
 
-    let output = new Matrix(3, 3);
+    let output = new Matrix(N, N);
     output.arr = counts;
 
     return output;
+}
+
+
+const generateFilteredMarkov = (oneHot) => {
+    let stateCounts = 0;
+    let states = [];
+    for(let i = 0; i < oneHot.length; i++){
+        if(i == oneHot.indexOf(oneHot[i])){
+            stateCounts++;
+            states.push(oneHot[i]);
+        }
+    }
+
+    states.sort();
+
+    let counts = new Matrix(stateCounts, stateCounts);
+    let totalFrom = new Float64Array(stateCounts);
+
+    for(let i = 1; i<oneHot.length; i++) {
+        const idxPrev = states.indexOf(oneHot[i-1]);
+        const idxTo = states.indexOf(oneHot[i]);
+        totalFrom[idxPrev]++;
+        counts.arr[idxPrev][idxTo]++;
+    }
+    
+    for(let i = 0; i < stateCounts; i++){
+        if(totalFrom[i] == 0) continue;
+        for(let j = 0; j < stateCounts; j++){
+            counts.arr[i][j] /= totalFrom[i];
+        }
+    }
+
+    return counts;
 }
 
 const analyze = () => {
@@ -274,16 +307,28 @@ const analyze = () => {
     const σP = stdDev(EP);
     
     const classifiedPoints = oneHotClassify(EE, EP, EF);
-    const markovMatrix = generateMarkov(classifiedPoints);
-    const steadyState = findNullVector(markovMatrix.minus(getIdentity(3)));
+    const filteredMarkovMatrix = generateFilteredMarkov(classifiedPoints);
+    const stateMap = ['Emotional','Physical','Friendly'].filter((v,i) => classifiedPoints.includes(i));
+    
+    const steadyState = findNullVector(filteredMarkovMatrix.minus(getIdentity(stateMap.length)));
+    let totalSize = 0;
+    for(let i of steadyState) totalSize += i;
+    const steadyStateRatio = [...steadyState.scalarMultiply(100/totalSize)].map(i => i = i.toFixed(0));
 
-    if(steadyState) {
-        const steadyStateRatio = [...steadyState.scalarMultiply(100/steadyState.dot(new Float64Array([1,1,1])))].map(i => i = i.toFixed(0));
-        $('.equilibrium').innerHTML = `The equilibrium of your relationship is <b>${steadyStateRatio[0]}%</b> emotional, <b>${steadyStateRatio[1]}%</b> physical, and <b>${steadyStateRatio[2]}%</b> friendly.`
+    if(totalSize != 0) {
+        let outputString = 'The equilibrium of your relationship is '
+        for(let i = 0; i < stateMap.length; i++){
+            if(i != 0) outputString += ', ';
+            if(i != 0 && i != stateMap.length - 1) outputString += 'and ';
+
+            outputString += `<b>${steadyStateRatio[i]}%</b> ${stateMap[i]}`;
+        }
+        $('.equilibrium').innerHTML = outputString;
     } else {
         $('.equilibrium').textContent = 'Not enough information to determine an equilibrium.'
     }
 
+    const markovMatrix = generateMarkov(classifiedPoints, 3);
     const titeldMarkovMatrix = [
         ['','To Emotional','To Physical','To Friendly'],
         ['From Emotional',...[...markovMatrix.arr[0]].map(truncate)],

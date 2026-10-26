@@ -465,7 +465,6 @@ function invert(M){
 function findNullVector(M){
     const {U:U, S:S, V:V} = SVD(M);
     const n = M.rows;
-    console.log(U,S,V);
     for(let i = 0; i < n; i++){
         if(Math.abs(S.arr[i][i]) < epsilon || isNaN(S.arr[i][i])) {
             return V.transpose().arr[i];
@@ -524,8 +523,6 @@ function computeEigenpairsPower(M, iter = 100){
 
         A = A.multiply(A.minus(getIdentity(n).scalarMultiply(lambda))).scalarMultiply(1/lambda);
     }
-
-    console.log(vectors);
 
     let eigenvalues = [];
     for(let i = 0; i<n; i++){
