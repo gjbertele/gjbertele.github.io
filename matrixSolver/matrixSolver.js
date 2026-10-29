@@ -96,6 +96,10 @@ class Matrix {
         return this.arr.map(i => i = '['+i.toString()+']').join(',');
     }
 
+    inverse = function(){
+        return invert(this);
+    }
+
     wolfram = function(){
         window.open(`https://www.wolframalpha.com/input?i=${encodeURIComponent(this.toString())}`);
         return;
@@ -493,7 +497,6 @@ function completeOrthogonalBasis(vectors){
     }
 
     return vectors;
-
 }
 
 function computeEigenpairsPower(M, iter = 100){
@@ -539,8 +542,6 @@ function computeEigenpairsPower(M, iter = 100){
     }
 
     return [vectors, eigenvalues];
-    
-
 }
 
 function operatorNorm(M, iter = 1000){

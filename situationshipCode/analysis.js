@@ -166,6 +166,7 @@ const generateGraph = (elem, E, color, type) => {
 
     elem.appendChild(lineLabel);
 
+    return;
 }
 
 const D = (E) => {
@@ -252,33 +253,10 @@ const generateFilteredMarkov = (oneHot) => {
     return counts;
 }
 
-const analyze = () => {
+const fillComplexityNumber = (points) => {
     const EE = E(points, A);
     const EP = E(points, B);
     const EF = E(points, C);
-
-    const FE = Fourier(EE, 1, Math.floor(points.length / 2));
-    const FP = Fourier(EP, 1, Math.floor(points.length / 2));
-    const FF = Fourier(EF, 1, Math.floor(points.length / 2));
-
-    const OE = FE.map(i => i = [...i, 'emotional']);
-    const OP = FP.map(i => i = [...i, 'physical']);
-    const OF = FF.map(i => i = [...i, 'friendly']);
-
-    const OO = outliers([...OE,...OP,...OF]);
-
-    const BLT = bary(points);
-    let BL = [];
-    for(let i = 0; i<3; i++){
-        let x = [];
-        for(let j = 0; j<points.length; j++) x.push(BLT[j][i]);
-        BL.push(x);
-    }
-
-    const Mtemp = corrM(BL);
-    const M = new Matrix(3, 3);
-    M.arr = Mtemp.map(i => i = new Float64Array(i));
-
 
     const DEE = D(EE);
     const DEF = D(EF);
@@ -302,24 +280,44 @@ const analyze = () => {
 
     $('.complexityNumber').textContent = Math.ceil(100 * complexityScore);
 
-    const σE = stdDev(EE);
-    const σF = stdDev(EF);
-    const σP = stdDev(EP);
-    
+    return;
+}
+
+const computeSteadyState = (points) => {
+    const EE = E(points, A);
+    const EP = E(points, B);
+    const EF = E(points, C);
+
     const classifiedPoints = oneHotClassify(EE, EP, EF);
-    const filteredMarkovMatrix = generateFilteredMarkov(classifiedPoints);
+    const filteredMarkovMatrix = generateFilteredMarkov(classifiedPoints).transpose();
     const stateMap = ['Emotional','Physical','Friendly'].filter((v,i) => classifiedPoints.includes(i));
-    
+
     const steadyState = findNullVector(filteredMarkovMatrix.minus(getIdentity(stateMap.length)));
     let totalSize = 0;
     for(let i of steadyState) totalSize += i;
     const steadyStateRatio = [...steadyState.scalarMultiply(100/totalSize)].map(i => i = i.toFixed(0));
 
+    return [stateMap, steadyStateRatio, totalSize];
+}
+
+const computeMarkovMatrix = (points) => {
+    const EE = E(points, A);
+    const EP = E(points, B);
+    const EF = E(points, C);
+
+    const classifiedPoints = oneHotClassify(EE, EP, EF);
+
+    return generateMarkov(classifiedPoints, 3);
+}
+
+const fillMarkovData = (points) => {
+    const [stateMap, steadyStateRatio, totalSize] = computeSteadyState(points);
+
     if(totalSize != 0) {
         let outputString = 'The equilibrium of your relationship is '
         for(let i = 0; i < stateMap.length; i++){
             if(i != 0) outputString += ', ';
-            if(i != 0 && i != stateMap.length - 1) outputString += 'and ';
+            if(i != 0 && i == stateMap.length - 1) outputString += 'and ';
 
             outputString += `<b>${steadyStateRatio[i]}%</b> ${stateMap[i]}`;
         }
@@ -328,7 +326,7 @@ const analyze = () => {
         $('.equilibrium').textContent = 'Not enough information to determine an equilibrium.'
     }
 
-    const markovMatrix = generateMarkov(classifiedPoints, 3);
+    const markovMatrix = computeMarkovMatrix(points);
     const titeldMarkovMatrix = [
         ['','To Emotional','To Physical','To Friendly'],
         ['From Emotional',...[...markovMatrix.arr[0]].map(truncate)],
@@ -338,7 +336,58 @@ const analyze = () => {
     
     insertArrayIntoTable($('.markovMatrix'), titeldMarkovMatrix);
 
+    return;
+}
 
+const fillGreeks = (points) => {
+    const EE = E(points, A);
+    const EP = E(points, B);
+    const EF = E(points, C);
+
+    const σE = stdDev(EE);
+    const σF = stdDev(EF);
+    const σP = stdDev(EP);
+
+    let betaStr = ``;
+
+    const barycentric = bary(points);
+    const nameMap = ['E', 'P', 'F'];
+    const [SE, SP, SF] = [0, 1, 2].map(i => i = barycentric.map(j => j = j[i]));
+
+    for(let i = 0; i < 3; i++){
+        const βS = getForwardsLeastSquaresRegressionSeries(SE, SP, SF, i);
+        const β = βS[βS.length - 1];
+        const std = vecStdDev(βS);
+        const Σ = operatorNorm(std);
+        betaStr += [0,1,2].map(j=> j = `∂${nameMap[i]}/∂${nameMap[j]}: ${β[j].toFixed(3)}`).join(' ') + '<br>';
+        betaStr += `||Cov(∂${nameMap[i]})||: ${Σ.toFixed(3)} <br>`;
+    }
+
+    
+    $('.greeks').innerHTML = `σE: ${σE.toFixed(2)}  σP: ${σP.toFixed(2)}  σF: ${σF.toFixed(2)} <br> ${betaStr}`;
+
+    return;
+}
+
+const computeCorrelationMatrix = (points) => {
+    const BLT = bary(points);
+    let BL = [];
+    for(let i = 0; i<3; i++){
+        let x = [];
+        for(let j = 0; j<points.length; j++) x.push(BLT[j][i]);
+        BL.push(x);
+    }
+
+    const Mtemp = corrM(BL);
+    const M = new Matrix(3, 3);
+    M.arr = Mtemp.map(i => i = new Float64Array(i));
+
+    return M;
+}
+
+const fillCorrelationData = (points) => {
+    const M = computeCorrelationMatrix(points);
+    
     const titledCorrelationArray = [
         ['','Emotional','Physical','Friendly'],
         ['Emotional',...[...M.arr[0]].map(truncate)],
@@ -348,6 +397,43 @@ const analyze = () => {
 
     insertArrayIntoTable($(".correlationMatrix"), titledCorrelationArray);
 
+    return;
+}
+
+const fillSignalData = (points) => {
+    const EE = E(points, A);
+    const EP = E(points, B);
+    const EF = E(points, C);
+
+    generateGraph($('.signalGraph'), EE, '#c8452d', 'Emotional');
+    generateGraph($('.signalGraph'), EP, '#63c82d', 'Physical');
+    generateGraph($('.signalGraph'), EF, '#2db0c8', 'Friendly');
+
+    const axes = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    axes.style.fill = 'none';
+    axes.style.stroke = 'var(--ink)';
+    axes.style.strokeWidth = 2;
+    axes.setAttribute('points','50,50 50,510 510,510')
+
+    $('.signalGraph').appendChild(axes);
+
+    return;
+}
+
+const fillFourierInterpretation = (points) => {
+    const EE = E(points, A);
+    const EP = E(points, B);
+    const EF = E(points, C);
+
+    const FE = Fourier(EE, 1, Math.floor(points.length / 2));
+    const FP = Fourier(EP, 1, Math.floor(points.length / 2));
+    const FF = Fourier(EF, 1, Math.floor(points.length / 2));
+
+    const OE = FE.map(i => i = [...i, 'emotional']);
+    const OP = FP.map(i => i = [...i, 'physical']);
+    const OF = FF.map(i => i = [...i, 'friendly']);
+
+    const OO = outliers([...OE,...OP,...OF]);
     $('.signalsCard > .signals').innerHTML = '';
 
     for(let O of OO){
@@ -367,19 +453,117 @@ const analyze = () => {
         $('.signalsCard > .signals').appendChild(textElem);
     }
 
-    generateGraph($('.signalGraph'), EE, '#c8452d', 'Emotional');
-    generateGraph($('.signalGraph'), EP, '#63c82d', 'Physical');
-    generateGraph($('.signalGraph'), EF, '#2db0c8', 'Friendly');
+    return;
+}
 
-    const axes = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-    axes.style.fill = 'none';
-    axes.style.stroke = 'var(--ink)';
-    axes.style.strokeWidth = 2;
-    axes.setAttribute('points','50,50 50,510 510,510')
+const getForwardsLeastSquaresRegression = (SE, SP, SF, target, length) => {
+    if(!length) length = SE.length;
+    SE = SE.slice(0, length + 1);
+    SP = SP.slice(0, length + 1);
+    SF = SF.slice(0, length + 1);
 
-    $('.signalGraph').appendChild(axes);
+    const Yarr = [SE, SP, SF][target].map((v, i, a) => v = a[i+1]);
+    Yarr.pop();
 
-    $('.greeks').textContent = `σE: ${σE.toFixed(2)}  σP: ${σP.toFixed(2)}  σF: ${σF.toFixed(2)}`;
+    const Y = new Float64Array(Yarr);
+    let X = new Matrix(3, Y.length);
+    X.arr = [SE, SP, SF].map(v => new Float64Array(v.slice(0, v.length - 1)));
+    X = X.transpose();
+
+    return (X.transpose().multiply(X)).inverse().multiply(X.transpose()).vecMultiply(Y);
+}
+
+const vecStdDev = (series) => {
+    const n = series[0].length;
+    const N = series.length;
+    let mean = new Float64Array(n);
+
+    for(let i = 0; i < N; i++){
+        mean = mean.plus(series[i]);
+    }
+
+    mean = mean.scalarMultiply(1 / N);
+
+    let stdDev = new Matrix(n, n);
+    for(let i = 0; i < N; i++){
+        const dev = vecToMatrix(series[i].minus(mean));
+        stdDev = stdDev.plus(dev.multiply(dev.transpose()));
+    }
+
+    return stdDev.scalarMultiply(1 / (N - 1));
+}
+
+const vecToMatrix = (vec) => {
+    const m = new Matrix(1, vec.length);
+    m.arr[0] = vec;
+    return m.transpose();
+}
+
+const getForwardsLeastSquaresRegressionSeries = (SE, SP, SF, target) => {
+    let N = SE.length;
+    let betas = [];
+    for(let i = 3; i < N; i++){
+        betas.push(getForwardsLeastSquaresRegression(SE, SP, SF, target, i));
+    }
+
+    return betas;
+}
+
+const computeEfficientInvestment = (points, target) => {
+    const barycentric = bary(points);
+    const [SE, SP, SF] = [0, 1, 2].map(i => i = barycentric.map(j => j = j[i]));
+
+    const β = getForwardsLeastSquaresRegressionSeries(SE, SP, SF, target);
+    const Σ = vecStdDev(β);
+    const N = β.length;
+
+    //maximize w^T β - w^TΣw subject to w^T1 = 1
+
+    let allocation = new Float64Array(3);
+    let bestScore = -Infinity;
+    let dx = 0.01;
+    for(let x1 = 0; x1 <= 1; x1 += dx){
+        for(let x2 = 0; x1 + x2 <= 1; x2 += dx){
+            const w = new Float64Array([x1, x2, 1 - x1 - x2]);
+            const score = w.dot(β[N - 1]) - w.dot(Σ.vecMultiply(w));
+
+            if(score > bestScore) {
+                bestScore = score;
+                allocation = w;
+            }
+        }
+    }
+
+    return [allocation.map(i => i = Math.round(i * 100)), operatorNorm(Σ)];
+}
+
+const fillEfficientInvestment = (points) => {
+    const EΣ = [0,1,2].map(i => i = computeEfficientInvestment(points, i));
+    const E = EΣ.map(i => i = i[0]);
+    const Σ = EΣ.map(i => i = i[1]);
+    const nameMap = ['Emotional','Physical','Friendly'];
+    const strings = [0,1,2].map(i => `For <b>${nameMap[i]}</b>, the ideal allocation is <b>${E[i][0]}% ${nameMap[0]}, ${E[i][1]}% ${nameMap[1]}, and ${E[i][2]}% ${nameMap[2]}.</b>`);
+
+
+    $('.allocationText').innerHTML = strings.join(`<br>`);
+
+    return;
+}
+
+const analyze = () => {
+    const fills = [
+        fillComplexityNumber,
+        fillSignalData,
+        fillFourierInterpretation,
+        fillMarkovData,
+        fillCorrelationData,
+        fillGreeks,
+        fillEfficientInvestment
+    ]
+
+    for(let fill of fills) fill(points);
+
+    return;
 }
 
 
