@@ -339,9 +339,9 @@ function Diag(vec){
     return output;
 }
 
-function SVD(M){
+function SVD(M, iter = 1000){
     let MTM = M.transpose().multiply(M);
-    let lambda = computeEigenvaluesWithQR(MTM);
+    let lambda = computeEigenvaluesWithQR(MTM, iter);
     let vecV = computeEigenvectorsFromEigenvalues(MTM, lambda);
     let V = new Matrix(vecV.length, vecV[0].length);
     V.arr = vecV;
@@ -561,4 +561,63 @@ function operatorNorm(M, iter = 1000){
 
 function conditionNumber(M){
     return operatorNorm(M)*operatorNorm(invert(M));
+}
+
+function diagonalize(M){
+    const eigenpairs = computeEigenpairsWithQR(M);
+    const D = Diag(eigenpairs[0]);
+    let V = new Matrix(3,3);
+    V.arr = eigenpairs[1];
+    V = V.transpose();
+
+    return {V:V, D:D};
+}
+
+function mean(u) {
+    return u.reduce((a, b) => a + b) / u.length;
+}
+
+function cov (u, v) {
+    let s = 0;
+    const μu = mean(u);
+    const μv = mean(v);
+    for(let i = 0; i < u.length; i++) s += (u[i] - μu) * (v[i] - μv);
+    return s / u.length;
+}
+
+function stdDev(u) {
+    return Math.sqrt(cov(u,u));
+}
+
+function pearsonCorrelation(u, v) {
+    return cov(u, v) / (stdDev(u) * stdDev(v));
+}
+
+function bauerFikeEigenvalueSensitivity(M){
+    //https://en.wikipedia.org/wiki/Bauer%E2%80%93Fike_theorem
+    //Assume p = infinity
+
+    const {V, D} = diagonalize(M);
+    const k_P = conditionNumber(V);
+    const norm = operatorNorm(M);
+
+    return k_P * norm;
+}
+
+function marchenkoPasturEigenvalueDistribution(M){
+    //https://en.wikipedia.org/wiki/Marchenko%E2%80%93Pastur_distribution
+
+    let entries = [];
+    for(let row of M.arr) entries.push(...row);
+    let μ = 0;
+    let σ2 = 0;
+
+    for(let xi of entries) μ += xi / entries.length;
+    for(let xi of entries) σ2 += (xi - μ)**2 / entries.length;
+
+    const λ = M.rows / M.columns;
+    const λp = σ2 * (1 + Math.sqrt(λ))**2;
+    const λm = σ2 * (1 - Math.sqrt(λ))**2;
+    
+    return {λ, λp, λm, σ2};
 }
