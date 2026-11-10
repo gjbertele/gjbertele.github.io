@@ -215,7 +215,7 @@ const generateMarkov = (oneHot, N) => {
     }
 
     let output = new Matrix(N, N);
-    output.arr = counts;
+    output.arr = convertRowsToMatrixArr(counts);
 
     return output;
 }
@@ -240,13 +240,13 @@ const generateFilteredMarkov = (oneHot) => {
         const idxPrev = states.indexOf(oneHot[i-1]);
         const idxTo = states.indexOf(oneHot[i]);
         totalFrom[idxPrev]++;
-        counts.arr[idxPrev][idxTo]++;
+        counts.arr[idxPrev * counts.columns + idxTo]++;
     }
     
     for(let i = 0; i < stateCounts; i++){
         if(totalFrom[i] == 0) continue;
         for(let j = 0; j < stateCounts; j++){
-            counts.arr[i][j] /= totalFrom[i];
+            counts.arr[i*counts.columns + j] /= totalFrom[i];
         }
     }
 
@@ -265,7 +265,7 @@ const fillComplexityNumber = (points) => {
     const PM = new Matrix(points.length, 3);
     for(let i = 0; i < points.length - 1; i++){
         for(let j = 0; j < 3; j++){
-            PM.arr[i][j] = [DEE, DEP, DEF][j][i];
+            PM.arr[i*PM.columns + j] = [DEE, DEP, DEF][j][i];
         }
     }
 
@@ -329,9 +329,9 @@ const fillMarkovData = (points) => {
     const markovMatrix = computeMarkovMatrix(points);
     const titeldMarkovMatrix = [
         ['','To Emotional','To Physical','To Friendly'],
-        ['From Emotional',...[...markovMatrix.arr[0]].map(truncate)],
-        ['From Physical',...[...markovMatrix.arr[1]].map(truncate)],
-        ['From Friendly',...[...markovMatrix.arr[2]].map(truncate)]
+        ['From Emotional',...[...markovMatrix.getRow(0)].map(truncate)],
+        ['From Physical',...[...markovMatrix.getRow(1)].map(truncate)],
+        ['From Friendly',...[...markovMatrix.getRow(2)].map(truncate)]
     ];
     
     insertArrayIntoTable($('.markovMatrix'), titeldMarkovMatrix);
@@ -380,7 +380,7 @@ const computeCorrelationMatrix = (points) => {
 
     const Mtemp = corrM(BL);
     const M = new Matrix(3, 3);
-    M.arr = Mtemp.map(i => i = new Float64Array(i));
+    M.arr = convertRowsToMatrixArr(Mtemp.map(i => i = new Float64Array(i)));
 
     return M;
 }
@@ -390,9 +390,9 @@ const fillCorrelationData = (points) => {
     
     const titledCorrelationArray = [
         ['','Emotional','Physical','Friendly'],
-        ['Emotional',...[...M.arr[0]].map(truncate)],
-        ['Physical',...[...M.arr[1]].map(truncate)],
-        ['Friendly',...[...M.arr[2]].map(truncate)]
+        ['Emotional',...[...M.getRow(0)].map(truncate)],
+        ['Physical',...[...M.getRow(1)].map(truncate)],
+        ['Friendly',...[...M.getRow(2)].map(truncate)]
     ];
 
     insertArrayIntoTable($(".correlationMatrix"), titledCorrelationArray);
@@ -467,7 +467,7 @@ const getForwardsLeastSquaresRegression = (SE, SP, SF, target, length) => {
 
     const Y = new Float64Array(Yarr);
     let X = new Matrix(3, Y.length);
-    X.arr = [SE, SP, SF].map(v => new Float64Array(v.slice(0, v.length - 1)));
+    X.arr = convertRowsToMatrixArr([SE, SP, SF].map(v => new Float64Array(v.slice(0, v.length - 1))));
     X = X.transpose();
 
     return (X.transpose().multiply(X)).inverse().multiply(X.transpose()).vecMultiply(Y);
@@ -495,7 +495,7 @@ const vecStdDev = (series) => {
 
 const vecToMatrix = (vec) => {
     const m = new Matrix(1, vec.length);
-    m.arr[0] = vec;
+    m.arr = vec;
     return m.transpose();
 }
 

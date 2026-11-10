@@ -36,7 +36,7 @@ const generateSP500CorrelationMatrix = (N, returnZm = false) => {
     });
 
     const Zm = new Matrix(N, T);
-    Zm.arr = Z;
+    Zm.arr = convertRowsToMatrixArr(Z);
 
     const corr = Zm.multiply(Zm.transpose()).scalarMultiply(1 / (T - 1));
 
@@ -47,7 +47,7 @@ const generateSP500CorrelationMatrix = (N, returnZm = false) => {
 const findSectorComponentsSP500 = (N = 60) => {
     const tickers = financialData.matrix.labels_sp500;
     const [corr, Zm] = generateSP500CorrelationMatrix(N, true);
-    const T = Zm.arr[0].length;
+    const T = Zm.columns;
     
 
     const eigenpairsRaw = computeEigenpairsWithQR(corr, 40);
