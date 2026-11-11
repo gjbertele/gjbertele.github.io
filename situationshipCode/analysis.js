@@ -550,6 +550,67 @@ const fillEfficientInvestment = (points) => {
     return;
 }
 
+const quadraticRegressionToTime = (N, T, target, EE, EP, EF) => {
+    const S = (new Array(T - 1)).fill(0).map((i,v) => i = [EE[v], EP[v], EF[v], 1]);
+    const M = new Matrix(T - 1, (N + 1) ** 2);
+    const Y = (new Float64Array(T - 1)).fill(0).map((i,v) => i = [EE, EP, EF][target][v + 1]);
+    S.push(1);
+
+    for(let t = 0; t < T - 1; t++) {
+        for(let i = 0; i < N + 1; i++) {
+            for(let j = 0; j < N + 1; j++) {
+                M.arr[t*((N + 1)**2) + i * (N + 1) * j] = S[t][i] * S[t][j]
+            }
+        }
+    }
+
+
+    return (M.transpose().multiply(M)).inverse().multiply(M.transpose()).vecMultiply(Y);
+}
+ 
+const solveMultivariateBlackScholesTargetted = (points, target) => {
+    const EE = E(points, A);
+    const EP = E(points, B);
+    const EF = E(points, C);
+
+
+    //M is (T - 1) x (N+1)^2 matrix, let s_(N+1)t = 1
+    //M_{t((N+1)i + j)} = s[t]_{i+1}s[t]_{j+1}=s[t][i]*s[t][j]
+    //Mbeta = Y
+
+    const T = EE.length;
+    const N = 3;
+    const S = (new Array(T - 1)).fill(0).map((i,v) => i = [EE[v], EP[v], EF[v], 1]);
+    const β = quadraticRegressionToTime(N, T, target, EE, EP, EF);
+
+    const HessianU = new Matrix(N, N); 
+    for(let i = 0; i < N; i++){
+        for(let j = 0; j < i; j++){
+            HessianU[i * N + j] = β[i * (N + 1) + j] + β[j * (N + 1) + i];
+            HessianU[j * N + i] = β[i * (N + 1) + j] + β[j * (N + 1) + i];
+        }
+        HessianU[i * N + i] = 2 * β[i * (N + 1) + i];
+    }
+
+    const NablaU = new Float64Array(N);
+    for(let i = 0; i < N; i++) {
+        for(let j = 0; j < N + 1; j++) {
+            if(i == j) continue;
+            NablaU[i] += (β[i * (N + 1) + j] + β[j * (N + 1) * i]) * S[T - 1][j];
+        }
+        NablaU[i] += 2 * β[i * (N + 1) + i] * S[T - 1][i];
+    }
+
+    console.log(M, β, Y, HessianU, NablaU);
+}
+
+const fillBlackScholes = (points) => {
+    solveMultivariateBlackScholesTargetted(points, 0)
+
+    //https://math.stackexchange.com/questions/3155866/multivariate-quadratic-regression
+    //use black scholes in photos
+}
+
 const analyze = () => {
     const fills = [
         fillComplexityNumber,
@@ -558,7 +619,8 @@ const analyze = () => {
         fillMarkovData,
         fillCorrelationData,
         fillGreeks,
-        fillEfficientInvestment
+        fillEfficientInvestment,
+        fillBlackScholes
     ]
 
     for(let fill of fills) fill(points);
