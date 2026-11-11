@@ -1,5 +1,10 @@
+const signals = ['Emotional','Time Spent','Friendly'];
 const $ = document.querySelector.bind(document);
 const analysisButton = $('#analyze');
+for(let i = 0; i<3; i++){
+    $('.signal'+['A', 'B', 'C'][i]).textContent = signals[i];
+}
+
 
 const E = (L, P) => {
     let output = [];
@@ -254,18 +259,18 @@ const generateFilteredMarkov = (oneHot) => {
 }
 
 const fillComplexityNumber = (points) => {
-    const EE = E(points, A);
-    const EP = E(points, B);
-    const EF = E(points, C);
+    const EA = E(points, A);
+    const EB = E(points, B);
+    const EC = E(points, C);
 
-    const DEE = D(EE);
-    const DEF = D(EF);
-    const DEP = D(EP);
+    const DEA = D(EA);
+    const DEC = D(EC);
+    const DEB = D(EB);
 
     const PM = new Matrix(points.length, 3);
     for(let i = 0; i < points.length - 1; i++){
         for(let j = 0; j < 3; j++){
-            PM.arr[i*PM.columns + j] = [DEE, DEP, DEF][j][i];
+            PM.arr[i*PM.columns + j] = [DEA, DEB, DEC][j][i];
         }
     }
 
@@ -284,13 +289,13 @@ const fillComplexityNumber = (points) => {
 }
 
 const computeSteadyState = (points) => {
-    const EE = E(points, A);
-    const EP = E(points, B);
-    const EF = E(points, C);
+    const EA = E(points, A);
+    const EB = E(points, B);
+    const EC = E(points, C);
 
-    const classifiedPoints = oneHotClassify(EE, EP, EF);
+    const classifiedPoints = oneHotClassify(EA, EB, EC);
     const filteredMarkovMatrix = generateFilteredMarkov(classifiedPoints).transpose();
-    const stateMap = ['Emotional','Physical','Friendly'].filter((v,i) => classifiedPoints.includes(i));
+    const stateMap = signals.filter((v,i) => classifiedPoints.includes(i));
 
     const steadyState = findNullVector(filteredMarkovMatrix.minus(getIdentity(stateMap.length)));
     let totalSize = 0;
@@ -301,11 +306,11 @@ const computeSteadyState = (points) => {
 }
 
 const computeMarkovMatrix = (points) => {
-    const EE = E(points, A);
-    const EP = E(points, B);
-    const EF = E(points, C);
+    const EA = E(points, A);
+    const EB = E(points, B);
+    const EC = E(points, C);
 
-    const classifiedPoints = oneHotClassify(EE, EP, EF);
+    const classifiedPoints = oneHotClassify(EA, EB, EC);
 
     return generateMarkov(classifiedPoints, 3);
 }
@@ -328,10 +333,10 @@ const fillMarkovData = (points) => {
 
     const markovMatrix = computeMarkovMatrix(points);
     const titeldMarkovMatrix = [
-        ['','To Emotional','To Physical','To Friendly'],
-        ['From Emotional',...[...markovMatrix.getRow(0)].map(truncate)],
-        ['From Physical',...[...markovMatrix.getRow(1)].map(truncate)],
-        ['From Friendly',...[...markovMatrix.getRow(2)].map(truncate)]
+        ['','To '+signals[0],'To '+signals[1],'To '+signals[2]],
+        ['From '+signals[0],...[...markovMatrix.getRow(0)].map(truncate)],
+        ['From '+signals[1],...[...markovMatrix.getRow(1)].map(truncate)],
+        ['From '+signals[2],...[...markovMatrix.getRow(2)].map(truncate)]
     ];
     
     insertArrayIntoTable($('.markovMatrix'), titeldMarkovMatrix);
@@ -340,22 +345,22 @@ const fillMarkovData = (points) => {
 }
 
 const fillGreeks = (points) => {
-    const EE = E(points, A);
-    const EP = E(points, B);
-    const EF = E(points, C);
+    const EA = E(points, A);
+    const EB = E(points, B);
+    const EC = E(points, C);
 
-    const σE = stdDev(EE);
-    const σF = stdDev(EF);
-    const σP = stdDev(EP);
+    const σA = stdDev(EA);
+    const σB = stdDev(EC);
+    const σC = stdDev(EB);
 
     let betaStr = ``;
 
     const barycentric = bary(points);
-    const nameMap = ['E', 'P', 'F'];
-    const [SE, SP, SF] = [0, 1, 2].map(i => i = barycentric.map(j => j = j[i]));
+    const nameMap = signals.map(i => i = i.charAt(0));
+    const [SA, SB, SC] = [0, 1, 2].map(i => i = barycentric.map(j => j = j[i]));
 
     for(let i = 0; i < 3; i++){
-        const βS = getForwardsLeastSquaresRegressionSeries(SE, SP, SF, i);
+        const βS = getForwardsLeastSquaresRegressionSeries(SA, SB, SC, i);
         const β = βS[βS.length - 1];
         const std = vecStdDev(βS);
         const Σ = operatorNorm(std);
@@ -364,7 +369,7 @@ const fillGreeks = (points) => {
     }
 
     
-    $('.greeks').innerHTML = `σE: ${σE.toFixed(2)}  σP: ${σP.toFixed(2)}  σF: ${σF.toFixed(2)} <br> ${betaStr}`;
+    $('.greeks').innerHTML = `σ${nameMap[0]}: ${σA.toFixed(2)}  σ${nameMap[1]}: ${σB.toFixed(2)}  σ${nameMap[2]}: ${σC.toFixed(2)} <br> ${betaStr}`;
 
     return;
 }
@@ -389,10 +394,10 @@ const fillCorrelationData = (points) => {
     const M = computeCorrelationMatrix(points);
     
     const titledCorrelationArray = [
-        ['','Emotional','Physical','Friendly'],
-        ['Emotional',...[...M.getRow(0)].map(truncate)],
-        ['Physical',...[...M.getRow(1)].map(truncate)],
-        ['Friendly',...[...M.getRow(2)].map(truncate)]
+        ['',...signals],
+        [signals[0],...[...M.getRow(0)].map(truncate)],
+        [signals[1],...[...M.getRow(1)].map(truncate)],
+        [signals[2],...[...M.getRow(2)].map(truncate)]
     ];
 
     insertArrayIntoTable($(".correlationMatrix"), titledCorrelationArray);
@@ -401,13 +406,13 @@ const fillCorrelationData = (points) => {
 }
 
 const fillSignalData = (points) => {
-    const EE = E(points, A);
-    const EP = E(points, B);
-    const EF = E(points, C);
+    const EA = E(points, A);
+    const EB = E(points, B);
+    const EC = E(points, C);
 
-    generateGraph($('.signalGraph'), EE, '#c8452d', 'Emotional');
-    generateGraph($('.signalGraph'), EP, '#63c82d', 'Physical');
-    generateGraph($('.signalGraph'), EF, '#2db0c8', 'Friendly');
+    generateGraph($('.signalGraph'), EA, '#c8452d', signals[0]);
+    generateGraph($('.signalGraph'), EB, '#63c82d', signals[1]);
+    generateGraph($('.signalGraph'), EC, '#2db0c8', signals[2]);
 
     const axes = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
     axes.style.fill = 'none';
@@ -421,19 +426,19 @@ const fillSignalData = (points) => {
 }
 
 const fillFourierInterpretation = (points) => {
-    const EE = E(points, A);
-    const EP = E(points, B);
-    const EF = E(points, C);
+    const EA = E(points, A);
+    const EB = E(points, B);
+    const EC = E(points, C);
 
-    const FE = Fourier(EE, 1, Math.floor(points.length / 2));
-    const FP = Fourier(EP, 1, Math.floor(points.length / 2));
-    const FF = Fourier(EF, 1, Math.floor(points.length / 2));
+    const FA = Fourier(EA, 1, Math.floor(points.length / 2));
+    const FB = Fourier(EB, 1, Math.floor(points.length / 2));
+    const FC = Fourier(EC, 1, Math.floor(points.length / 2));
 
-    const OE = FE.map(i => i = [...i, 'emotional']);
-    const OP = FP.map(i => i = [...i, 'physical']);
-    const OF = FF.map(i => i = [...i, 'friendly']);
+    const OA = FA.map(i => i = [...i, signals[0].toLowerCase()]);
+    const OB = FB.map(i => i = [...i, signals[1].toLowerCase()]);
+    const OC = FC.map(i => i = [...i, signals[2].toLowerCase()]);
 
-    const OO = outliers([...OE,...OP,...OF]);
+    const OO = outliers([...OA,...OB,...OC]);
     $('.signalsCard > .signals').innerHTML = '';
 
     for(let O of OO){
@@ -456,18 +461,18 @@ const fillFourierInterpretation = (points) => {
     return;
 }
 
-const getForwardsLeastSquaresRegression = (SE, SP, SF, target, length) => {
+const getForwardsLeastSquaresRegression = (SA, SB, SC, target, length) => {
     if(!length) length = SE.length;
-    SE = SE.slice(0, length + 1);
-    SP = SP.slice(0, length + 1);
-    SF = SF.slice(0, length + 1);
+    SA = SA.slice(0, length + 1);
+    SB = SB.slice(0, length + 1);
+    SC = SC.slice(0, length + 1);
 
-    const Yarr = [SE, SP, SF][target].map((v, i, a) => v = a[i+1]);
+    const Yarr = [SA, SB, SC][target].map((v, i, a) => v = a[i+1]);
     Yarr.pop();
 
     const Y = new Float64Array(Yarr);
     let X = new Matrix(3, Y.length);
-    X.arr = convertRowsToMatrixArr([SE, SP, SF].map(v => new Float64Array(v.slice(0, v.length - 1))));
+    X.arr = convertRowsToMatrixArr([SA, SB, SC].map(v => new Float64Array(v.slice(0, v.length - 1))));
     X = X.transpose();
 
     return (X.transpose().multiply(X)).inverse().multiply(X.transpose()).vecMultiply(Y);
@@ -499,11 +504,11 @@ const vecToMatrix = (vec) => {
     return m.transpose();
 }
 
-const getForwardsLeastSquaresRegressionSeries = (SE, SP, SF, target) => {
-    let N = SE.length;
+const getForwardsLeastSquaresRegressionSeries = (SA, SB, SC, target) => {
+    let N = SA.length;
     let betas = [];
     for(let i = 3; i < N; i++){
-        betas.push(getForwardsLeastSquaresRegression(SE, SP, SF, target, i));
+        betas.push(getForwardsLeastSquaresRegression(SA, SB, SC, target, i));
     }
 
     return betas;
@@ -511,9 +516,9 @@ const getForwardsLeastSquaresRegressionSeries = (SE, SP, SF, target) => {
 
 const computeEfficientInvestment = (points, target) => {
     const barycentric = bary(points);
-    const [SE, SP, SF] = [0, 1, 2].map(i => i = barycentric.map(j => j = j[i]));
+    const [SA, SB, SC] = [0, 1, 2].map(i => i = barycentric.map(j => j = j[i]));
 
-    const β = getForwardsLeastSquaresRegressionSeries(SE, SP, SF, target);
+    const β = getForwardsLeastSquaresRegressionSeries(SA, SB, SC, target);
     const Σ = vecStdDev(β);
     const N = β.length;
 
@@ -541,8 +546,7 @@ const fillEfficientInvestment = (points) => {
     const EΣ = [0,1,2].map(i => i = computeEfficientInvestment(points, i));
     const E = EΣ.map(i => i = i[0]);
     const Σ = EΣ.map(i => i = i[1]);
-    const nameMap = ['Emotional','Physical','Friendly'];
-    const strings = [0,1,2].map(i => `For <b>${nameMap[i]}</b>, the ideal allocation is <b>${E[i][0]}% ${nameMap[0]}, ${E[i][1]}% ${nameMap[1]}, and ${E[i][2]}% ${nameMap[2]}.</b>`);
+    const strings = [0,1,2].map(i => `For <b>${signals[i]}</b>, the ideal allocation is <b>${E[i][0]}% ${signals[0]}, ${E[i][1]}% ${signals[1]}, and ${E[i][2]}% ${signals[2]}.</b>`);
 
 
     $('.allocationText').innerHTML = strings.join(`<br>`);
