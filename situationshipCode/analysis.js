@@ -274,7 +274,7 @@ const fillComplexityNumber = (points) => {
         }
     }
 
-    const σ = computeEigenvaluesWithQR(PM.multiply(PM.transpose()));
+    const σ = jacobiEigen(PM.multiply(PM.transpose()))[1].sort((a,b) => b - a);
     const Σσ = σ.reduce((a,b) => a + b, 0);
     const ρ = σ.map(i => i = i / Σσ);
 
@@ -554,7 +554,10 @@ const fillEfficientInvestment = (points) => {
     return;
 }
 
+
 const analyze = () => {
+    if(memoryPointer > 2e7) wipeMatrixMemory();
+    
     const fills = [
         fillComplexityNumber,
         fillSignalData,

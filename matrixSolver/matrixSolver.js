@@ -1,21 +1,29 @@
-const epsilon = 1e-5;
+const epsilon = 1e-8;
+let maxSize = 5e7;
+let memory = new Float64Array(maxSize);
+let memoryPointer = 0;
+memory.fill(0);
+
 
 class Matrix {
     rows;
     columns;
     arr;
+
     constructor(n, m){
         if(!m) m = n;
 
         this.rows = n;
         this.columns = m;
 
-        this.arr = new Float64Array(m * n);
+
+        this.arr = memory.subarray(memoryPointer, memoryPointer + n * m);
         this.arr.fill(0);
+        memoryPointer += n * m;
 
         return this;
     }
-    plus = function(B){
+    plus (B){
         let output = new Matrix(this.rows, this.columns);
         for(let i = 0; i<this.rows * this.columns; i++){
             output.arr[i] = this.arr[i] + B.arr[i];
@@ -23,7 +31,7 @@ class Matrix {
         return output;
     }
 
-    minus = function(B){
+    minus (B){
         let output = new Matrix(this.rows, this.columns);
         for(let i = 0; i<this.rows * this.columns; i++){
             output.arr[i] = this.arr[i] - B.arr[i];
@@ -31,22 +39,19 @@ class Matrix {
         return output;
     }
 
-    multiply = function(B){
+    multiply (B){
         let output = new Matrix(this.rows, B.columns);
-        let temp = 0;
         for(let i = 0; i < this.rows; i++){
             for(let j = 0; j < B.columns; j++){
-                temp = 0;
                 for(let k = 0; k<Math.min(this.columns, B.rows); k++){
-                    temp += this.arr[i*this.columns + k]*B.arr[k*B.columns + j];
+                    output.arr[i * output.columns + j] += this.arr[i*this.columns + k]*B.arr[k*B.columns + j];
                 }
-                output.arr[i * output.columns + j] = temp;
             }
         }
         return output;
     }
 
-    vecMultiply = function(v){
+    vecMultiply (v){
         let output = new Float64Array(this.rows);
         let temp = 0;
         for(let i = 0; i<this.rows; i++){
@@ -59,7 +64,7 @@ class Matrix {
         return output;
     }
 
-    scalarMultiply = function(a){
+    scalarMultiply (a){
         let output = new Matrix(this.rows, this.columns);
         for(let i = 0; i<this.rows * this.columns; i++){
             output.arr[i] = this.arr[i] * a;
@@ -67,7 +72,7 @@ class Matrix {
         return output;
     }
 
-    transpose = function(){
+    transpose (){
         let output = new Matrix(this.columns, this.rows);
         for(let i = 0; i<this.columns; i++){
             for(let j = 0; j<this.rows; j++) output.arr[i * output.columns + j] = this.arr[j * this.columns + i];
@@ -75,11 +80,11 @@ class Matrix {
         return output;
     }
 
-    dot = function(B){
+    dot (B){
         return this.arr.dot(B.arr);
     }
 
-    toString = function(){
+    toString (){
         let string = ``;
         for(let i = 0; i < this.rows; i++){
             let column = '{'+this.arr.slice(i * this.columns, (i+1)*this.columns).join(', ')+'}';
@@ -89,23 +94,27 @@ class Matrix {
         return '{'+string+'}';
     }
 
-    inverse = function(){
+    inverse (){
         return invert(this);
     }
 
-    wolfram = function(){
+    wolfram (){
         window.open(`https://www.wolframalpha.com/input?i=${encodeURIComponent(this.toString())}`);
         return;
     }
 
-    QR = function(){
+    QR (){
         return QRFactorize(this);
     }
 
-    T = this.transpose;
+    get T() { return this.transpose() };
 
-    getRow = function(i){
+    getRow (i){
         return this.arr.slice(i*this.columns,(i+1)*this.columns);
+    }
+
+    getColumn (i){
+        return new Float64Array((new Array(this.rows)).fill(0).map((j,v) => j = this.arr[v * this.columns + i]));
     }
 }
 
@@ -260,6 +269,10 @@ function precomputeCoefficientsExcluding(lambda, idx){
     return output;
 }
 
+function Δ(u){
+    return u.map((i,v) => i = i - u[v-1]).slice(1);
+}
+
 function matrixPolynomialExcluding(M,lambda,idx){
     let n = M.rows;
     let output = new Matrix(n,n);
@@ -337,19 +350,14 @@ function Diag(vec){
     return output;
 }
 
-function SVD(M, iter = 1000){
+function SVD(M){
     let MTM = M.transpose().multiply(M);
-    let lambda = computeEigenvaluesWithQR(MTM, iter);
-    let vecV = computeEigenvectorsFromEigenvalues(MTM, lambda);
-    let V = new Matrix(vecV.length, vecV[0].length);
-    V.arr = convertRowsToMatrixArr(vecV);
-    V = V.transpose();
-
+    let [V, lambda] = jacobiEigen(MTM);
     let U = M.multiply(V).transpose();
 
     for(let i = 0; i<U.arr.length; i++){
         let norm = U.getRow(i).mag();
-        if(norm>10**(-6)){
+        if(norm > epsilon){
             for(let j = i*U.columns; j<(i+1)*U.columns; j++) U.arr[j] = U.arr[j] / norm;
         }
     }
@@ -369,7 +377,7 @@ function computeEigenvaluesSparse(M){
     let init = new Matrix(n,n);
     let lambda = new Array(n);
     for(let i = 0; i<n; i++){
-        init.arr[i][i] = M.arr[i*M.columns + i];
+        init.arr[i*n + i] = M.arr[i*M.columns + i];
         lambda[i] = M.arr[i*M.columns + i];
     }
 
@@ -401,7 +409,7 @@ function QRFactorize(M){
     let Qn = getIdentity(n);
 
     for(let i = 0; i<n-1; i++){
-        let aCol = An.transpose().getRow(i);
+        let aCol = An.getColumn(i);
         for(let j = 0; j<i; j++) aCol[j] = 0;
         let norm = Math.sqrt(aCol.dot(aCol));
         let vi = aCol.plus(getE(n, i).scalarMultiply(norm*Math.sign(aCol[i])));
@@ -427,17 +435,15 @@ function computeEigenvaluesWithQR(M, iter = 1000){
 
 function computeEigenpairsWithQR(M, iter = 1000){
     let output = M;
-    let Qs = [];
+    let S = getIdentity(M.rows);
     for(let i = 0; i<iter; i++){
         let {Q,R} = QRFactorize(output);
         output = R.multiply(Q);
-        Qs.push(Q);
+        S = S.multiply(Q);
     }
     let vec = new Float64Array(M.rows);
     for(let i = 0; i<M.rows; i++) vec[i] = output.arr[i*output.columns + i];
     
-    let S = getIdentity(M.rows);
-    for(let i = 0; i<Qs.length; i++) S = S.multiply(Qs[i])
     S = S.transpose();
 
     let eigenvectors = (new Array(S.rows)).fill(0).map(i => i = S.getRow(i));
@@ -445,6 +451,89 @@ function computeEigenpairsWithQR(M, iter = 1000){
     return [vec, eigenvectors];
 }
 
+function jacobiEigen(T) {
+    const n = T.rows;
+    const S = Float64Array.from(T.arr);
+    const E = getIdentity(n);
+    const e = new Float64Array(n);
+    const ind = new Int32Array(n);
+    const changed = new Array(n).fill(true);
+    let state = n;
+
+    if (n < 2) { 
+        e[0] = S[0]; 
+        return [E, e]; 
+    }
+
+    const maxind = (k) => {
+        let m = k + 1;
+        for (let j = k + 2; j < n; j++) {
+            if (Math.abs(S[k * n + j]) > Math.abs(S[k * n + m])) m = j;
+        }
+        return m;
+    };
+
+    const update = (k, t) => {
+        const y = e[k];
+        e[k] = y + t;
+        if (changed[k] && y === e[k]) { 
+            changed[k] = false; 
+            state--; 
+        }
+        else if (!changed[k] && y !== e[k]) { 
+            changed[k] = true; 
+            state++; 
+        }
+    };
+
+    const rotate = (k, l, i, j, c, s) => {
+        const u = S[k * n + l], v = S[i * n + j];
+        S[k * n + l] = c * u - s * v;
+        S[i * n + j] = s * u + c * v;
+    };
+
+    for (let k = 0; k < n; k++) {
+        e[k] = S[k * n + k];
+        if (k < n - 1) ind[k] = maxind(k);
+    }
+
+    while (state !== 0) {
+        let m = 0;
+        for (let k = 1; k < n - 1; k++) {
+            if (Math.abs(S[k * n + ind[k]]) > Math.abs(S[m * n + ind[m]])) m = k;
+        }
+
+        const k = m, l = ind[m];
+        const p = S[k * n + l];
+        if (p === 0) break;                      
+
+        const y = (e[l] - e[k]) / 2;
+        const d = Math.abs(y) + Math.hypot(p, y);
+        const r = Math.hypot(p, d);
+        const c = d / r;
+        let s = p / r;
+        let t = (p * p) / d;
+        if (y < 0) { s = -s; t = -t; }
+
+        S[k * n + l] = 0;
+        update(k, -t);
+        update(l, t);
+
+        for (let i = 0; i < k; i++)         rotate(i, k, i, l, c, s);
+        for (let i = k + 1; i < l; i++)     rotate(k, i, i, l, c, s);
+        for (let i = l + 1; i < n; i++)     rotate(k, i, l, i, c, s);
+
+        for (let i = 0; i < n; i++) {
+            const u = E.arr[i * n + k], v = E.arr[i * n + l];
+            E.arr[i * n + k] = c * u - s * v;
+            E.arr[i * n + l] = s * u + c * v;
+        }
+
+        for (let i = 0; i <= Math.min(l, n - 2); i++) ind[i] = maxind(i);
+    }
+
+    return [E, e]; 
+}
 
 function randomMatrix(n, symmetric = true){
     let output = new Matrix(n,n);
@@ -471,7 +560,7 @@ function findNullVector(M){
     const n = M.rows;
     for(let i = 0; i < n; i++){
         if(Math.abs(S.arr[i*S.columns + i]) < epsilon || isNaN(S.arr[i*S.columns + i])) {
-            return V.transpose().getRow(i);
+            return V.getColumn(i);
         }
     }
     return new Float64Array(n);
@@ -499,7 +588,7 @@ function conditionNumber(M){
 function diagonalize(M){
     const eigenpairs = computeEigenpairsWithQR(M);
     const D = Diag(eigenpairs[0]);
-    let V = new Matrix(3,3);
+    let V = new Matrix(M.rows, M.rows);
     V.arr = convertRowsToMatrixArr(eigenpairs[1]);
     V = V.transpose();
 
@@ -555,4 +644,10 @@ function marchenkoPasturEigenvalueDistribution(M){
     const λm = σ2 * (1 - Math.sqrt(λ))**2;
     
     return {λ, λp, λm, σ2};
+}
+
+function wipeMatrixMemory() {
+    memory = new Float64Array(maxSize);
+    memoryPointer = 0;
+    memory.fill(0);
 }

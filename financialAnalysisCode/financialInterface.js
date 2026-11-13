@@ -50,10 +50,11 @@ const findSectorComponentsSP500 = (N = 60) => {
     const T = Zm.columns;
     
 
-    const eigenpairsRaw = computeEigenpairsWithQR(corr, 40);
-
-    const eigenpairs = (new Array(eigenpairsRaw[0].length)).fill(0).map((i, v) => i = [eigenpairsRaw[0][v], eigenpairsRaw[1][v]]);
+    const eigenpairsRaw = jacobiEigen(corr);
+    const eigenpairs =  (new Array(eigenpairsRaw[1].length)).fill(0).map((i, v) => i = [eigenpairsRaw[1][v], eigenpairsRaw[0].getColumn(v)]);
+    eigenpairs.sort((a,b) => b[0] - a[0]);
     const {λ, λp, λm, σ2} = marchenkoPasturEigenvalueDistribution(Zm);
+
     const significantEigenpairs = eigenpairs.filter(i => i[0] > λp).map(i => i = [i[0], i[1].scalarMultiply(1/i[1].mag())]);
 
     let sectors = [];
