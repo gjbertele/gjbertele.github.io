@@ -646,8 +646,88 @@ function marchenkoPasturEigenvalueDistribution(M){
     return {λ, λp, λm, σ2};
 }
 
+function eigenvaluesSymmetric(M) {
+    return tridiagonalQL(tridiagonalizeSymmetric(M));
+}
+
+function tridiagonalizeSymmetric(M) {
+    let A = structuredClone(M);
+    const n = M.rows;
+
+    for(let k = 0; k < n - 2; k++) {
+        let sgn = Math.sign(A.arr[(k+1) * n + k]);
+        if(sgn == 0) sgn = 1;
+        let sum = 0;
+        for(let j = k + 1; j < n; j++) sum += A.arr[j * n + k]**2;
+
+        const α = -sgn*Math.sqrt(sum);
+        const r = Math.sqrt(0.5 * (α * α - A.arr[(k+1) * n + k]*α));
+        let v = new Matrix(n, 1);
+        v.arr[k + 1] = (A.arr[(k+1)*n + k] - α) / (2 * r);
+        for(let j = k + 2; j < n; j++) v.arr[j] = A.arr[j * n + k] / (2 * r);
+        const P = getIdentity(n).minus(v.multiply(v.transpose()).scalarMultiply(2));
+        A = P.multiply(A).multiply(P);
+    }
+
+    return A;
+}
+
+function tridiagonalQL(M) {
+    const n = M.rows;
+    const d = new Float64Array(n);
+    const e = new Float64Array(n);              
+    for (let i = 0; i < n; i++) {
+        d[i] = M.arr[i * n + i];
+        if (i < n - 1) e[i] = M.arr[(i + 1) * n + i];
+    }
+
+    for (let l = 0; l < n; l++) {
+        let iter = 0;
+        outer: while (true) {
+            let m = l;
+            while (m < n - 1 &&
+                   Math.abs(e[m]) > Number.EPSILON * (Math.abs(d[m]) + Math.abs(d[m + 1]))) m++;
+            if (m === l) break;                 
+
+            if (++iter === 30) throw new Error("Max iter");
+
+            let g = (d[l + 1] - d[l]) / (2 * e[l]);
+            let r = Math.hypot(g, 1);
+            g = d[m] - d[l] + e[l] / (g + (g >= 0 ? r : -r));
+
+            let s = 1, c = 1, p = 0;
+            for (let i = m - 1; i >= l; i--) {
+                const f = s * e[i];
+                const b = c * e[i];
+                r = Math.hypot(f, g);
+                e[i + 1] = r;
+                if (r === 0) {
+                    d[i + 1] -= p;
+                    e[m] = 0;
+                    continue outer;
+                }
+                s = f / r;
+                c = g / r;
+                g = d[i + 1] - p;
+                r = (d[i] - g) * s + 2 * c * b;
+                p = s * r;
+                d[i + 1] = g + p;
+                g = c * r - b;
+            }
+
+            d[l] -= p;
+            e[l] = g;
+            e[m] = 0;
+        }
+    }
+    return d;                                  
+}
+
+
 function wipeMatrixMemory() {
     memory = new Float64Array(maxSize);
     memoryPointer = 0;
     memory.fill(0);
 }
+
+//TODO: OPTIMIZE MATRIX MULTIPLICATION
