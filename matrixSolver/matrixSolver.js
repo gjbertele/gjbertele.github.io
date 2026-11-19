@@ -566,6 +566,34 @@ function findNullVector(M){
     return new Float64Array(n);
 }
 
+function vectorPearsonMatrix(u,v){
+    let n = u.length;
+    let m = v.length;
+    let output = new Matrix(n, m);
+    for(let i = 0; i<n; i++) {
+        for(let j = 0; j<m; j++){
+            output.arr[i * n + j] = pearsonCorrelation(u[i], v[j]);
+        }
+    }
+    
+    return output;
+}
+
+function getVectorofAllOnes(N) {
+    return (new Float64Array(N)).fill(1);
+}
+
+function minimalMagnitudeOnUnitBall(M){
+    //minimize <Mx,Mx>/<x,x> = <x,M^TMx>/<x,x>
+    //so x is eigenvector of M^TM with smallest eigenvalue in magnitude (same as smallest eigenvalue bc they'll all be >= 0)
+
+    const n = M.columns;
+    const eigenvalues = eigenvaluesSymmetric(M.transpose().multiply(M));
+    const minimalLambda = Math.min(...eigenvalues);
+    const vector = findNullVector(M.transpose().multiply(M).minus(getIdentity(n).scalarMultiply(minimalLambda)));
+    return vector.scalarMultiply(1/vector.mag());
+}
+
 function operatorNorm(M, iter = 1000){
     let n = M.columns;
     let vec = getE(n, 0);

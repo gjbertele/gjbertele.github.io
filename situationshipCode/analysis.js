@@ -374,7 +374,7 @@ const fillGreeks = (points) => {
     return;
 }
 
-const computeCorrelationMatrix = (points) => {
+const computePointCorrelationMatrix = (points) => {
     const BLT = bary(points);
     let BL = [];
     for(let i = 0; i<3; i++){
@@ -391,7 +391,7 @@ const computeCorrelationMatrix = (points) => {
 }
 
 const fillCorrelationData = (points) => {
-    const M = computeCorrelationMatrix(points);
+    const M = computePointCorrelationMatrix(points);
     
     const titledCorrelationArray = [
         ['',...signals],
